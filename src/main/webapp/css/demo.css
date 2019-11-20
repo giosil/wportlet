@@ -1,0 +1,13 @@
+/* Responsive rules */
+.res-cell-hide{
+	display: table-cell;
+}
+.res-block-hide{
+	display: block;
+}
+.res-break{
+	display: none;
+}
+@media all and (min-width: 900px) {.res-cell-hide{display: table-cell;}.res-block-hide{display: block;}.res-break{display: none;}}
+@media not all and (min-width: 900px) {.res-cell-hide{display: none;}.res-block-hide{display: none;}.res-break{display: block;}}
+

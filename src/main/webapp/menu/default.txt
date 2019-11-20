@@ -1,0 +1,17 @@
+# Configuration
+
+root  = Demo
+class = org.dew.portlet.ui.SimpleMenuBuilder
+state = normal
+
+# Liferay Configuration
+
+#liferay_class    = org.dew.portlet.ui.LiferayTreeMenuBuilder
+#liferay_img_path = /html/themes/classic/images/trees/
+#liferay_js_path  = /html/js/liferay/
+
+# Menu
+
+Examples
+	Hello->formHello.jsp
+	Maps->showMap.jsp?map=config

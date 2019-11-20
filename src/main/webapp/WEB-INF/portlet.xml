@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd" 
+	version="1.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+	
+	<portlet>
+		<portlet-name>dew_demo</portlet-name>
+		<display-name>DEW Demo</display-name>
+		
+		<portlet-class>org.dew.portlet.WPortlet</portlet-class>
+		
+		<init-param>
+			<name>view-jsp</name>
+			<value>index.jsp</value>
+		</init-param>
+		<init-param>
+			<name>edit-jsp</name>
+			<value>edit.jsp</value>
+		</init-param>
+		<init-param>
+			<name>help-jsp</name>
+			<value>help.jsp</value>
+		</init-param>
+		<init-param>
+			<name>login-jsp</name>
+			<value>login.jsp</value>
+		</init-param>
+		<init-param>
+			<name>message-jsp</name>
+			<value>message.jsp</value>
+		</init-param>
+		
+		<init-param>
+			<name>menu</name>
+			<value>default.txt</value>
+		</init-param>
+		
+		<init-param>
+			<name>listener</name>
+			<value>org.dew.portlet.demo.PortletListener</value>
+		</init-param>
+		
+		<init-param>
+			<name>action.login</name>
+			<value>org.dew.portlet.demo.LoginAction</value>
+		</init-param>
+		<init-param>
+			<name>action.forward</name>
+			<value>org.dew.portlet.demo.ForwardAction</value>
+		</init-param>
+		<init-param>
+			<name>action.hello</name>
+			<value>org.dew.portlet.demo.HelloAction</value>
+		</init-param>
+		
+		<expiration-cache>0</expiration-cache>
+		
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+			<portlet-mode>edit</portlet-mode>
+			<portlet-mode>help</portlet-mode>
+		</supports>
+		
+		<portlet-info>
+			<title>DEW Demo</title>
+			<short-title>DEW Demo</short-title>
+		</portlet-info>
+		
+		<portlet-preferences>
+			<preference>
+				<name>pref_name</name>
+				<value>pref_value</value>
+			</preference>
+		</portlet-preferences>
+	</portlet>
+</portlet-app>

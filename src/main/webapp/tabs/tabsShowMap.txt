@@ -1,0 +1,11 @@
+# Configuration
+
+class = org.dew.portlet.ui.SimpleTabsBuilder
+#liferay_class = org.dew.portlet.ui.LiferayTabsBuilder
+
+# Tabs
+
+Configuration -> showMap.jsp?map=config
+Parameters    -> showMap.jsp?map=parameters
+Preferences   -> showMap.jsp?map=preferences
+Session       -> showMap.jsp?map=session
