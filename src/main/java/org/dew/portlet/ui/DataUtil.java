@@ -311,7 +311,17 @@ class DataUtil
       message += " Found: null"; 
     }
     else {
-      message += " Found: " + o.getClass().getCanonicalName();
+      String g = "";
+      if(o instanceof List) {
+        int size = ((List<?>) o).size();
+        if(size > 0) {
+          Object item0 = ((List<?>) o).get(0);
+          if(item0 != null) {
+            g += "<" + item0.getClass().getCanonicalName() + ">";
+          }
+        }
+      }
+      message += " Found: " + o.getClass().getCanonicalName() + g;
     }
     
     if(action != null) {
@@ -319,9 +329,10 @@ class DataUtil
     }
     
     if(parameters != null) {
+      message += " params=" + parameters;
       PortletSession portletSession = parameters.getPortletSession();
       if(portletSession != null) {
-        String sSessionDump = "{";
+        String sSessionDump = "session={";
         Object sessAction = portletSession.getAttribute(WNames.sSESS_ACTION);
         sSessionDump = WNames.sSESS_ACTION + "=" + sessAction;
         sSessionDump += "}";
