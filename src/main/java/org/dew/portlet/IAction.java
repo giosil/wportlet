@@ -61,10 +61,7 @@ interface IAction
    * @throws Exception
    */
   public
-  Object action(String sAction, 
-            Parameters parameters, 
-            ActionRequest request, 
-            ActionResponse response) 
+  Object action(String sAction, Parameters parameters, ActionRequest request, ActionResponse response) 
     throws Exception;
   
   /**
@@ -84,11 +81,7 @@ interface IAction
    * @throws Exception
    */
   public
-  String view(String sAction, 
-          Parameters parameters,
-          Object oActionResult,
-          RenderRequest request, 
-          RenderResponse response) 
+  String view(String sAction, Parameters parameters, Object oActionResult, RenderRequest request, RenderResponse response) 
     throws Exception;
   
   /**
@@ -107,10 +100,6 @@ interface IAction
    * @throws Exception
    */
   public
-  String exception(String sAction, 
-               Parameters parameters,
-               Exception actionException,
-               RenderRequest request, 
-               RenderResponse response) 
+  String exception(String sAction, Parameters parameters, Exception actionException, RenderRequest request, RenderResponse response) 
     throws Exception;
 }

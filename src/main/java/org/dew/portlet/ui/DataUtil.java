@@ -1,0 +1,334 @@
+package org.dew.portlet.ui;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.portlet.PortletSession;
+
+import org.dew.portlet.IAction;
+import org.dew.portlet.WNames;
+import org.dew.portlet.Parameters;
+import org.dew.portlet.SnapTracer;
+
+public 
+class DataUtil 
+{
+  public static <T> 
+  List<T> expectList(Object o, Class<T> itemClass)
+  {
+    return expectList(o, itemClass, false);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  List<T> expectList(Object o, Class<T> itemClass, boolean emptyListDefault)
+  {
+    if(o == null) {
+      if(emptyListDefault) {
+        return new ArrayList<T>();
+      }
+      return null;
+    }
+    if(!(o instanceof List)) {
+      if(itemClass != null && itemClass.isInstance(o)) {
+        List<T> listResult = new ArrayList<T>();
+        listResult.add((T) o);
+        return listResult;
+      }
+      // WARNING
+      warn(o, "List", itemClass, null, null);
+      if(emptyListDefault) {
+        return new ArrayList<T>();
+      }
+      return null;
+    }
+    int size = ((List<?>) o).size();
+    if(size == 0) {
+      return (List<T>) o;
+    }
+    Object item0 = ((List<?>) o).get(0);
+    if(item0 == null) {
+      return (List<T>) o;
+    }
+    if(itemClass == null) {
+      return (List<T>) o;
+    }
+    if(itemClass.isInstance(item0)) {
+      return (List<T>) o;
+    }
+    // WARNING
+    warn(o, "List", itemClass, null, null);
+    if(emptyListDefault) {
+      return new ArrayList<T>();
+    }
+    return null;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  List<T> expectList(Object o, Class<T> itemClass, boolean emptyListDefault, IAction action, Parameters parameters)
+  {
+    if(o == null) {
+      if(emptyListDefault) {
+        return new ArrayList<T>();
+      }
+      return null;
+    }
+    if(!(o instanceof List)) {
+      if(itemClass != null && itemClass.isInstance(o)) {
+        List<T> listResult = new ArrayList<T>();
+        listResult.add((T) o);
+        return listResult;
+      }
+      // WARNING
+      warn(o, "List", itemClass, action, parameters);
+      if(emptyListDefault) {
+        return new ArrayList<T>();
+      }
+      return null;
+    }
+    int size = ((List<?>) o).size();
+    if(size == 0) {
+      return (List<T>) o;
+    }
+    Object item0 = ((List<?>) o).get(0);
+    if(item0 == null) {
+      return (List<T>) o;
+    }
+    if(itemClass == null) {
+      return (List<T>) o;
+    }
+    if(itemClass.isInstance(item0)) {
+      return (List<T>) o;
+    }
+    // WARNING
+    warn(o, "List", itemClass, action, parameters);
+    if(emptyListDefault) {
+      return new ArrayList<T>();
+    }
+    return null;
+  }
+  
+  public static
+  List<Map<String,Object>> expectListOfMap(Object o)
+  {
+    return expectListOfMap(o, false);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static
+  List<Map<String,Object>> expectListOfMap(Object o, boolean emptyListDefault)
+  {
+    if(o == null) {
+      if(emptyListDefault) {
+        return new ArrayList<Map<String,Object>>();
+      }
+      return null;
+    }
+    if(!(o instanceof List)) {
+      if(o instanceof Map) {
+        List<Map<String,Object>> listResult = new ArrayList<Map<String,Object>>();
+        listResult.add((Map<String,Object>) o);
+        return listResult;
+      }
+      // WARNING
+      warn(o, "List<Map<String,Object>>", null, null, null);
+      if(emptyListDefault) {
+        return new ArrayList<Map<String,Object>>();
+      }
+      return null;
+    }
+    int size = ((List<?>) o).size();
+    if(size == 0) {
+      return (List<Map<String,Object>>) o;
+    }
+    Object item0 = ((List<?>) o).get(0);
+    if(item0 == null) {
+      return (List<Map<String,Object>>) o;
+    }
+    if(item0 instanceof Map) {
+      return (List<Map<String,Object>>) o;
+    }
+    // WARNING
+    warn(o, "List<Map<String,Object>>", null, null, null);
+    if(emptyListDefault) {
+      return new ArrayList<Map<String,Object>>();
+    }
+    return null;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  List<Map<String,Object>> expectListOfMap(Object o, boolean emptyListDefault, IAction action, Parameters parameters)
+  {
+    if(o == null) {
+      if(emptyListDefault) {
+        return new ArrayList<Map<String,Object>>();
+      }
+      return null;
+    }
+    if(!(o instanceof List)) {
+      if(o instanceof Map) {
+        List<Map<String,Object>> listResult = new ArrayList<Map<String,Object>>();
+        listResult.add((Map<String,Object>) o);
+        return listResult;
+      }
+      // WARNING
+      warn(o, "List<Map<String,Object>>", null, action, parameters);
+      if(emptyListDefault) {
+        return new ArrayList<Map<String,Object>>();
+      }
+      return null;
+    }
+    int size = ((List<?>) o).size();
+    if(size == 0) {
+      return (List<Map<String,Object>>) o;
+    }
+    Object item0 = ((List<?>) o).get(0);
+    if(item0 == null) {
+      return (List<Map<String,Object>>) o;
+    }
+    if(item0 instanceof Map) {
+      return (List<Map<String,Object>>) o;
+    }
+    // WARNING
+    warn(o, "List<Map<String,Object>>", null, action, parameters);
+    if(emptyListDefault) {
+      return new ArrayList<Map<String,Object>>();
+    }
+    return null;
+  }
+  
+  public static 
+  Map<String,Object> expectMap(Object o)
+  {
+    return expectMap(o, false);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static 
+  Map<String,Object> expectMap(Object o, boolean emptyMapDefault)
+  {
+    if(o == null) {
+      if(emptyMapDefault) {
+        return new HashMap<String, Object>();
+      }
+      return null;
+    }
+    if(!(o instanceof Map)) {
+      // WARNING
+      warn(o, "Map<String,Object>", null, null, null);
+      if(emptyMapDefault) {
+        return new HashMap<String, Object>();
+      }
+      return null;
+    }
+    return (Map<String,Object>) o;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static 
+  Map<String,Object> expectMap(Object o, boolean emptyMapDefault, IAction action, Parameters parameters)
+  {
+    if(o == null) {
+      if(emptyMapDefault) {
+        return new HashMap<String, Object>();
+      }
+      return null;
+    }
+    if(!(o instanceof Map)) {
+      // WARNING
+      warn(o, "Map<String,Object>", null, action, parameters);
+      if(emptyMapDefault) {
+        return new HashMap<String, Object>();
+      }
+      return null;
+    }
+    return (Map<String,Object>) o;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  T expect(Object o, Class<T> itemClass)
+  {
+    if(o == null) {
+      return null;
+    }
+    if(itemClass == null) {
+      return (T) o;
+    }
+    if(itemClass.isInstance(o)) {
+      return (T) o;
+    }
+    // WARNING
+    warn(o, null, itemClass, null, null);
+    return null;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  T expect(Object o, Class<T> itemClass, IAction action, Parameters parameters)
+  {
+    if(o == null) {
+      return null;
+    }
+    if(itemClass == null) {
+      return (T) o;
+    }
+    if(itemClass.isInstance(o)) {
+      return (T) o;
+    }
+    // WARNING
+    warn(o, null, itemClass, action, parameters);
+    return null;
+  }
+  
+  protected static
+  void warn(Object o, String sExpected, Class<?> itemClass, IAction action, Parameters parameters)
+  {
+    String message = "Expected ";
+    
+    if(itemClass != null) {
+      if(sExpected != null && sExpected.length() > 0) {
+        message += sExpected + "<" + itemClass.getCanonicalName() + ">";
+      }
+      else {
+        message += itemClass.getCanonicalName();
+      }
+    }
+    else {
+      if(sExpected != null && sExpected.length() > 0) {
+        message += sExpected;
+      }
+      else {
+        message += "?";
+      }
+    }
+    
+    if(o == null) {
+      message += " Found: null"; 
+    }
+    else {
+      message += " Found: " + o.getClass().getCanonicalName();
+    }
+    
+    if(action != null) {
+      message += " in " + action.getClass().getCanonicalName();
+    }
+    
+    if(parameters != null) {
+      PortletSession portletSession = parameters.getPortletSession();
+      if(portletSession != null) {
+        String sSessionDump = "{";
+        Object sessAction = portletSession.getAttribute(WNames.sSESS_ACTION);
+        sSessionDump = WNames.sSESS_ACTION + "=" + sessAction;
+        sSessionDump += "}";
+        message += " " + sSessionDump;
+      }
+    }
+    
+    SnapTracer.trace(action, message);
+  }
+}
