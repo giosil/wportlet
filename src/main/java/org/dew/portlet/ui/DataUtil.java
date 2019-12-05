@@ -5,15 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.portlet.PortletSession;
-
-import org.dew.portlet.IAction;
-import org.dew.portlet.WNames;
-import org.dew.portlet.Parameters;
 import org.dew.portlet.SnapTracer;
 
-public 
-class DataUtil 
+public
+class DataUtil
 {
   public static <T> 
   List<T> expectList(Object o, Class<T> itemClass)
@@ -68,7 +63,7 @@ class DataUtil
   
   @SuppressWarnings("unchecked")
   public static <T> 
-  List<T> expectList(Object o, Class<T> itemClass, boolean emptyListDefault, IAction action, Parameters parameters)
+  List<T> expectList(Object o, Class<T> itemClass, boolean emptyListDefault, Object module, Object parameters)
   {
     if(o == null) {
       if(emptyListDefault) {
@@ -83,7 +78,7 @@ class DataUtil
         return listResult;
       }
       // WARNING
-      warn(o, "List", itemClass, action, parameters);
+      warn(o, "List", itemClass, module, parameters);
       if(emptyListDefault) {
         return new ArrayList<T>();
       }
@@ -104,7 +99,7 @@ class DataUtil
       return (List<T>) o;
     }
     // WARNING
-    warn(o, "List", itemClass, action, parameters);
+    warn(o, "List", itemClass, module, parameters);
     if(emptyListDefault) {
       return new ArrayList<T>();
     }
@@ -161,7 +156,7 @@ class DataUtil
   
   @SuppressWarnings("unchecked")
   public static <T> 
-  List<Map<String,Object>> expectListOfMap(Object o, boolean emptyListDefault, IAction action, Parameters parameters)
+  List<Map<String,Object>> expectListOfMap(Object o, boolean emptyListDefault, Object module, Object parameters)
   {
     if(o == null) {
       if(emptyListDefault) {
@@ -176,7 +171,7 @@ class DataUtil
         return listResult;
       }
       // WARNING
-      warn(o, "List<Map<String,Object>>", null, action, parameters);
+      warn(o, "List<Map<String,Object>>", null, module, parameters);
       if(emptyListDefault) {
         return new ArrayList<Map<String,Object>>();
       }
@@ -194,7 +189,7 @@ class DataUtil
       return (List<Map<String,Object>>) o;
     }
     // WARNING
-    warn(o, "List<Map<String,Object>>", null, action, parameters);
+    warn(o, "List<Map<String,Object>>", null, module, parameters);
     if(emptyListDefault) {
       return new ArrayList<Map<String,Object>>();
     }
@@ -230,7 +225,7 @@ class DataUtil
   
   @SuppressWarnings("unchecked")
   public static 
-  Map<String,Object> expectMap(Object o, boolean emptyMapDefault, IAction action, Parameters parameters)
+  Map<String,Object> expectMap(Object o, boolean emptyMapDefault, Object module, Object parameters)
   {
     if(o == null) {
       if(emptyMapDefault) {
@@ -240,7 +235,7 @@ class DataUtil
     }
     if(!(o instanceof Map)) {
       // WARNING
-      warn(o, "Map<String,Object>", null, action, parameters);
+      warn(o, "Map<String,Object>", null, module, parameters);
       if(emptyMapDefault) {
         return new HashMap<String, Object>();
       }
@@ -269,7 +264,7 @@ class DataUtil
   
   @SuppressWarnings("unchecked")
   public static <T> 
-  T expect(Object o, Class<T> itemClass, IAction action, Parameters parameters)
+  T expect(Object o, Class<T> itemClass, Object module, Object parameters)
   {
     if(o == null) {
       return null;
@@ -281,12 +276,12 @@ class DataUtil
       return (T) o;
     }
     // WARNING
-    warn(o, null, itemClass, action, parameters);
+    warn(o, null, itemClass, module, parameters);
     return null;
   }
   
   protected static
-  void warn(Object o, String sExpected, Class<?> itemClass, IAction action, Parameters parameters)
+  void warn(Object o, String sExpected, Class<?> itemClass, Object module, Object parameters)
   {
     String message = "Expected ";
     
@@ -324,22 +319,10 @@ class DataUtil
       message += " Found: " + o.getClass().getCanonicalName() + g;
     }
     
-    if(action != null) {
-      message += " in " + action.getClass().getCanonicalName();
-    }
-    
     if(parameters != null) {
-      message += " params=" + parameters;
-      PortletSession portletSession = parameters.getPortletSession();
-      if(portletSession != null) {
-        String sSessionDump = "session={";
-        Object sessAction = portletSession.getAttribute(WNames.sSESS_ACTION);
-        sSessionDump = WNames.sSESS_ACTION + "=" + sessAction;
-        sSessionDump += "}";
-        message += " " + sSessionDump;
-      }
+      message += " (" + parameters + ")";
     }
     
-    SnapTracer.trace(action, message);
+    SnapTracer.trace(module, message);
   }
 }
