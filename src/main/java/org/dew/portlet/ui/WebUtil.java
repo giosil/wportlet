@@ -567,7 +567,7 @@ class WebUtil
       Collections.sort(listKeys);
       if(boContainsHeader) {
         sb.append("<thead>");
-        sb.append("<tr " + sCLASS_TR_HEADER + "><th>Chiave</th><th>Valore</th></tr>");
+        sb.append("<tr " + sCLASS_TR_HEADER + "><th>Key</th><th>Value</th></tr>");
         sb.append("</thead>");
       }
       sb.append("<tbody>");
@@ -1305,7 +1305,30 @@ class WebUtil
   {
     PortletSession portletSession = getPortletSession(request);
     if(portletSession == null) return null;
-    return portletSession.getAttribute(WNames.sSESS_ACTION_RESULT);
+    Object actionResult = portletSession.getAttribute(WNames.sSESS_ACTION_RESULT);
+    if(actionResult instanceof WActionResult) {
+      return ((WActionResult) actionResult).getActionResult();
+    }
+    return actionResult;
+  }
+  
+  /**
+   * Restituisce il risultato dell'ultima action salvato nella sessione.
+   * 
+   * @param request (HttpServletRequest, ActionRequest, RenderRequest, Parameters)
+   * @param resultClass (expected class of result)
+   * @return actionResult (instance of resultClass)
+   */
+  public static <T>
+  T getActionResult(Object request, Class<T> resultClass)
+  {
+    PortletSession portletSession = getPortletSession(request);
+    if(portletSession == null) return null;
+    Object actionResult = portletSession.getAttribute(WNames.sSESS_ACTION_RESULT);
+    if(actionResult instanceof WActionResult) {
+      return DataUtil.expect(((WActionResult) actionResult).getActionResult(), resultClass);
+    }
+    return DataUtil.expect(actionResult, resultClass);
   }
   
   /**

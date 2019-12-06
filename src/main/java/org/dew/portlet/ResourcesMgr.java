@@ -26,6 +26,7 @@ import javax.naming.InitialContext;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.PortletConfig;
+import javax.portlet.PortletSession;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -161,7 +162,7 @@ class ResourcesMgr
       if(ds != null) return ds.getConnection();
     }
     catch(Exception ex) {}
-    throw new Exception("[WPortlet] DataSource " + sDataSource + " not avilable.");
+    throw new Exception("[WPortlet] DataSource " + sDataSource + " not available.");
   }
   
   public static
@@ -251,6 +252,66 @@ class ResourcesMgr
     if(portletConfig == null) return false;
     String sIAction = portletConfig.getInitParameter("action." + sCommand);
     return sIAction != null && sIAction.length() > 0;
+  }
+  
+  public static
+  void setActionResult(PortletSession portletSession, String action, IAction actionHandler, Object actionResult)
+  {
+    if(action == null || portletSession == null) return;
+    
+    WActionResult wActionResult = new WActionResult(action, actionHandler, actionResult);
+    
+    portletSession.setAttribute(WNames.sSESS_ACTION,        action,        PortletSession.PORTLET_SCOPE);
+    portletSession.setAttribute(WNames.sSESS_ACTION_RESULT, wActionResult, PortletSession.PORTLET_SCOPE);
+  }
+  
+  public static
+  void setActionException(PortletSession portletSession, String action, IAction actionHandler, Throwable throwable)
+  {
+    if(action == null || portletSession == null) return;
+    
+    WActionResult wActionResult = new WActionResult(action, actionHandler, throwable);
+    
+    portletSession.setAttribute(WNames.sSESS_ACTION,        action,        PortletSession.PORTLET_SCOPE);
+    portletSession.setAttribute(WNames.sSESS_ACTION_RESULT, wActionResult, PortletSession.PORTLET_SCOPE);
+  }
+  
+  public static
+  String callView(String action, Parameters parameters, Object actionResult, RenderRequest request, RenderResponse response) 
+    throws Exception
+  {
+    if(action == null || parameters == null) return null;
+    
+    IAction actionHandler = ResourcesMgr.getAction(parameters.getPortletConfig(), action);
+    
+    if(actionHandler == null) return null;
+    
+    PortletSession portletSession = parameters.getPortletSession();
+    if(portletSession != null) {
+      setActionResult(portletSession, action, actionHandler, actionResult);
+      portletSession.setAttribute(WNames.sSESS_PARARAMETERS, parameters, PortletSession.PORTLET_SCOPE);
+    }
+    
+    return actionHandler.view(action, parameters, actionResult, request, response);
+  }
+  
+  public static
+  String callException(String action, Parameters parameters, Exception actionException, RenderRequest request, RenderResponse response) 
+    throws Exception
+  {
+    if(action == null || parameters == null) return null;
+    
+    IAction actionHandler = ResourcesMgr.getAction(parameters.getPortletConfig(), action);
+    
+    if(actionHandler == null) return null;
+    
+    PortletSession portletSession = parameters.getPortletSession();
+    if(portletSession != null) {
+      setActionException(portletSession, action, actionHandler, actionException);
+      portletSession.setAttribute(WNames.sSESS_PARARAMETERS, parameters, PortletSession.PORTLET_SCOPE);
+    }
+    
+    return actionHandler.exception(action, parameters, actionException, request, response);
   }
   
   public static

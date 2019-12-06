@@ -4,18 +4,17 @@ public interface WNames {
 
   public final static String sPREFIX = "org.dew.portlet.";
   
-  public final static String sPAR_ACTION     = "a";
-  public final static String sPAR_FORWARD    = "f";
-  public final static String sPAR_MENU_ITEM  = "mi";
+  public final static String sPAR_ACTION            = "a";
+  public final static String sPAR_FORWARD           = "f";
+  public final static String sPAR_MENU_ITEM         = "mi";
   
-  public final static String sACTION_FORWARD = "forward";
-  public final static String sACTION_LOGIN   = "login";
-  public final static String sACTION_LOGOUT  = "logout";
+  public final static String sACTION_FORWARD        = "forward";
+  public final static String sACTION_LOGIN          = "login";
+  public final static String sACTION_LOGOUT         = "logout";
   
   public final static String sSESS_ACTION           = sPREFIX + "action";
   public final static String sSESS_PARARAMETERS     = sPREFIX + "parameters";
   public final static String sSESS_ACTION_RESULT    = sPREFIX + "actionResult";
-  public final static String sSESS_ACTION_EXCEPTION = sPREFIX + "actionException";
   public final static String sSESS_LAST_FORWARD_URL = sPREFIX + "lastForwardURL";
   public final static String sSESS_LAST_MODE        = sPREFIX + "lastMode";
   public final static String sSESS_USER             = sPREFIX + "user";

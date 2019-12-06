@@ -18,6 +18,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.dew.portlet.ui.AMenuBuilder;
+import org.dew.portlet.ui.DataUtil;
 import org.dew.portlet.ui.WebUtil;
 
 /**
@@ -168,7 +169,6 @@ class WPortlet extends GenericPortlet implements WNames
     session.removeAttribute(sSESS_ACTION);
     session.removeAttribute(sSESS_PARARAMETERS);
     session.removeAttribute(sSESS_ACTION_RESULT);
-    session.removeAttribute(sSESS_ACTION_EXCEPTION);
     
     String sAction = parameters.getString(sPAR_ACTION);
     if(boActionIsBlank) {
@@ -189,8 +189,7 @@ class WPortlet extends GenericPortlet implements WNames
     session.setAttribute(sSESS_ACTION,       sAction,    PortletSession.PORTLET_SCOPE);
     session.setAttribute(sSESS_PARARAMETERS, parameters, PortletSession.PORTLET_SCOPE);
     
-    Object actionResult = null;
-    Exception actionException = null;
+    WActionResult wActionResult = null;
     IAction iaction = ResourcesMgr.getAction(_portletConfig, sKeyAction);
     if(iaction != null) {
       try {
@@ -202,7 +201,10 @@ class WPortlet extends GenericPortlet implements WNames
             }
           }
         }
-        actionResult = iaction.action(sAction, parameters, request, response);
+        
+        Object actionResult = iaction.action(sAction, parameters, request, response);
+        wActionResult = new WActionResult(sAction, iaction, actionResult);
+        
         if(boActionLogin && (actionResult instanceof User)) {
           session.setAttribute(sSESS_USER, actionResult, PortletSession.PORTLET_SCOPE);
           Map mapMenu = ((User) actionResult).getMenu();
@@ -220,16 +222,15 @@ class WPortlet extends GenericPortlet implements WNames
           return;
         }
       } 
-      catch (Exception ex) {
-        SnapTracer.trace(iaction, "action(" + sAction + ")", ex);
+      catch (Throwable th) {
+        SnapTracer.trace(iaction, "action(" + sAction + ")", th);
         System.out.println("Exception in " + iaction.getClass().getName() + ".action(" + sAction + "):");
-        ex.printStackTrace();
-        actionException = ex;
+        th.printStackTrace();
+        wActionResult = new WActionResult(sAction, iaction, th);
       }
     }
     
-    session.setAttribute(sSESS_ACTION_RESULT,    actionResult,    PortletSession.PORTLET_SCOPE);
-    session.setAttribute(sSESS_ACTION_EXCEPTION, actionException, PortletSession.PORTLET_SCOPE);
+    session.setAttribute(sSESS_ACTION_RESULT, wActionResult, PortletSession.PORTLET_SCOPE);
   }
   
   public 
@@ -283,7 +284,6 @@ class WPortlet extends GenericPortlet implements WNames
       session.removeAttribute(sSESS_ACTION);
       session.removeAttribute(sSESS_PARARAMETERS);
       session.removeAttribute(sSESS_ACTION_RESULT);
-      session.removeAttribute(sSESS_ACTION_EXCEPTION);
     }
     else {
       request.setAttribute(sATTR_LAST_FORWARD_URL, session.getAttribute(sSESS_LAST_FORWARD_URL));
@@ -343,10 +343,28 @@ class WPortlet extends GenericPortlet implements WNames
       session.setAttribute(sSESS_LAST_FORWARD_URL, parameters.getActionURL(response), PortletSession.PORTLET_SCOPE);
     }
     
-    Object actionResult       = session.getAttribute(sSESS_ACTION_RESULT);
-    Exception actionException = (Exception) session.getAttribute(sSESS_ACTION_EXCEPTION);
+    WActionResult wActionResult = DataUtil.expect(session.getAttribute(sSESS_ACTION_RESULT), WActionResult.class);
     
-    IAction iaction = ResourcesMgr.getAction(_portletConfig, sAction);
+    Object    actionResult      = null;
+    Exception actionException   = null;
+    IAction   iaction           = null;
+    
+    if(wActionResult != null) {
+      actionResult    = wActionResult.getActionResult();
+      actionException = wActionResult.getException();
+      iaction         = wActionResult.getActionHandler();
+      if(iaction == null) {
+        iaction = ResourcesMgr.getAction(_portletConfig, sAction);
+      }
+      else {
+        String sWAction = wActionResult.getAction();
+        if(sWAction != null && sWAction.length() > 0 && !sWAction.equals(sAction)) {
+          SnapTracer.trace(this, "Discordance wActionResult=" + wActionResult + ",action=" + sAction);
+          sAction = sWAction;
+        }
+      }
+    }
+    
     if(iaction == null) {
       if(sAction.equals(sACTION_FORWARD)) {
         include(request, response, sPage);
@@ -507,11 +525,24 @@ class WPortlet extends GenericPortlet implements WNames
     }
     String sAction = (String) session.getAttribute(sSESS_ACTION);
     if(sAction != null && sAction.equals(sACTION_LOGIN)) {
-      Exception exLogin = (Exception) session.getAttribute(sSESS_ACTION_EXCEPTION); 
-      if(exLogin == null) {
-        return true;
+      Exception exceptionDuringLogin = null;
+      
+      WActionResult wActionResult = DataUtil.expect(session.getAttribute(sSESS_ACTION_RESULT), WActionResult.class);
+      if(wActionResult != null) {
+        String sWAction = wActionResult.getAction();
+        if(sWAction != null && sWAction.length() > 0) {
+          if(sWAction.equals(sAction)) {
+            exceptionDuringLogin = wActionResult.getException();
+          }
+        }
+        else {
+          exceptionDuringLogin = wActionResult.getException();
+        }
       }
-      String sMessage = exLogin.getMessage();
+      
+      if(exceptionDuringLogin == null) return true;
+      String sMessage = exceptionDuringLogin.getMessage();
+      if(sMessage == null) sMessage = exceptionDuringLogin.toString();
       request.setAttribute(sATTR_MESSAGE, sMessage);
     }
     Object parameters = request.getAttribute(sATTR_PARAMETERS);

@@ -3,6 +3,7 @@ package org.dew.portlet.demo;
 import javax.portlet.*;
 
 import org.dew.portlet.*;
+import org.dew.portlet.ui.DataUtil;
 
 public 
 class HelloAction implements IAction 
@@ -24,7 +25,7 @@ class HelloAction implements IAction
   String view(String sAction, Parameters parameters, Object actionResult, RenderRequest request, RenderResponse response)
     throws Exception
   {
-    String sName = (String) actionResult;
+    String sName = DataUtil.expect(actionResult, String.class);
     
     String sHello = ResourcesMgr.getMessage(request, "hello", sName);
     
