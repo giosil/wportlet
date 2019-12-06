@@ -283,7 +283,7 @@ class DataUtil
   protected static
   void warn(Object o, String sExpected, Class<?> itemClass, Object module, Object parameters)
   {
-    String message = "Expected ";
+    String message = "Expected: ";
     
     if(itemClass != null) {
       if(sExpected != null && sExpected.length() > 0) {
@@ -320,7 +320,7 @@ class DataUtil
     }
     
     if(parameters != null) {
-      message += " (" + parameters + ")";
+      message += " Parameters: " + parameters;
     }
     
     SnapTracer.trace(module, message);
