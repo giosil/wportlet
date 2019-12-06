@@ -1332,6 +1332,26 @@ class WebUtil
   }
   
   /**
+   * Restituisce il risultato (List) dell'ultima action salvato nella sessione.
+   * 
+   * @param request (HttpServletRequest, ActionRequest, RenderRequest, Parameters)
+   * @param itemClass (expected class of items)
+   * @param emptyListDefault (se true viene restituita una lista vuota in caso di risultato null)
+   * @return actionResult (List of itemClass)
+   */
+  public static <T>
+  List<T> getActionResultList(Object request, Class<T> itemClass, boolean emptyListDefault)
+  {
+    PortletSession portletSession = getPortletSession(request);
+    if(portletSession == null) return null;
+    Object actionResult = portletSession.getAttribute(WNames.sSESS_ACTION_RESULT);
+    if(actionResult instanceof WActionResult) {
+      return DataUtil.expectList(((WActionResult) actionResult).getActionResult(), itemClass, emptyListDefault);
+    }
+    return DataUtil.expectList(actionResult, itemClass, emptyListDefault);
+  }
+  
+  /**
    * Restituisce una risorsa utente.
    * Essa viene recuperata dalla Map restituita da User.getResources().
    * 

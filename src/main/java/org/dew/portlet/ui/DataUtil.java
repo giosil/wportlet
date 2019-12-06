@@ -32,8 +32,6 @@ class DataUtil
         listResult.add((T) o);
         return listResult;
       }
-      // WARNING
-      warn(o, "List", itemClass, null, null);
       if(emptyListDefault) {
         return new ArrayList<T>();
       }
@@ -53,8 +51,6 @@ class DataUtil
     if(itemClass.isInstance(item0)) {
       return (List<T>) o;
     }
-    // WARNING
-    warn(o, "List", itemClass, null, null);
     if(emptyListDefault) {
       return new ArrayList<T>();
     }
@@ -128,8 +124,6 @@ class DataUtil
         listResult.add((Map<String,Object>) o);
         return listResult;
       }
-      // WARNING
-      warn(o, "List<Map<String,Object>>", null, null, null);
       if(emptyListDefault) {
         return new ArrayList<Map<String,Object>>();
       }
@@ -146,8 +140,6 @@ class DataUtil
     if(item0 instanceof Map) {
       return (List<Map<String,Object>>) o;
     }
-    // WARNING
-    warn(o, "List<Map<String,Object>>", null, null, null);
     if(emptyListDefault) {
       return new ArrayList<Map<String,Object>>();
     }
@@ -213,8 +205,6 @@ class DataUtil
       return null;
     }
     if(!(o instanceof Map)) {
-      // WARNING
-      warn(o, "Map<String,Object>", null, null, null);
       if(emptyMapDefault) {
         return new HashMap<String, Object>();
       }
@@ -257,8 +247,6 @@ class DataUtil
     if(itemClass.isInstance(o)) {
       return (T) o;
     }
-    // WARNING
-    warn(o, null, itemClass, null, null);
     return null;
   }
   

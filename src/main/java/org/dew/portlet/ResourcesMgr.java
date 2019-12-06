@@ -257,22 +257,20 @@ class ResourcesMgr
   public static
   void setActionResult(PortletSession portletSession, String action, IAction actionHandler, Object actionResult)
   {
-    if(action == null || portletSession == null) return;
+    if(portletSession == null) return;
     
     WActionResult wActionResult = new WActionResult(action, actionHandler, actionResult);
     
-    portletSession.setAttribute(WNames.sSESS_ACTION,        action,        PortletSession.PORTLET_SCOPE);
     portletSession.setAttribute(WNames.sSESS_ACTION_RESULT, wActionResult, PortletSession.PORTLET_SCOPE);
   }
   
   public static
   void setActionException(PortletSession portletSession, String action, IAction actionHandler, Throwable throwable)
   {
-    if(action == null || portletSession == null) return;
+    if(portletSession == null) return;
     
     WActionResult wActionResult = new WActionResult(action, actionHandler, throwable);
     
-    portletSession.setAttribute(WNames.sSESS_ACTION,        action,        PortletSession.PORTLET_SCOPE);
     portletSession.setAttribute(WNames.sSESS_ACTION_RESULT, wActionResult, PortletSession.PORTLET_SCOPE);
   }
   
@@ -286,12 +284,6 @@ class ResourcesMgr
     
     if(actionHandler == null) return null;
     
-    PortletSession portletSession = parameters.getPortletSession();
-    if(portletSession != null) {
-      setActionResult(portletSession, action, actionHandler, actionResult);
-      portletSession.setAttribute(WNames.sSESS_PARARAMETERS, parameters, PortletSession.PORTLET_SCOPE);
-    }
-    
     return actionHandler.view(action, parameters, actionResult, request, response);
   }
   
@@ -304,12 +296,6 @@ class ResourcesMgr
     IAction actionHandler = ResourcesMgr.getAction(parameters.getPortletConfig(), action);
     
     if(actionHandler == null) return null;
-    
-    PortletSession portletSession = parameters.getPortletSession();
-    if(portletSession != null) {
-      setActionException(portletSession, action, actionHandler, actionException);
-      portletSession.setAttribute(WNames.sSESS_PARARAMETERS, parameters, PortletSession.PORTLET_SCOPE);
-    }
     
     return actionHandler.exception(action, parameters, actionException, request, response);
   }

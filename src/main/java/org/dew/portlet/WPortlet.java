@@ -353,16 +353,17 @@ class WPortlet extends GenericPortlet implements WNames
       actionResult    = wActionResult.getActionResult();
       actionException = wActionResult.getException();
       iaction         = wActionResult.getActionHandler();
-      if(iaction == null) {
-        iaction = ResourcesMgr.getAction(_portletConfig, sAction);
-      }
-      else {
+      if(iaction != null) {
         String sWAction = wActionResult.getAction();
         if(sWAction != null && sWAction.length() > 0 && !sWAction.equals(sAction)) {
           SnapTracer.trace(this, "Discordance wActionResult=" + wActionResult + ",action=" + sAction);
           sAction = sWAction;
         }
       }
+    }
+    
+    if(iaction == null) {
+      iaction = ResourcesMgr.getAction(_portletConfig, sAction);
     }
     
     if(iaction == null) {
