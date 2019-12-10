@@ -12,131 +12,141 @@ class User implements Serializable
 {
   private static final long serialVersionUID = -8306744803593044134L;
   
+  private long    id;
   private String  sessionId;
-  private Integer userId;
   private String  userName;
   private String  password;
   private String  role;
   private String  email;
   private String  mobile;
-  private Map<String,Object> resources;
-  private Map<String,Object> menu;
+  private List<String> groups;
   private Object  profile;
   private boolean portalUser;
   private int     authLevel;
-
+  
+  private Map<String,Object> resources;
+  private Map<String,Object> menu;
+  
   public User()
   {
   }
-
+  
+  public long getId() {
+    return id;
+  }
+  
+  public void setId(long id) {
+    this.id = id;
+  }
+  
   public String getSessionId() {
     return sessionId;
   }
-
+  
   public void setSessionId(String sessionId) {
     this.sessionId = sessionId;
   }
-
-  public Integer getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Integer userId) {
-    this.userId = userId;
-  }
-
+  
   public String getUserName() {
     return userName;
   }
-
+  
   public void setUserName(String userName) {
     this.userName = userName;
   }
-
+  
   public String getPassword() {
     return password;
   }
-
+  
   public void setPassword(String password) {
     this.password = password;
   }
-
+  
   public String getRole() {
     return role;
   }
-
+  
   public void setRole(String role) {
     this.role = role;
   }
-
+  
   public String getEmail() {
     return email;
   }
-
+  
   public void setEmail(String email) {
     this.email = email;
   }
-
+  
   public String getMobile() {
     return mobile;
   }
-
+  
   public void setMobile(String mobile) {
     this.mobile = mobile;
   }
-
-  public Map<String,Object> getResources() {
-    return resources;
+  
+  public List<String> getGroups() {
+    return groups;
   }
-
-  public void setResources(Map<String,Object> resources) {
-    this.resources = resources;
+  
+  public void setGroups(List<String> groups) {
+    this.groups = groups;
   }
-
-  public Map<String,Object> getMenu() {
-    return menu;
-  }
-
-  public void setMenu(Map<String,Object> menu) {
-    this.menu = menu;
-  }
-
+  
   public Object getProfile() {
     return profile;
   }
-
+  
   public void setProfile(Object profile) {
     this.profile = profile;
   }
-
+  
   public boolean isPortalUser() {
     return portalUser;
   }
-
+  
   public void setPortalUser(boolean portalUser) {
     this.portalUser = portalUser;
   }
-
+  
   public int getAuthLevel() {
     return authLevel;
   }
-
+  
   public void setAuthLevel(int authLevel) {
     this.authLevel = authLevel;
   }
-
+  
+  public Map<String, Object> getResources() {
+    return resources;
+  }
+  
+  public void setResources(Map<String, Object> resources) {
+    this.resources = resources;
+  }
+  
+  public Map<String, Object> getMenu() {
+    return menu;
+  }
+  
+  public void setMenu(Map<String, Object> menu) {
+    this.menu = menu;
+  }
+  
   /**
-  * Ottiene una mappa di risorse le cui chiavi sono gerarchicamente
-  * appartenenti ad una risorsa individuata dal parametro specificato.
-  * In altre parole vengono selezionate tutte le chiavi che iniziano per:
-  * sFather + "."
-  * Si noti che le chiavi della mappa restituita sono ottenute escludendo
-  * il prefisso.
-  *
-  * @param sFather String
-  * @param boRemove Flag rimozione chiavi
-  * @return Map
-  */
+   * Ottiene una mappa di risorse le cui chiavi sono gerarchicamente
+   * appartenenti ad una risorsa individuata dal parametro specificato.
+   * In altre parole vengono selezionate tutte le chiavi che iniziano per:
+   * sFather + "."
+   * Si noti che le chiavi della mappa restituita sono ottenute escludendo
+   * il prefisso.
+   *
+   * @param sFather String
+   * @param boRemove Flag rimozione chiavi
+   * @return Map
+   */
   public
   Map getResourcesByFather(String sFather, boolean boRemove)
   {
@@ -159,14 +169,14 @@ class User implements Serializable
     }
     return mapResult;
   }
-
+  
   /**
-  * Ottiene una lista di valori dalle risorse considerando le chiavi
-  * che hanno il prefisso specificato.
-  *
-  * @param sPrefix String
-  * @return List
-  */
+   * Ottiene una lista di valori dalle risorse considerando le chiavi
+   * che hanno il prefisso specificato.
+   *
+   * @param sPrefix String
+   * @return List
+   */
   public
   List getListResourceValuesByPrefix(String sPrefix)
   {
@@ -182,11 +192,11 @@ class User implements Serializable
     }
     return listResult;
   }
-
+  
   /**
-  * Restituisce la rappresentazione HTML dell'utente.
-  * @return String
-  */
+   * Restituisce la rappresentazione HTML dell'utente.
+   * @return String
+   */
   public
   String toHTML()
   {
@@ -208,14 +218,14 @@ class User implements Serializable
     }
     return sResult;
   }
-
+  
   @Override
   public
   String toString()
   {
     return userName;
   }
-
+  
   @Override
   public
   int hashCode()
@@ -223,7 +233,7 @@ class User implements Serializable
     if(userName == null) return 0;
     return userName.hashCode();
   }
-
+  
   @Override
   public
   boolean equals(Object anObject)

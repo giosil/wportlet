@@ -378,7 +378,10 @@ class ResourcesMgr
     if(sTabsFile == null || sTabsFile.length() == 0) {
       return null;
     }
+    
     String sFilePath = portletConfig.getPortletContext().getRealPath("tabs/" + sTabsFile);
+    if(sFilePath == null || sFilePath.length() == 0) return null;
+    
     if(sTabsFile.endsWith("properties")) {
       return ResourcesMgr.loadFileProperties(sFilePath);
     }
@@ -429,7 +432,10 @@ class ResourcesMgr
     if(sMenuFile == null || sMenuFile.length() == 0) {
       return null;
     }
-    String sFilePath = portletConfig.getPortletContext().getRealPath("menu/" + sMenuFile);    
+    
+    String sFilePath = portletConfig.getPortletContext().getRealPath("menu/" + sMenuFile);
+    if(sFilePath == null || sFilePath.length() == 0) return null;
+    
     if(sMenuFile.endsWith("properties")) {
       return ResourcesMgr.loadFileProperties(sFilePath);
     }
@@ -511,12 +517,15 @@ class ResourcesMgr
     }
     return properties;
   }
-
+  
   public static
   String loadSQL(PortletConfig portletConfig, String sSQLFile)
   {
     if(sSQLFile == null || sSQLFile.length() == 0) return null;
-    String sFilePath  = portletConfig.getPortletContext().getRealPath("sql/" + sSQLFile);    
+    
+    String sFilePath  = portletConfig.getPortletContext().getRealPath("sql/" + sSQLFile);
+    if(sFilePath == null || sFilePath.length() == 0) return null;
+    
     StringBuffer sb   = new StringBuffer();
     InputStream is    = null;
     BufferedReader br = null;
@@ -551,7 +560,10 @@ class ResourcesMgr
   String loadHTML(PortletConfig portletConfig, String sHTMLFile, RenderResponse renderResponse)
   {
     if(sHTMLFile == null || sHTMLFile.length() == 0) return null;
-    String sFilePath  = portletConfig.getPortletContext().getRealPath("html/" + sHTMLFile);    
+    
+    String sFilePath  = portletConfig.getPortletContext().getRealPath("html/" + sHTMLFile);
+    if(sFilePath == null || sFilePath.length() == 0) return null;
+    
     StringBuffer sb   = new StringBuffer();
     InputStream is    = null;
     BufferedReader br = null;
