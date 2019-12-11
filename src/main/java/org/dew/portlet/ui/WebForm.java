@@ -771,7 +771,7 @@ class WebForm implements Serializable
           }
           else {
             sTAttr = " disabled=\"disabled\"";
-          }          
+          }
         }
         
         if(sType.startsWith("e") && !columnLayout) { 
