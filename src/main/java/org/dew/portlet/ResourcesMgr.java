@@ -42,6 +42,7 @@ class ResourcesMgr
 {
   public static String sJDBC_PATH = "jdbc/";
   public static String sPORTAL_PLATFORM = "";
+  public static int    iPORTAL_VERSION  = 6;
   
   private static Map<String, ResourceBundle> _mapPoolBoundle = new HashMap<String, ResourceBundle>();
   private static Map<String, IAction> _mapIActions = new HashMap<String, IAction>();
@@ -49,19 +50,42 @@ class ResourcesMgr
   public static
   String checkPortalPlatform(PortletConfig portletConfig)
   {
-    String sClassNameOfPortletConfig = portletConfig.getClass().getName();
-    System.out.println(sClassNameOfPortletConfig);
+    if(portletConfig == null || portletConfig.getPortletContext() == null) {
+      return sPORTAL_PLATFORM;
+    }
+    String sServerInfo = portletConfig.getPortletContext().getServerInfo();
+    System.out.println("[ResourcesMgr] ServerInfo: " + sServerInfo);
     sPORTAL_PLATFORM = "";
-    int iFirstDot = sClassNameOfPortletConfig.indexOf('.');
-    if(iFirstDot > 0) {
-      int iSecondDot = sClassNameOfPortletConfig.indexOf('.', iFirstDot + 1);
-      if(iSecondDot > 0) {
-        sPORTAL_PLATFORM = sClassNameOfPortletConfig.substring(iFirstDot + 1, iSecondDot);
+    if(sServerInfo != null && sServerInfo.length() > 0) {
+      int iSep = sServerInfo.indexOf('/');
+      if(iSep > 0) {
+        sPORTAL_PLATFORM = sServerInfo.substring(0, iSep).toLowerCase();
+        int iSp = sPORTAL_PLATFORM.indexOf(' ');
+        if(iSp > 0) {
+          sPORTAL_PLATFORM = sPORTAL_PLATFORM.substring(0, iSp);
+        }
+        String sVersion  = sServerInfo.substring(iSep + 1).trim();
+        if(sVersion != null && sVersion.length() > 0) {
+          int iDot = sVersion.indexOf('.');
+          if(iDot > 0) {
+            try { iPORTAL_VERSION = Integer.parseInt(sVersion.substring(0, iDot)); } catch(Exception ex) {}
+          }
+          else {
+            try { iPORTAL_VERSION = Integer.parseInt(sVersion); } catch(Exception ex) {}
+          }
+        }
       }
       else {
-        sPORTAL_PLATFORM = sClassNameOfPortletConfig.substring(0, iFirstDot);
+        sPORTAL_PLATFORM = sServerInfo.trim().toLowerCase();
+        int iSp = sPORTAL_PLATFORM.indexOf(' ');
+        if(iSp > 0) {
+          sPORTAL_PLATFORM = sPORTAL_PLATFORM.substring(0, iSp);
+        }
+        iPORTAL_VERSION = 1;
       }
     }
+    System.out.println("[ResourcesMgr] sPORTAL_PLATFORM = " + sPORTAL_PLATFORM);
+    System.out.println("[ResourcesMgr] iPORTAL_VERSION  = " + iPORTAL_VERSION);
     return sPORTAL_PLATFORM;
   }
   

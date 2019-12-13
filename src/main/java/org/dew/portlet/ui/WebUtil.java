@@ -142,6 +142,41 @@ class WebUtil
   }
   
   /**
+   * Restituisce il link con label="Indietro" richiamando window.history.back().
+   * In Liferay 7 l'implementazione corrisponde a getLastForwardLink.
+   * 
+   * @param request HttpServletRequest
+   * @param sIcon Icona (non obbligatoria)
+   * @return String
+   */
+  public static
+  String getBackLink(HttpServletRequest request, String sIcon)
+  {
+    if("liferay".equals(ResourcesMgr.sPORTAL_PLATFORM) && ResourcesMgr.iPORTAL_VERSION == 7) {
+      String sResult = "";
+      if(sIcon != null && sIcon.length() > 0) {
+        sResult += "<img alt=\"Indietro\" src=\"" + request.getContextPath() + sIcon + "\"> ";
+      }
+      String sURL = (String) request.getAttribute(WNames.sATTR_LAST_FORWARD_URL);
+      if(sURL == null || sURL.length() == 0) {
+        // sResult += "<a href=\"javascript:void(0)\" onclick=\"window.history.back();return false;\"> Indietro</a>";
+        return "";
+      }
+      else {
+        sResult += "<a href=\"" + sURL + "\" title=\"Indietro\"> Indietro</a>";
+      }
+      return sResult;
+    }
+    
+    String sResult = "";
+    if(sIcon != null && sIcon.length() > 0) {
+      sResult += "<img alt=\"Indietro\" src=\"" + request.getContextPath() + sIcon + "\"> ";
+    }
+    sResult += "<a href=\"javascript:void(0)\" onclick=\"window.history.back();return false;\"> Indietro</a>";
+    return sResult;
+  }
+  
+  /**
    * Restituisce il link con label="Indietro" relativo all'ultima azione di forward. 
    * 
    * @param request HttpServletRequest
