@@ -142,37 +142,46 @@ class WebUtil
   }
   
   /**
-   * Restituisce il link con label="Indietro" richiamando window.history.back().
-   * In Liferay 7 l'implementazione corrisponde a getLastForwardLink.
+   * Restituisce il back link costruito.
    * 
    * @param request HttpServletRequest
    * @param sIcon Icona (non obbligatoria)
+   * @param sLabel Caption del link
+   * @param sDefBackURL Default back url
    * @return String
    */
   public static
-  String getBackLink(HttpServletRequest request, String sIcon)
+  String getBackLink(HttpServletRequest request, String sIcon, String sLabel, String sDefBackURL)
   {
+    if(sLabel == null) sLabel = "";
     if("liferay".equals(ResourcesMgr.sPORTAL_PLATFORM) && ResourcesMgr.iPORTAL_VERSION == 7) {
       String sResult = "";
       if(sIcon != null && sIcon.length() > 0) {
-        sResult += "<img alt=\"Indietro\" src=\"" + request.getContextPath() + sIcon + "\"> ";
+        sResult += "<img alt=\"" + sLabel + "\" src=\"" + request.getContextPath() + sIcon + "\"> ";
       }
+      PortletSession portletSession = getPortletSession(request);
       String sURL = (String) request.getAttribute(WNames.sATTR_LAST_FORWARD_URL);
+      if((sURL == null || sURL.length() == 0) && portletSession != null) {
+        sURL = (String) portletSession.getAttribute(WNames.sSESS_LAST_FORWARD_URL);
+      }
       if(sURL == null || sURL.length() == 0) {
-        // sResult += "<a href=\"javascript:void(0)\" onclick=\"window.history.back();return false;\"> Indietro</a>";
-        return "";
+        if(sDefBackURL != null && sDefBackURL.length() > 0) {
+          sResult += "<a href=\"" + sDefBackURL + "\" title=\"" + sLabel + "\"> " + sLabel + "</a>";
+        }
+        else {
+          sResult += "<a href=\"javascript:history.go(-1);\"> " + sLabel + "</a>";
+        }
       }
       else {
-        sResult += "<a href=\"" + sURL + "\" title=\"Indietro\"> Indietro</a>";
+        sResult += "<a href=\"" + sURL + "\" title=\"" + sLabel + "\"> " + sLabel + "</a>";
       }
       return sResult;
     }
-    
     String sResult = "";
     if(sIcon != null && sIcon.length() > 0) {
-      sResult += "<img alt=\"Indietro\" src=\"" + request.getContextPath() + sIcon + "\"> ";
+      sResult += "<img alt=\"" + sLabel + "\" src=\"" + request.getContextPath() + sIcon + "\"> ";
     }
-    sResult += "<a href=\"javascript:void(0)\" onclick=\"window.history.back();return false;\"> Indietro</a>";
+    sResult += "<a href=\"javascript:history.go(-1);\"> " + sLabel + "</a>";
     return sResult;
   }
   
