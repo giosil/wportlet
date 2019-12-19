@@ -734,11 +734,10 @@ class WebForm implements Serializable
         if(sType.startsWith("s")) {
           sb.append("<button " + oc + "type=\"submit\">");
         }
-        else
-        if(sType.startsWith("c")) {
+        else if(sType.startsWith("c")) {
           sb.append("<button " + oc + "type=\"reset\">");
         }
-        else {  
+        else {
           sb.append("<button " + oc + "type=\"button\">");
         }
         sb.append(sLabel);
@@ -797,13 +796,22 @@ class WebForm implements Serializable
           }
         }
         
+        int iSepPlaceHolder = sLabel.indexOf('^');
+        String sPlaceholder = sLabel;
+        if(iSepPlaceHolder > 0) {
+          sPlaceholder = sLabel.substring(iSepPlaceHolder + 1);
+          sLabel = sLabel.substring(0, iSepPlaceHolder);
+        }
+        if(sLabel != null && sLabel.length() > 20) {
+          sPlaceholder = "";
+        }
+        
         if(sType.startsWith("e") && !columnLayout) { 
           // Empty
           if(sLabel != null && sLabel.length() > 50) {
             sb.append("<div class=\"col span_12_of_12\">" + sLabel + "</div>");
           }
-          else
-          if(sLabel != null && sLabel.length() > 1) {
+          else if(sLabel != null && sLabel.length() > 1) {
             sb.append("<div class=\"col span_" + iSmL + "_of_12\"></div>");
             sb.append("<div class=\"col span_" + iSmF + "_of_12\">" + sLabel + "</div>");
           }
@@ -862,14 +870,9 @@ class WebForm implements Serializable
               sTAttr = " value=\"" + sTAttr.trim().replace("\"", "\\\"") + "\"";
             }
           }
-          String sPlaceholder = sLabel;
-          if(sLabel != null && sLabel.equalsIgnoreCase("indirizzo")) {
-            sPlaceholder = "Riportare via , numero, comune";
-          }
           sb.append("<input type=\"text\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
         }
-        else
-        if(sType.equals("l")) {
+        else if(sType.equals("l")) {
           sTAttr = sTAttr.trim();
           if(sTAttr.startsWith("<")|| sTAttr.indexOf("<b") >= 0 || sTAttr.indexOf("<a") >= 0) {
             sb.append(sTAttr);
@@ -878,41 +881,36 @@ class WebForm implements Serializable
             sb.append(sTAttr.replace("<", "&lt;").replace(">", "&gt;"));
           }
         }
-        else
-        if(sType.startsWith("n")) {
+        else if(sType.startsWith("n")) {
           String sText = null;
           if(mapData != null) {
             sText = mapData.get(sName);
           }
           if(sText != null && sText.length() > 0) {
-            sb.append("<textarea placeholder=\"" + sLabel + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
+            sb.append("<textarea placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
             sb.append(sText.replace("<", "&lt;").replace(">", "&gt;"));
             sb.append("</textarea>");
           }
           else {
-            sb.append("<textarea placeholder=\"" + sLabel + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + "></textarea>");
+            sb.append("<textarea placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + "></textarea>");
           }
         }
-        else
-        if(sType.startsWith("c")) {
+        else if(sType.startsWith("c")) {
           sb.append("<input type=\"checkbox\" name=\"" + namespace + sName + "\" id=\"" + sName + "\" value=\"1\"" + sTAttr + ">");
         }
-        else
-        if(sType.startsWith("d")) {
+        else if(sType.startsWith("d")) {
           if(sTAttr != null && sTAttr.length() > 0) {
             int iSepAttrVal = sTAttr.indexOf('=');
             if(iSepAttrVal < 0) {
               sTAttr = " value=\"" + sTAttr.trim().replace("\"", "\\\"") + "\"";
             }
           }
-          sb.append("<input type=\"text\" class=\"fdate\" placeholder=\"" + sLabel + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+          sb.append("<input type=\"text\" class=\"fdate\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
         }
-        else
-        if(sType.startsWith("h")) {
-          sb.append("<input type=\"text\" class=\"ftime\" placeholder=\"" + sLabel + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+        else if(sType.startsWith("h")) {
+          sb.append("<input type=\"text\" class=\"ftime\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
         }
-        else
-        if(sType.startsWith("r")) {
+        else if(sType.startsWith("r")) {
           if(sTAttr != null && sTAttr.indexOf("=\"") >= 0) {
             sb.append("<input type=\"radio\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + "> ");
           }
@@ -921,8 +919,7 @@ class WebForm implements Serializable
             sb.append("<input type=\"radio\" name=\"" + namespace + sName + "\" id=\"" + sName + "\" " + (selected.contains(sValue) ? "checked" : "") + " value=\"" + sValue + "\"> " + sValue);
           }
         } 
-        else
-        if(sType.startsWith("s")) {
+        else if(sType.startsWith("s")) {
           String sSelectedItem = null;
           if(sTAttr != null && sTAttr.length() > 0) {
             int iSepAttrVal = sTAttr.indexOf('=');
@@ -994,15 +991,14 @@ class WebForm implements Serializable
           if(sTAttr == null || sTAttr.length() == 0) {
             sTAttr = " style=\"width:100%\"";
           }
-          if(boOnlyImages) { // [201703]
-            sb.append("<input type=\"file\" accept=\".bmp, .jpg, .png, image/bmp, image/jpeg, image/png\" placeholder=\"" + sLabel + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + sNotes);
+          if(boOnlyImages) {
+            sb.append("<input type=\"file\" accept=\".bmp, .jpg, .png, image/bmp, image/jpeg, image/png\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + sNotes);
           }
-          else
-          if(boOnlyPdf) { // [201701]
-            sb.append("<input type=\"file\" accept=\".pdf, application/pdf\" placeholder=\"" + sLabel + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + sNotes);
+          else if(boOnlyPdf) {
+            sb.append("<input type=\"file\" accept=\".pdf, application/pdf\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + sNotes);
           }
           else {
-            sb.append("<input type=\"file\" placeholder=\"" + sLabel + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + sNotes);
+            sb.append("<input type=\"file\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + sNotes);
           }
         }
         if(!columnLayout) {
@@ -1039,11 +1035,10 @@ class WebForm implements Serializable
         if(sType.startsWith("s")) {
           sb.append("<button " + oc + "type=\"submit\">");
         }
-        else
-        if(sType.startsWith("c")) {
+        else if(sType.startsWith("c")) {
           sb.append("<button " + oc + "type=\"reset\">");
         }
-        else {  
+        else {
           sb.append("<button " + oc + "type=\"button\">");
         }
         sb.append(sLabel);
