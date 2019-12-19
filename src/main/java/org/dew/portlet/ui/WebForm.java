@@ -3,6 +3,7 @@ package org.dew.portlet.ui;
 import org.dew.portlet.WNames;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
+
 import javax.servlet.http.HttpServletRequest;
 
 @SuppressWarnings({"rawtypes"})
@@ -22,8 +24,6 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * t=TextField, l=Label (StaticText), n=notes (TextArea), c=CheckBox, r=RadioButton
  * d=DateField, h=Hours (TimeField),  s=Select, f=FileField, e=Empty
- * 
- * @author silvestris
  */
 public 
 class WebForm implements Serializable
@@ -52,6 +52,7 @@ class WebForm implements Serializable
   protected String method;
   protected String actionUrl;
   protected String onSubmit;
+  protected String validation;
   protected boolean multipart = false;
   protected boolean btnsUp    = false;
   protected boolean btnsDown  = true;
@@ -163,6 +164,17 @@ class WebForm implements Serializable
     this.onSubmit = onSubmit;
   }
   
+  public void setOnSubmit(String onSubmit, boolean validation) {
+    if(validation) {
+      this.validation = onSubmit;
+      this.onSubmit = null;
+    }
+    else {
+      this.onSubmit = onSubmit;
+      this.validation = null;
+    }
+  }
+  
   public void setEndRow(String endRow) {
     this.endRow = endRow;
   }
@@ -190,7 +202,7 @@ class WebForm implements Serializable
   public void setIncrementLabel(int incLab) {
     this.incLab = incLab;
   }
-    
+  
   public void setLabelStyle(String labelStyle) {
     this.labelStyle = labelStyle;
   }
@@ -221,6 +233,14 @@ class WebForm implements Serializable
   
   public void setButtonsUp(boolean buttonsUp) {
     this.btnsUp = buttonsUp;
+  }
+  
+  public String getValidation() {
+    return validation;
+  }
+  
+  public void setValidation(String validation) {
+    this.validation = validation;
   }
   
   public 
@@ -263,7 +283,7 @@ class WebForm implements Serializable
   {
     List<String> currRow = getCurrentRow();
     if(sStyle != null && sStyle.length() > 0) {
-      currRow.add("l|" + sId + "|" + sLabel + "|<span style=\"" + sStyle + "\">" + sText + "</span>");
+      currRow.add("l|" + sId + "|" + sLabel + "|<span id=\"" + sId + "\" style=\"" + sStyle + "\">" + sText + "</span>");
     }
     else {
       currRow.add("l|" + sId + "|" + sLabel + "|" + sText);
@@ -668,6 +688,9 @@ class WebForm implements Serializable
       sb.append(" onsubmit=\"" + onSubmit + "\"");
     }
     else {
+      if(validation != null && validation.length() > 0) {
+        sb.append(" onsubmit=\"" + validation + "\"");
+      }
       if(method != null && method.length() > 0) {
         sb.append(" method=\"" + method + "\"");
       }
