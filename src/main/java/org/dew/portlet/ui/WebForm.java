@@ -5,112 +5,110 @@ import org.dew.portlet.WNames;
 import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
-@SuppressWarnings({"rawtypes"})
 /**
  * Classe per la costruzione di Form Web.
- * Componenti implementati:
- * 
- * t=TextField, l=Label (StaticText), n=notes (TextArea), c=CheckBox, r=RadioButton
- * d=DateField, h=Hours (TimeField),  s=Select, f=FileField, e=Empty
  */
 public 
 class WebForm implements Serializable
 {
-  private static final long serialVersionUID = -8722452868995707246L;
+  private static final long serialVersionUID = 953736094564294951L;
   
   protected String  title;
-  protected boolean columnLayout    = false;
-  protected String  labelStyle      = null;
-  protected String  fieldsetStyle   = null;
-  protected String  focusOn         = null;
-  protected List<List<String>> rows = new ArrayList<List<String>>();
-  protected List<String>       btns = new ArrayList<String>();
-  
-  protected Map<String,List>   opts = null;
-  protected Set<String>    selected = new HashSet<String>();
-  protected List<String>       sele = null;
-  protected List<String>       date = null;
-  protected List<String>       time = null;
-  protected List<String>       hidd = null;
-  
+  protected boolean columnLayout;
+  protected String  labelStyle;
+  protected String  fieldsetStyle;
+  protected String  focusOn;
+
+  protected List<List<WField>> rows = new ArrayList<List<WField>>();
+  protected List<WField> btns;
+  protected List<WField> hidd;
+  protected List<String> date;
+
   protected String name;
   protected String id;
   protected String initFunction;
   protected String namespace;
   protected String method;
   protected String actionUrl;
+  protected String style;
   protected String onSubmit;
   protected String validation;
   protected boolean multipart = false;
   protected boolean btnsUp    = false;
   protected boolean btnsDown  = true;
-  
+
   protected String endRow;
   protected String before;
   protected String after;
   protected String footer;
   protected int incLab = 0;
-  
+
   protected List<WebForm> forms = null;
   protected List<String> titles = null;
-  protected Map<String,String> mapData;
+
+  public static String ROW_CLASS        = "section group";
+  public static String COL_CLASS_BEG    = "col span_";
+  public static String COL_CLASS_END    = "_of_12";
+
+  public static String STYLE_STATIC_TXT = "line-height:2;vertical-align:middle;";
+  public static String STYLE_DIV_LABEL  = "line-height:2;vertical-align:middle;text-align:right;";
+  public static String STYLE_DIV_BLANK  = "padding:2px 0 2px 0;";
+  public static String STYLE_DIV_INPUT  = "padding:2px 0 2px 0;";
+  public static String STYLE_DIV_FIELD  = "padding:2px 0 2px 0;";
+  public static String STYLE_DIV_STATIC = "padding:0px 0 0px 0;";
   
   public WebForm()
   {
   }
-  
+
   public WebForm(String id, String title, String onSubmit)
   {
     this.id       = id;
     this.title    = title;
     this.onSubmit = onSubmit;
   }
-  
+
   public WebForm(HttpServletRequest request)
   {
     this.namespace = WebUtil.getNamespace(request);
     this.actionUrl = WebUtil.getActionURL(request);
   }
-  
+
   public WebForm(HttpServletRequest request, String title)
   {
     this.namespace = WebUtil.getNamespace(request);
     this.actionUrl = WebUtil.getActionURL(request);
     this.title     = title;
   }
-  
+
   public WebForm(HttpServletRequest request, String title, String action)
   {
     this.namespace = WebUtil.getNamespace(request);
     this.actionUrl = WebUtil.buildActionURL(request, action, null);
     this.title     = title;
   }
-  
+
   public WebForm(RenderResponse renderResponse)
   {
     this.namespace = renderResponse.getNamespace();
     this.actionUrl = renderResponse.createActionURL().toString();
   }
-  
+
   public WebForm(RenderResponse renderResponse, String title)
   {
     this.namespace = renderResponse.getNamespace();
     this.actionUrl = renderResponse.createActionURL().toString();
     this.title     = title;
   }
-  
+
   public WebForm(RenderResponse renderResponse, String title, String action)
   {
     this.namespace = renderResponse.getNamespace();
@@ -121,7 +119,7 @@ class WebForm implements Serializable
     this.actionUrl = portletURL.toString();
     this.title     = title;
   }
-  
+
   public WebForm(RenderResponse renderResponse, String title, String action, String param, String value)
   {
     this.namespace = renderResponse.getNamespace();
@@ -135,35 +133,43 @@ class WebForm implements Serializable
     this.actionUrl = portletURL.toString();
     this.title     = title;
   }
-  
+
   public void setNamespace(String namespace) {
     this.namespace = namespace;
   }
-  
+
   public String getActionUrl() {
     return actionUrl;
   }
-  
+
   public String getId() {
     return id;
   }
-  
+
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   public void setName(String name) {
     this.name = name;
   }
-  
+
+  public String getStyle() {
+    return style;
+  }
+
+  public void setStyle(String style) {
+    this.style = style;
+  }
+
   public void setOnSubmit(String onSubmit) {
     this.onSubmit = onSubmit;
   }
-  
+
   public void setOnSubmit(String onSubmit, boolean validation) {
     if(validation) {
       this.validation = onSubmit;
@@ -174,75 +180,75 @@ class WebForm implements Serializable
       this.validation = null;
     }
   }
-  
+
   public void setEndRow(String endRow) {
     this.endRow = endRow;
   }
-  
+
   public void setBefore(String before) {
     this.before = before;
   }
-  
+
   public void setAfter(String after) {
     this.after = after;
   }
-  
+
   public void setFooter(String footer) {
     this.footer = footer;
   }
-  
+
   public boolean isColumnLayout() {
     return columnLayout;
   }
-  
+
   public void setColumnLayout(boolean columnLayout) {
     this.columnLayout = columnLayout;
   }
-  
+
   public void setIncrementLabel(int incLab) {
     this.incLab = incLab;
   }
-  
+
   public void setLabelStyle(String labelStyle) {
     this.labelStyle = labelStyle;
   }
-  
+
   public void setFieldsetStyle(String fieldsetStyle) {
     this.fieldsetStyle = fieldsetStyle;
   }
-  
+
   public String getFocusOn() {
     return focusOn;
   }
-  
+
   public void setFocusOn(String focusOn) {
     this.focusOn = focusOn;
   }
-  
+
   public boolean isButtonsDown() {
     return btnsDown;
   }
-  
+
   public void setButtonsDown(boolean buttonsDown) {
     this.btnsDown = buttonsDown;
   }
-  
+
   public boolean isButtonsUp() {
     return btnsUp;
   }
-  
+
   public void setButtonsUp(boolean buttonsUp) {
     this.btnsUp = buttonsUp;
   }
-  
+
   public String getValidation() {
     return validation;
   }
-  
+
   public void setValidation(String validation) {
     this.validation = validation;
   }
-  
+
   public 
   void addForm(WebForm form, String title)
   {
@@ -257,354 +263,353 @@ class WebForm implements Serializable
       titles.add("");
     }
   }
-  
+
   public
   void addRow()
   {
-    rows.add(new ArrayList<String>());
+    rows.add(new ArrayList<WField>());
   }
-  
+
   public 
-  void addComponent(String sComponent)
+  void addComponent(String sHtml)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add(sComponent);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.COMPONENT, sHtml));
   }
-  
+
+  public 
+  void addComponent(String sLabel, String sHtml)
+  {
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.COMPONENT, "", sLabel).append(sHtml));
+  }
+
   public 
   void addStaticText(String sId, String sLabel, String sText)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("l|" + sId + "|" + sLabel + "|" + sText);
+    List<WField> currRow = getCurrentRow();
+    if(STYLE_STATIC_TXT != null && STYLE_STATIC_TXT.length() > 0) {
+      currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + STYLE_STATIC_TXT + "\">" + esc(sText) + "</span>"));
+    }
+    else {
+      currRow.add(new WField(Type.STATICTEXT, sId, sLabel, sText));
+    }
   }
-  
+
   public 
   void addStaticText(String sId, String sLabel, String sText, String sStyle)
   {
-    List<String> currRow = getCurrentRow();
+    List<WField> currRow = getCurrentRow();
     if(sStyle != null && sStyle.length() > 0) {
-      currRow.add("l|" + sId + "|" + sLabel + "|<span id=\"" + sId + "\" style=\"" + sStyle + "\">" + sText + "</span>");
+      if(STYLE_STATIC_TXT != null && STYLE_STATIC_TXT.length() > 0) {
+        if(!sStyle.endsWith(";")) sStyle += ";";
+        sStyle += STYLE_STATIC_TXT;
+      }
+      currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + sStyle + "\">" + esc(sText) + "</span>"));
+    }
+    else if(STYLE_STATIC_TXT != null && STYLE_STATIC_TXT.length() > 0) {
+      currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + STYLE_STATIC_TXT + "\">" + esc(sText) + "</span>"));
     }
     else {
-      currRow.add("l|" + sId + "|" + sLabel + "|" + sText);
+      currRow.add(new WField(Type.STATICTEXT, sId, sLabel, sText));
     }
   }
-  
+
   public 
   void addTextField(String sId, String sLabel)
   {
-    List<String> currRow = getCurrentRow();
-    String row = "t|" + sId + "|" + sLabel;
-    currRow.add(row);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.TEXTFIELD, sId, sLabel));
   }
-  
+
   public 
-  void addTextField(String sId, String sLabel, String sTagAttributes)
+  void addTextField(String sId, String sLabel, String sAttributes)
   {
-    List<String> currRow = getCurrentRow();
-    String row = "t|" + sId + "|" + sLabel;
-    if(sTagAttributes != null && sTagAttributes.length() > 0) {
-      row += "|" + sTagAttributes;
-    }
-    currRow.add(row);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.TEXTFIELD, sId, sLabel, "", sAttributes));
   }
-  
+
   public 
-  void addTextField(String sId, String sLabel, String sTagAttributes, String sText)
+  void addTextField(String sId, String sLabel, String sAttributes, String sText)
   {
-    List<String> currRow = getCurrentRow();
-    String row = "t|" + sId + "|" + sLabel;
-    if(sTagAttributes != null && sTagAttributes.length() > 0) {
-      row += "|" + sTagAttributes;
-      if(sText != null && sText.length() > 0) {
-        row += " value=\"" + sText.replace("\"", "\\\"") + "\"";
-      }
-    }
-    else {
-      row += "|" + sText;
-    }
-    currRow.add(row);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.TEXTFIELD, sId, sLabel, sText, sAttributes));
   }
-  
+
   public 
-  void addTextField(String sId, String sLabel, String sTagAttributes, boolean boEnabled)
+  void addTextField(String sId, String sLabel, String sAttributes, boolean boEnabled)
   {
     if(boEnabled) {
-      addTextField(sId, sLabel, sTagAttributes);
+      addTextField(sId, sLabel, sAttributes);
     }
     else {
-      addStaticText(sId, sLabel, sTagAttributes);
+      addStaticText(sId, sLabel, sAttributes);
     }
   }
-  
+
   public 
   void addTextArea(String sId, String sLabel, int iRows, int iCols)
   {
-    List<String> currRow = getCurrentRow();
+    List<WField> currRow = getCurrentRow();
     if(iRows > 0 || iCols > 0) {
       if(iRows < 1) iRows = 1;
       if(iCols > 0) {
-        currRow.add("n|" + sId + "|" + sLabel + "|rows=\" + iRows + \" cols=\"" + iCols + "\"");
+        currRow.add(new WField(Type.TEXTAREA, sId, sLabel, "", "rows=\"" + iRows + "\" cols=\"" + iCols + "\""));
       }
       else {
-        currRow.add("n|" + sId + "|" + sLabel + "|rows=\" + iRows + \"");
+        currRow.add(new WField(Type.TEXTAREA, sId, sLabel, "", "rows=\"" + iRows + "\""));
       }
     }
     else {
-      currRow.add("n|" + sId + "|" + sLabel + "|");
+      currRow.add(new WField(Type.TEXTAREA, sId, sLabel));
     }
   }
-  
+
   public 
-  void addTextArea(String sId, String sLabel, int iRows, int iCols, String sTagAttributes)
+  void addTextArea(String sId, String sLabel, int iRows, int iCols, String sAttributes)
   {
-    List<String> currRow = getCurrentRow();
-    if(sTagAttributes == null) sTagAttributes = "";
-    if(sTagAttributes != null && sTagAttributes.length() > 0) {
-      sTagAttributes = " " + sTagAttributes;
-    }
+    List<WField> currRow = getCurrentRow();
+    if(sAttributes == null) sAttributes = "";
     if(iRows > 0 || iCols > 0) {
+      if(sAttributes != null && sAttributes.length() > 0) {
+        sAttributes = " " + sAttributes;
+      }
       if(iRows < 1) iRows = 1;
       if(iCols > 0) {
-        currRow.add("n|" + sId + "|" + sLabel + "|rows=\" + iRows + \" cols=\"" + iCols + "\"" + sTagAttributes);
+        currRow.add(new WField(Type.TEXTAREA, sId, sLabel, "", "rows=\"" + iRows + "\" cols=\"" + iCols + "\"" + sAttributes));
       }
       else {
-        currRow.add("n|" + sId + "|" + sLabel + "|rows=\" + iRows + \"" + sTagAttributes);
+        currRow.add(new WField(Type.TEXTAREA, sId, sLabel, "", "rows=\"" + iRows + "\"" + sAttributes));
       }
     }
     else {
-      currRow.add("n|" + sId + "|" + sLabel + "|" + sTagAttributes);
+      currRow.add(new WField(Type.TEXTAREA, sId, sLabel, "", sAttributes));
     }
   }
-  
+
   public 
-  void addTextArea(String sId, String sLabel, int iRows, int iCols, String sTagAttributes, String sText)
+  void addTextArea(String sId, String sLabel, int iRows, int iCols, String sAttributes, String sText)
   {
-    List<String> currRow = getCurrentRow();
-    if(sTagAttributes == null) sTagAttributes = "";
-    if(sTagAttributes != null && sTagAttributes.length() > 0) {
-      sTagAttributes = " " + sTagAttributes;
-    }
+    List<WField> currRow = getCurrentRow();
+    if(sAttributes == null) sAttributes = "";
     if(iRows > 0 || iCols > 0) {
+      if(sAttributes != null && sAttributes.length() > 0) {
+        sAttributes = " " + sAttributes;
+      }
       if(iRows < 1) iRows = 1;
       if(iCols > 0) {
-        currRow.add("n|" + sId + "|" + sLabel + "|rows=\" + iRows + \" cols=\"" + iCols + "\"" + sTagAttributes);
+        currRow.add(new WField(Type.TEXTAREA, sId, sLabel, sText, "rows=\"" + iRows + "\" cols=\"" + iCols + "\"" + sAttributes));
       }
       else {
-        currRow.add("n|" + sId + "|" + sLabel + "|rows=\" + iRows + \"" + sTagAttributes);
+        currRow.add(new WField(Type.TEXTAREA, sId, sLabel, sText, "rows=\"" + iRows + "\"" + sAttributes));
       }
     }
     else {
-      currRow.add("n|" + sId + "|" + sLabel + "|" + sTagAttributes);
+      currRow.add(new WField(Type.TEXTAREA, sId, sLabel, sText, sAttributes));
     }
-    if(mapData == null) mapData = new HashMap<String, String>();
-    mapData.put(sId, sText);
   }
-  
+
   public 
   void addCheckBox(String sId, String sLabel)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("c|" + sId + "|" + sLabel);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.CHECKBOX, sId, sLabel));
   }
-  
+
   public 
   void addCheckBox(String sId, String sLabel, boolean checked)
   {
-    List<String> currRow = getCurrentRow();
+    List<WField> currRow = getCurrentRow();
     if(checked) {
-      currRow.add("c|" + sId + "|" + sLabel + "|checked=\"checked\"");
+      currRow.add(new WField(Type.CHECKBOX, sId, sLabel, "", "checked=\"checked\""));
     }
     else {
-      currRow.add("c|" + sId + "|" + sLabel);
+      currRow.add(new WField(Type.CHECKBOX, sId, sLabel));
     }
   }
-  
+
   public 
   void addRadioButton(String sId, String sName, boolean checked)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("r|" + sId + "||" + sName);
-    if(checked) {
-      selected.add(sName);
-    }
-    else {
-      selected.remove(sName);
-    }
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.RADIOBUTTON, sId, sName, checked));
   }
-  
+
+  public 
+  void addRadioButton(String sId, String sName, String sValue, boolean checked)
+  {
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.RADIOBUTTON, sId, sName, sValue, checked));
+  }
+
   public 
   void addDateField(String sId, String sLabel)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("d|" + sId + "|" + sLabel);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.DATEFIELD, sId, sLabel));
     if(date == null) date = new ArrayList<String>();
     date.add(sId);
   }
-  
+
   public 
-  void addDateField(String sId, String sLabel, String sTagAttributes)
+  void addDateField(String sId, String sLabel, String sAttributes)
   {
-    List<String> currRow = getCurrentRow();
-    if(sTagAttributes != null && sTagAttributes.length() > 0) {
-      currRow.add("d|" + sId + "|" + sLabel + "|" + sTagAttributes);
-    }
-    else {
-      currRow.add("d|" + sId + "|" + sLabel);
-    }
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.DATEFIELD, sId, sLabel, "", sAttributes));
     if(date == null) date = new ArrayList<String>();
     date.add(sId);
   }
-  
+
   public 
   void addTimeField(String sId, String sLabel)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("h|" + sId + "|" + sLabel);
-    if(time == null) time = new ArrayList<String>();
-    time.add(sId);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.TIMEFIELD, sId, sLabel));
   }
-  
+
   public 
   void addSelect(String sId, String sLabel, HttpServletRequest request, String sAttribute)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("s|" + sId + "|" + sLabel);
-    if(opts == null) opts = new HashMap<String, List>();
+    List<WField> currRow = getCurrentRow();
     Object oOption = request.getAttribute(sAttribute);
     if(oOption instanceof List) {
-      opts.put(sId, (List) oOption);
+      currRow.add(new WField(Type.SELECT, sId, sLabel, (List<?>) oOption));
     }
     else {
-      opts.put(sId, new ArrayList(0));
+      currRow.add(new WField(Type.SELECT, sId, sLabel, Collections.EMPTY_LIST));
     }
-    if(sele == null) sele = new ArrayList<String>();
-    sele.add(sId);
   }
-  
+
   public 
-  void addSelect(String sId, String sLabel, List listOptions)
+  void addSelect(String sId, String sLabel, List<?> listOptions)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("s|" + sId + "|" + sLabel);
-    if(opts == null) opts = new HashMap<String, List>();
-    opts.put(sId, listOptions);
-    if(sele == null) sele = new ArrayList<String>();
-    sele.add(sId);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.SELECT, sId, sLabel, listOptions));
   }
-  
+
   public 
-  void addSelect(String sId, String sLabel, List listOptions, String sSelectedItem)
+  void addSelect(String sId, String sLabel, List<?> listOptions, String sSelectedItem_Attribute)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("s|" + sId + "|" + sLabel + "|" + sSelectedItem);
-    if(opts == null) opts = new HashMap<String, List>();
-    opts.put(sId, listOptions);
-    if(sele == null) sele = new ArrayList<String>();
-    sele.add(sId);
+    List<WField> currRow = getCurrentRow();
+    if(sSelectedItem_Attribute != null && sSelectedItem_Attribute.indexOf("=") > 0) {
+      currRow.add(new WField(Type.SELECT, sId, sLabel, listOptions, "", sSelectedItem_Attribute));
+    }
+    else {
+      currRow.add(new WField(Type.SELECT, sId, sLabel, listOptions, sSelectedItem_Attribute));
+    }
   }
-  
+
+  public 
+  void addSelect(String sId, String sLabel, List<?> listOptions, String sSelectedItem, String sAttribute)
+  {
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.SELECT, sId, sLabel, listOptions, sSelectedItem, sAttribute));
+  }
+
   public 
   void addSelect(String sId, String sLabel, String... asOptions)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("s|" + sId + "|" + sLabel);
-    if(opts == null) opts = new HashMap<String, List>();
-    opts.put(sId, Arrays.asList(asOptions));
-    if(sele == null) sele = new ArrayList<String>();
-    sele.add(sId);
+    List<WField> currRow = getCurrentRow();
+    int length = asOptions != null ? asOptions.length : 0;
+    List<String> listOptions = new ArrayList<String>(length);
+    if(length > 0) {
+      for(int i = 0; i < length; i++) {
+        listOptions.add(asOptions[i]);
+      }
+    }
+    currRow.add(new WField(Type.SELECT, sId, sLabel, listOptions));
   }
-  
+
   public 
   void addHiddenField(String sId, String sValue)
   {
-    if(hidd == null) hidd = new ArrayList<String>();
-    hidd.add(sId + "|" + sValue);
+    if(hidd == null) hidd = new ArrayList<WField>();
+    hidd.add(new WField(Type.HIDDEN, sId, "", sValue));
   }
-  
+
   public 
   void addFileField(String sId, String sLabel)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("f|" + sId + "|" + sLabel);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.FILEFIELD, sId, sLabel));
     multipart = true;
   }
-  
+
   public 
   void addFileField(String sId, String sLabel, String sNotes)
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("f|" + sId + "|" + sLabel + "|" + sNotes);
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.FILEFIELD, sId, sLabel, sNotes));
     multipart = true;
   }
-  
+
   public 
   void addBlankField()
   {
-    List<String> currRow = getCurrentRow();
-    currRow.add("e|&nbsp;|");
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.BLANK, "&nbsp;"));
   }
-  
+
   public 
-  void addBlankField(String sText)
+  void addBlankField(String sText_Html)
   {
-    List<String> currRow = getCurrentRow();
-    if(sText != null && sText.length() > 0) {
-      currRow.add("e|&nbsp;|" + sText);
-    }
-    else {
-      currRow.add("e|&nbsp;|");
-    }
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.BLANK, sText_Html));
   }
-  
+
   public 
   void addButton(String sLabel, String sOnClick)
   {
-    btns.add("b|" + sLabel + "|" + sOnClick);
+    if(btns == null) btns = new ArrayList<WField>();
+    btns.add(new WField(Type.BUTTON, "", sLabel, sOnClick));
   }
-  
+
   public 
   void addSubmit(String sLabel, String sOnClick)
   {
-    btns.add("s|" + sLabel + "|" + sOnClick);
+    if(btns == null) btns = new ArrayList<WField>();
+    btns.add(new WField(Type.SUBMIT, "", sLabel, sOnClick));
   }
-  
+
   public 
   void addSubmit(String sLabel)
   {
-    btns.add("s|" + sLabel + "|");
+    if(btns == null) btns = new ArrayList<WField>();
+    btns.add(new WField(Type.SUBMIT, "", sLabel));
   }
-  
+
   public 
   void addCancel(String sLabel, String sOnClick)
   {
-    btns.add("c|" + sLabel + "|" + sOnClick);
+    if(btns == null) btns = new ArrayList<WField>();
+    btns.add(new WField(Type.RESET, "", sLabel, sOnClick));
   }
-  
+
   public 
   void addCancel(String sLabel)
   {
-    btns.add("c|" + sLabel + "|");
+    if(btns == null) btns = new ArrayList<WField>();
+    btns.add(new WField(Type.RESET, "", sLabel));
   }
-  
+
   public
   void setInitFunction(String functionName)
   {
     this.initFunction = functionName;
   }
-  
+
   public
   String getInitFunction()
   {
     return initFunction;
   }
-  
+
   protected
-  List<String> getCurrentRow()
+  List<WField> getCurrentRow()
   {
-    List<String> listResult = null;
+    List<WField> listResult = null;
     if(rows.size() == 0) {
-      listResult = new ArrayList<String>();
+      listResult = new ArrayList<WField>();
       rows.add(listResult);
     }
     else {
@@ -612,7 +617,32 @@ class WebForm implements Serializable
     }
     return listResult;
   }
-  
+
+  protected static
+  String esc(String sText)
+  {
+    if(sText == null) return "";
+    int iLength = sText.length();
+    if(iLength == 0) return "";
+    StringBuilder sb = new StringBuilder(iLength);
+    for(int i = 0; i < iLength; i++) {
+      char c = sText.charAt(i);
+      if(c == '<')  sb.append("&lt;");
+      else if(c == '>')  sb.append("&gt;");
+      else if(c == '&')  sb.append("&amp;");
+      else if(c == '"')  sb.append("&quot;");
+      else if(c == '\'') sb.append("&apos;");
+      else if(c > 127) {
+        int code = (int) c;
+        sb.append("&#" + code + ";");
+      }
+      else {
+        sb.append(c);
+      }
+    }
+    return sb.toString();
+  }
+
   public
   String buildReadyFunction(String sBefore, String sAfter)
   {
@@ -660,11 +690,11 @@ class WebForm implements Serializable
     }
     return "";
   }
-  
+
   protected
   String build()
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     if(namespace == null) namespace = "";
     if(actionUrl != null && actionUrl.length() > 0) {
       if(method == null || method.length() == 0) {
@@ -675,7 +705,7 @@ class WebForm implements Serializable
       sb.append(before);
     }
     if(title != null && title.length() > 0) {
-      sb.append("<div class=\"section group\"><strong>" + title + "</strong></div>");
+      sb.append("<div class=\"" + ROW_CLASS + "\"><strong>" + title + "</strong></div>");
     }
     sb.append("<form");
     if(id != null && id.length() > 0) {
@@ -685,11 +715,11 @@ class WebForm implements Serializable
       sb.append(" name=\"" + name + "\"");
     }
     if(onSubmit != null && onSubmit.length() > 0) {
-      sb.append(" onsubmit=\"" + onSubmit + "\"");
+      sb.append(" onsubmit=\"" + esc(onSubmit) + "\"");
     }
     else {
       if(validation != null && validation.length() > 0) {
-        sb.append(" onsubmit=\"" + validation + "\"");
+        sb.append(" onsubmit=\"" + esc(validation) + "\"");
       }
       if(method != null && method.length() > 0) {
         sb.append(" method=\"" + method + "\"");
@@ -702,10 +732,23 @@ class WebForm implements Serializable
     if(multipart) {
       sb.append(" enctype=\"multipart/form-data\"");
     }
+    if(style != null && style.length() > 0) {
+      if(style.indexOf(':') > 0) {
+        sb.append(" style=\"" + style + "\"");
+      }
+      else {
+        sb.append(" class=\"" + style + "\"");
+      }
+    }
     sb.append(">");
     if(rows.size() > 0) {
       if(fieldsetStyle != null && fieldsetStyle.length() > 0) {
-        sb.append("<fieldset style=\"" + fieldsetStyle + "\">");
+        if(fieldsetStyle.indexOf(':') > 0) {
+          sb.append("<fieldset style=\"" + fieldsetStyle + "\">");
+        }
+        else {
+          sb.append("<fieldset class=\"" + fieldsetStyle + "\">");
+        }
       }
       else {
         sb.append("<fieldset>");
@@ -713,111 +756,80 @@ class WebForm implements Serializable
     }
     if(btnsUp && btns != null && btns.size() > 0) {
       if(!columnLayout) {
-        sb.append("<div class=\"section group\">");
+        sb.append("<div class=\"" + ROW_CLASS + "\">");
       }
       else {
         sb.append("<br/>");
       }
       for(int i = 0; i < btns.size(); i++) {
-        String sElement = btns.get(i);
-        int iSep1 = sElement.indexOf('|');
-        if(iSep1 <= 0) continue;
-        int iSep2 = sElement.indexOf('|', iSep1+1);
-        if(iSep2 <= 0) continue;
-        String sType    = sElement.substring(0, iSep1);
-        String sLabel   = sElement.substring(iSep1+1, iSep2);
-        String sOnClick = sElement.substring(iSep2+1);
-        String oc = "";
-        if(sOnClick != null && sOnClick.length() > 0 && !sOnClick.equals("null")) {
-          oc = "onclick=\"" + sOnClick + "\" ";
-        }
-        if(sType.startsWith("s")) {
-          sb.append("<button " + oc + "type=\"submit\">");
-        }
-        else if(sType.startsWith("c")) {
-          sb.append("<button " + oc + "type=\"reset\">");
-        }
-        else {
-          sb.append("<button " + oc + "type=\"button\">");
-        }
-        sb.append(sLabel);
-        sb.append("</button>");
+        WField wButton = btns.get(i);
+        sb.append(wButton.toString());
         if(i < btns.size()-1) sb.append("&nbsp;&nbsp;");
       }
       if(!columnLayout) sb.append("</div>");
       sb.append("<br/>");
     }
     for(int r = 0; r < rows.size(); r++) {
-      if(!columnLayout) sb.append("<div class=\"section group\">");
-      List<String> currRow = rows.get(r);
+      if(!columnLayout) sb.append("<div class=\"" + ROW_CLASS + "\">");
+      
+      List<WField> currRow = rows.get(r);
+      
       int iSizeRow = currRow.size();
       int iSmL = 1;
       int iSmF = 1;
-      if(iSizeRow <  2) { iSmL = 3 + incLab; iSmF = 9 - incLab; } else
-      if(iSizeRow == 2) { iSmL = 2 + incLab; iSmF = 4 - incLab; } else
-      if(iSizeRow == 3) { iSmL = 1 + incLab; iSmF = 3 - incLab; } else
-      if(iSizeRow == 4) { iSmL = 1 + incLab; iSmF = 2 - incLab; } else {
+      if(iSizeRow <  2) { iSmL = 3 + incLab; iSmF = 9 - incLab; }
+      else if(iSizeRow == 2) { iSmL = 2 + incLab; iSmF = 4 - incLab; }
+      else if(iSizeRow == 3) { iSmL = 1 + incLab; iSmF = 3 - incLab; }
+      else if(iSizeRow == 4) { iSmL = 1 + incLab; iSmF = 2 - incLab; } 
+      else {
         iSmL = 1; iSmF = 1;
       }
       int iRowItems = currRow.size();
       for(int c = 0; c < iRowItems; c++) {
-        String sElement = currRow.get(c);
-        if(sElement.startsWith("<")) {
-          sb.append(sElement);
-          continue;
-        }
-        int iSep1 = sElement.indexOf('|');
-        if(iSep1 <= 0) continue;
-        int iSep2 = sElement.indexOf('|', iSep1+1);
-        if(iSep2 <= 0) continue;
-        String sType  = sElement.substring(0,iSep1);
-        String sName  = sElement.substring(iSep1+1,iSep2);
-        String sLabel = sElement.substring(iSep2+1);
+        WField wField = currRow.get(c);
         
-        String sTAttr = "";
-        int iSep3 = sLabel.indexOf('|');
-        if(iSep3 > -1) {
-          sTAttr = sLabel.substring(iSep3+1);
-          sLabel = sLabel.substring(0,iSep3);
-          if(sTAttr.length() > 0 && !sTAttr.equals("null")) {
-            sTAttr = " " + sTAttr;
-          }
-          else {
-            sTAttr = "";
+        Type   type   = wField.getType();
+        String sName  = wField.getId();
+        String sLabel = wField.getLabel();
+        String sHtml  = wField.getHtml();
+        
+        if(type == Type.COMPONENT && sHtml != null && sHtml.length() > 0) {
+          if(sLabel == null || sLabel.length() == 0) {
+            sb.append(sHtml);
+            continue;
           }
         }
+        
         if(sName != null && sName.startsWith("!")) {
-          sName    = sName.substring(1);
-          if(sTAttr.length() > 0 && !sTAttr.equals("null")) {
-            sTAttr += " disabled=\"disabled\"";
-          }
-          else {
-            sTAttr = " disabled=\"disabled\"";
-          }
+          sName = sName.substring(1);
+        }
+        if(sName == null || sName.length() == 0) {
+          sName = "f" + r + "_" + c;
+          wField.setId(sName);
         }
         
+        if(sLabel == null) sLabel = "";
         int iSepPlaceHolder = sLabel.indexOf('^');
-        String sPlaceholder = sLabel;
         if(iSepPlaceHolder > 0) {
-          sPlaceholder = sLabel.substring(iSepPlaceHolder + 1);
           sLabel = sLabel.substring(0, iSepPlaceHolder);
         }
-        if(sLabel != null && sLabel.length() > 20) {
-          sPlaceholder = "";
-        }
         
-        if(sType.startsWith("e") && !columnLayout) { 
-          // Empty
-          if(sLabel != null && sLabel.length() > 50) {
-            sb.append("<div class=\"col span_12_of_12\">" + sLabel + "</div>");
+        if(type == Type.BLANK && !columnLayout) {
+          String sStyleBlank = "";
+          if(STYLE_DIV_BLANK != null && STYLE_DIV_BLANK.length() > 0) {
+            sStyleBlank = " style=\"" + STYLE_DIV_BLANK + "\"";
           }
-          else if(sLabel != null && sLabel.length() > 1) {
-            sb.append("<div class=\"col span_" + iSmL + "_of_12\"></div>");
-            sb.append("<div class=\"col span_" + iSmF + "_of_12\">" + sLabel + "</div>");
+          // Empty
+          if(sHtml != null && sHtml.length() > 50) {
+            sb.append("<div class=\"" + COL_CLASS_BEG + "12" + COL_CLASS_END + "\"" + sStyleBlank + ">" + sHtml + "</div>");
+          }
+          else if(sHtml != null && sHtml.length() > 1) {
+            sb.append("<div class=\"" + COL_CLASS_BEG + iSmL + COL_CLASS_END + "\"" + sStyleBlank + "></div>");
+            sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\"" + sStyleBlank + ">" + sHtml + "</div>");
           }
           else {
-            sb.append("<div class=\"col span_" + iSmL + "_of_12\"></div>");
-            sb.append("<div class=\"col span_" + iSmF + "_of_12\"></div>");
+            sb.append("<div class=\"" + COL_CLASS_BEG + iSmL + COL_CLASS_END + "\"" + sStyleBlank + "></div>");
+            sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\"" + sStyleBlank + "></div>");
           }
           continue;
         }
@@ -828,26 +840,31 @@ class WebForm implements Serializable
             }
             else {
               if(labelStyle != null && labelStyle.length() > 0) {
-                sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;" + labelStyle + "\">" + sLabel + ":</label>");
+                sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;" + labelStyle + "\">" + esc(sLabel) + ":</label>");
               }
               else {
-                sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;\">" + sLabel + ":</label>");
+                sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;\">" + esc(sLabel) + ":</label>");
               }
             }
           }
         }
         else {
-          sb.append("<div class=\"col span_" + iSmL + "_of_12\" style=\"text-align:right;\">");
+          if(STYLE_DIV_LABEL != null && STYLE_DIV_LABEL.length() > 0) {
+            sb.append("<div class=\"" + COL_CLASS_BEG + iSmL + COL_CLASS_END + "\" style=\"" + STYLE_DIV_LABEL + "\">");
+          }
+          else {
+            sb.append("<div class=\"" + COL_CLASS_BEG + iSmL + COL_CLASS_END + "\">");
+          }
           if(sLabel != null && sLabel.length() > 0) {
             if(sLabel.startsWith("<")) {
               sb.append(sLabel);
             }
             else {
               if(labelStyle != null && labelStyle.length() > 0) {
-                sb.append("<label for=\"" + sName + "\" style=\"" + labelStyle + "\">" + sLabel + ":</label>");
+                sb.append("<label for=\"" + sName + "\" style=\"" + labelStyle + "\">" + esc(sLabel) + ":</label>");
               }
               else {
-                sb.append("<label for=\"" + sName + "\">" + sLabel + ":</label>");
+                sb.append("<label for=\"" + sName + "\">" + esc(sLabel) + ":</label>");
               }
             }
           }
@@ -855,152 +872,34 @@ class WebForm implements Serializable
         }
         
         if(!columnLayout) {
-          if(sType.equals("t") || sType.startsWith("d") || sType.startsWith("h")) {
-            sb.append("<div class=\"col span_" + iSmF + "_of_12\" style=\"margin-top:1px;\">");
+          if(type == Type.TEXTFIELD || type == Type.DATEFIELD || type == Type.TIMEFIELD || type == Type.FILEFIELD) {
+            if(STYLE_DIV_INPUT != null && STYLE_DIV_INPUT.length() > 0) {
+              sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\" style=\"" + STYLE_DIV_INPUT + "\">");
+            }
+            else {
+              sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\">");
+            }
+          }
+          else if(type == Type.STATICTEXT) {
+            if(STYLE_DIV_STATIC != null && STYLE_DIV_STATIC.length() > 0) {
+              sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\" style=\"" + STYLE_DIV_STATIC + "\">");
+            }
+            else {
+              sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\">");
+            }
           }
           else {
-            sb.append("<div class=\"col span_" + iSmF + "_of_12\">");
+            if(STYLE_DIV_FIELD != null && STYLE_DIV_FIELD.length() > 0) {
+              sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\" style=\"" + STYLE_DIV_FIELD + "\">");
+            }
+            else {
+              sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\">");
+            }
           }
         }
         
-        if(sType.equals("t")) {
-          if(sTAttr != null && sTAttr.length() > 0) {
-            int iSepAttrVal = sTAttr.indexOf('=');
-            if(iSepAttrVal < 0) {
-              sTAttr = " value=\"" + sTAttr.trim().replace("\"", "\\\"") + "\"";
-            }
-          }
-          sb.append("<input type=\"text\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
-        }
-        else if(sType.equals("l")) {
-          sTAttr = sTAttr.trim();
-          if(sTAttr.startsWith("<")|| sTAttr.indexOf("<b") >= 0 || sTAttr.indexOf("<a") >= 0) {
-            sb.append(sTAttr);
-          }
-          else {
-            sb.append(sTAttr.replace("<", "&lt;").replace(">", "&gt;"));
-          }
-        }
-        else if(sType.startsWith("n")) {
-          String sText = null;
-          if(mapData != null) {
-            sText = mapData.get(sName);
-          }
-          if(sText != null && sText.length() > 0) {
-            sb.append("<textarea placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
-            sb.append(sText.replace("<", "&lt;").replace(">", "&gt;"));
-            sb.append("</textarea>");
-          }
-          else {
-            sb.append("<textarea placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + "></textarea>");
-          }
-        }
-        else if(sType.startsWith("c")) {
-          sb.append("<input type=\"checkbox\" name=\"" + namespace + sName + "\" id=\"" + sName + "\" value=\"1\"" + sTAttr + ">");
-        }
-        else if(sType.startsWith("d")) {
-          if(sTAttr != null && sTAttr.length() > 0) {
-            int iSepAttrVal = sTAttr.indexOf('=');
-            if(iSepAttrVal < 0) {
-              sTAttr = " value=\"" + sTAttr.trim().replace("\"", "\\\"") + "\"";
-            }
-          }
-          sb.append("<input type=\"text\" class=\"fdate\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
-        }
-        else if(sType.startsWith("h")) {
-          sb.append("<input type=\"text\" class=\"ftime\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
-        }
-        else if(sType.startsWith("r")) {
-          if(sTAttr != null && sTAttr.indexOf("=\"") >= 0) {
-            sb.append("<input type=\"radio\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + "> ");
-          }
-          else {
-            String sValue = sTAttr != null ? sTAttr.trim() : "";
-            sb.append("<input type=\"radio\" name=\"" + namespace + sName + "\" id=\"" + sName + "\" " + (selected.contains(sValue) ? "checked" : "") + " value=\"" + sValue + "\"> " + sValue);
-          }
-        } 
-        else if(sType.startsWith("s")) {
-          String sSelectedItem = null;
-          if(sTAttr != null && sTAttr.length() > 0) {
-            int iSepAttrVal = sTAttr.indexOf('=');
-            if(iSepAttrVal < 0) {
-              sSelectedItem = sTAttr.trim();
-              sTAttr = "";
-            }
-          }
-          sb.append("<select name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
-          if(opts != null) {
-            List listOptions = opts.get(sName);
-            if(listOptions != null && listOptions.size() > 0) {
-              for(int i = 0; i < listOptions.size(); i++) {
-                Object oOption   = listOptions.get(i);
-                String sSelected = "";
-                if(oOption instanceof List) {
-                  List listOption = (List) oOption;
-                  if(listOption.size() == 0) continue;
-                  Object oValue = listOption.get(0);
-                  if(oValue == null) continue;
-                  Object oDesc  = listOption.size() > 1 ? listOption.get(1) : null;
-                  if(sSelectedItem != null) {
-                    if(sSelectedItem.equals(oValue)) {
-                      sSelected = " selected";
-                    }
-                    else
-                    if(oDesc != null && sSelectedItem.equals(oDesc)) {
-                      sSelected = " selected";
-                    }
-                  }
-                  if(oDesc != null) {
-                    sb.append("<option value=\"" + oValue + "\"" + sSelected + ">" + oDesc + "</option>");
-                  }
-                  else {
-                    sb.append("<option" + sSelected + ">" + oValue + "</option>");
-                  }
-                }
-                else {
-                  if(sSelectedItem != null && sSelectedItem.equals(oOption)) {
-                    sSelected = " selected";
-                  }
-                  sb.append("<option" + sSelected + ">" + oOption + "</option>");
-                }
-              }
-            }
-          }
-          sb.append("</select>");
-        }
-        else
-        if(sType.startsWith("f")) {
-          String sNotes = "";
-          if(sTAttr != null && sTAttr.length() > 0) {
-            int iSepAttrVal = sTAttr.indexOf('=');
-            if(iSepAttrVal < 0) {
-              sNotes = sTAttr;
-              sTAttr = "";
-            }
-          }
-          boolean boOnlyPdf    = false;
-          boolean boOnlyImages = false;
-          if(sNotes != null && sNotes.length() > 0) {
-            if(sNotes.toLowerCase().indexOf("pdf") >= 0) {
-              boOnlyPdf = true;
-            }
-            if(sNotes.toLowerCase().indexOf("jpg") >= 0) {
-              boOnlyImages = true;
-            }
-          }
-          if(sTAttr == null || sTAttr.length() == 0) {
-            sTAttr = " style=\"width:100%\"";
-          }
-          if(boOnlyImages) {
-            sb.append("<input type=\"file\" accept=\".bmp, .jpg, .png, image/bmp, image/jpeg, image/png\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + sNotes);
-          }
-          else if(boOnlyPdf) {
-            sb.append("<input type=\"file\" accept=\".pdf, application/pdf\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + sNotes);
-          }
-          else {
-            sb.append("<input type=\"file\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + sNotes);
-          }
-        }
+        sb.append(wField.toString(namespace));
+        
         if(!columnLayout) {
           if(c == iRowItems - 1 && endRow != null) {
             sb.append(endRow);
@@ -1012,7 +911,7 @@ class WebForm implements Serializable
     }
     if(btnsDown && btns != null && btns.size() > 0) {
       if(!columnLayout) {
-        sb.append("<div class=\"section group\">");
+        sb.append("<div class=\"" + ROW_CLASS + "\">");
         sb.append("<br/>");
       }
       else {
@@ -1020,42 +919,16 @@ class WebForm implements Serializable
         sb.append("<br/>");
       }
       for(int i = 0; i < btns.size(); i++) {
-        String sElement = btns.get(i);
-        int iSep1 = sElement.indexOf('|');
-        if(iSep1 <= 0) continue;
-        int iSep2 = sElement.indexOf('|', iSep1+1);
-        if(iSep2 <= 0) continue;
-        String sType    = sElement.substring(0, iSep1);
-        String sLabel   = sElement.substring(iSep1+1, iSep2);
-        String sOnClick = sElement.substring(iSep2+1);
-        String oc = "";
-        if(sOnClick != null && sOnClick.length() > 0 && !sOnClick.equals("null")) {
-          oc = "onclick=\"" + sOnClick + "\" ";
-        }
-        if(sType.startsWith("s")) {
-          sb.append("<button " + oc + "type=\"submit\">");
-        }
-        else if(sType.startsWith("c")) {
-          sb.append("<button " + oc + "type=\"reset\">");
-        }
-        else {
-          sb.append("<button " + oc + "type=\"button\">");
-        }
-        sb.append(sLabel);
-        sb.append("</button>");
+        WField wButton = btns.get(i);
+        sb.append(wButton.toString());
         if(i < btns.size()-1) sb.append("&nbsp;&nbsp;");
       }
       if(!columnLayout) sb.append("</div>");
     }
     if(hidd != null) {
       for(int i = 0; i < hidd.size(); i++) {
-        String sHiddenField = hidd.get(i);
-        int iSep1 = sHiddenField.indexOf('|');
-        if(iSep1 <= 0) continue;
-        String sName  = sHiddenField.substring(0,  iSep1);
-        String sValue = sHiddenField.substring(iSep1 + 1);
-        if(sValue != null && sValue.equals("null")) sValue = "";
-        sb.append("<input type=\"hidden\" name=\"" + namespace + sName +  "\" id=\"" + sName + "\" value=\"" + sValue + "\">");
+        WField wHidden = hidd.get(i);
+        sb.append(wHidden.toString(namespace));
       }
     }
     if(rows.size() > 0) sb.append("</fieldset>");
@@ -1068,7 +941,7 @@ class WebForm implements Serializable
     }
     return sb.toString();
   }
-  
+
   @Override
   public
   boolean equals(Object obj) 
@@ -1079,7 +952,7 @@ class WebForm implements Serializable
     }
     return false;
   }
-  
+
   @Override
   public
   int hashCode()
@@ -1087,7 +960,7 @@ class WebForm implements Serializable
     if(actionUrl != null) return actionUrl.hashCode();
     return 0;
   }
-  
+
   @Override
   public
   String toString()
@@ -1110,5 +983,380 @@ class WebForm implements Serializable
       }
     }
     return sb.toString();
+  }
+
+  static enum Type
+  {
+    STATICTEXT, TEXTFIELD, TEXTAREA, CHECKBOX, RADIOBUTTON, DATEFIELD, TIMEFIELD, SELECT, FILEFIELD, HIDDEN, 
+    COMPONENT, BLANK, 
+    BUTTON, SUBMIT, RESET 
+  }
+
+  static class WField implements Serializable
+  {
+    private static final long serialVersionUID = 8260748273213660357L;
+    
+    protected Type    type;
+    protected String  id      = "";
+    protected String  label   = "";
+    protected String  value   = "";
+    protected String  attr    = "";
+    protected String  html    = "";
+    protected boolean checked = false;
+    protected List<?> options;
+
+    public WField()
+    {
+      this.type  = Type.BLANK;
+    }
+
+    public WField(Type type, String id, String label)
+    {
+      this.type    = type;
+      this.id      = id;
+      this.label   = label;
+    }
+
+    public WField(Type type, String id, String label, boolean checked)
+    {
+      this.type    = type;
+      this.id      = id;
+      this.label   = label;
+      this.checked = checked;
+    }
+
+    public WField(Type type, String id, String label, String value, boolean checked)
+    {
+      this.type    = type;
+      this.id      = id;
+      this.label   = label;
+      this.value   = value;
+      this.checked = checked;
+    }
+
+    public WField(Type type, String id, String label, List<?> options)
+    {
+      this.type    = type;
+      this.id      = id;
+      this.label   = label;
+      this.options = options;
+      if(this.options == null) {
+        this.options = Collections.EMPTY_LIST;
+      }
+    }
+
+    public WField(Type type, String html)
+    {
+      this.type  = type;
+      this.html  = html;
+    }
+
+    public WField(Type type, String id, String label, String value)
+    {
+      this.type  = type;
+      this.id    = id;
+      this.label = label;
+      this.value = value;
+    }
+
+    public WField(Type type, String id, String label, List<?> options, String value)
+    {
+      this.type    = type;
+      this.id      = id;
+      this.label   = label;
+      this.value   = value;
+      this.options = options;
+      if(this.options == null) {
+        this.options = Collections.EMPTY_LIST;
+      }
+    }
+
+    public WField(Type type, String id, String label, List<?> options, String value, String attr)
+    {
+      this.type    = type;
+      this.id      = id;
+      this.label   = label;
+      this.value   = value;
+      this.attr    = attr;
+      this.options = options;
+      if(this.options == null) {
+        this.options = Collections.EMPTY_LIST;
+      }
+    }
+
+    public WField(Type type, String id, String label, String value, String attr)
+    {
+      this.type  = type;
+      this.id    = id;
+      this.label = label;
+      this.value = value;
+      this.attr  = attr;
+    }
+
+    public Type getType() {
+      return type;
+    }
+
+    public void setType(Type type) {
+      this.type = type;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
+    }
+
+    public String getLabel() {
+      return label;
+    }
+
+    public void setLabel(String label) {
+      this.label = label;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+
+    public String getAttr() {
+      return attr;
+    }
+
+    public void setAttr(String attr) {
+      this.attr = attr;
+    }
+
+    public String getHtml() {
+      return html;
+    }
+
+    public void setHtml(String html) {
+      this.html = html;
+    }
+
+    public boolean isChecked() {
+      return checked;
+    }
+
+    public void setChecked(boolean checked) {
+      this.checked = checked;
+    }
+
+    public List<?> getOptions() {
+      return options;
+    }
+
+    public void setOptions(List<?> options) {
+      this.options = options;
+    }
+
+    public WField append(Object obj) {
+      if(obj == null) obj = "";
+      String sObjHtml = obj.toString();
+      if(sObjHtml != null && sObjHtml.length() > 0) {
+        if(this.html == null) this.html = "";
+        this.html += sObjHtml;
+      }
+      return this;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if(obj instanceof WField) {
+        String sId = ((WField) obj).getId();
+        return sId != null && sId.equals(id); 
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if(id != null) return id.hashCode();
+      return 0;
+    }
+    
+    @Override
+    public String toString() {
+      return toString("");
+    }
+    
+    public String toString(String namespace) {
+      StringBuilder sb = new StringBuilder();
+      
+      if(html != null && html.length() > 0) {
+        sb.append(html);
+        return sb.toString();
+      }
+      
+      if(value == null) value = "";
+      if(value != null && value.equals("null")) value = "";
+      if(type == Type.BUTTON || type == Type.SUBMIT || type == Type.RESET) {
+        String onClickAttr = "";
+        if(value != null && value.length() > 0) {
+          onClickAttr = "onclick=\"" + esc(value) + "\" ";
+        }
+        if(type == Type.SUBMIT) {
+          sb.append("<button " + onClickAttr + "type=\"submit\">");
+        }
+        else if(type == Type.RESET) {
+          sb.append("<button " + onClickAttr + "type=\"reset\">");
+        }
+        else {
+          sb.append("<button " + onClickAttr + "type=\"button\">");
+        }
+        sb.append(esc(label));
+        sb.append("</button>");
+        return sb.toString();
+      }
+      
+      if(namespace == null) namespace = "";
+      
+      String sName  = this.id;
+      String sLabel = this.label;
+      String sTAttr = this.attr;
+      
+      if(sTAttr == null) sTAttr = "";
+      if(sTAttr.length() > 0) sTAttr = " " + sTAttr;
+      if(sName != null && sName.startsWith("!")) {
+        sName = sName.substring(1);
+        if(sTAttr != null && sTAttr.length() > 0) sTAttr = " ";
+        sTAttr += "disabled=\"disabled\"";
+      }
+      if(sName == null || sName.length() == 0) {
+        sName = "f" + Math.round(Math.random() * 100000);
+      }
+      
+      if(type == Type.TEXTFIELD || type == Type.DATEFIELD || type == Type.TIMEFIELD) {
+        if(value != null && value.length() > 0) {
+          if(sTAttr != null && sTAttr.length() > 0) sTAttr += " ";
+          sTAttr += "value=\"" + esc(value) + "\"";
+        }
+      }
+      
+      if(sLabel == null) sLabel = "";
+      int iSepPlaceHolder = sLabel.indexOf('^');
+      String sPlaceholder = sLabel;
+      if(iSepPlaceHolder > 0) {
+        sPlaceholder = sLabel.substring(iSepPlaceHolder + 1);
+        sLabel = sLabel.substring(0, iSepPlaceHolder);
+      }
+      if(sLabel != null && sLabel.length() > 20) {
+        sPlaceholder = "";
+      }
+      
+      if(type == Type.TEXTFIELD) {
+        sb.append("<input type=\"text\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
+      }
+      else if(type == Type.HIDDEN) {
+        sb.append("<input type=\"hidden\" name=\"" + namespace + sName +  "\" id=\"" + sName + "\" value=\"" + esc(value) + "\">");
+      }
+      else if(type == Type.STATICTEXT) {
+        if(value != null && value.startsWith("<") && value.endsWith(">")) {
+          sb.append(value);
+        }
+        else {
+          sb.append(esc(value));
+        }
+      }
+      else if(type == Type.TEXTAREA) {
+        sb.append("<textarea placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
+        if(value != null && value.length() > 0) {
+          sb.append(esc(value));
+        }
+        sb.append("</textarea>");
+      }
+      else if(type == Type.CHECKBOX) {
+        sb.append("<input type=\"checkbox\" name=\"" + namespace + sName + "\" id=\"" + sName + "\" value=\"1\"" + sTAttr + ">");
+      }
+      else if(type == Type.DATEFIELD) {
+        sb.append("<input type=\"text\" class=\"fdate\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+      }
+      else if(type == Type.TIMEFIELD) {
+        sb.append("<input type=\"text\" class=\"ftime\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+      }
+      else if(type == Type.RADIOBUTTON) {
+        if(value != null && value.length() > 0) {
+          sb.append("<input type=\"radio\" name=\"" + namespace + sLabel + "\" id=\"" + sName + "\" " + (checked ? "checked" : "") + " value=\"" + esc(value) + "\"> " + esc(value));
+        }
+        else {
+          sb.append("<input type=\"radio\" name=\"" + namespace + sLabel + "\" id=\"" + sName + "\"" + sTAttr + "> ");
+        }
+      }
+      else if(type == Type.COMPONENT) {
+        if(html == null) html = "";
+        sb.append(html);
+      }
+      else if(type == Type.SELECT) {
+        sb.append("<select name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
+        if(options != null && options.size() > 0) {
+          for(int i = 0; i < options.size(); i++) {
+            Object oOption   = options.get(i);
+            String sSelected = "";
+            if(oOption instanceof List) {
+              List<?> listOption = (List<?>) oOption;
+              if(listOption.size() == 0) continue;
+              Object oValue = listOption.get(0);
+              if(oValue == null) continue;
+              Object oDesc  = listOption.size() > 1 ? listOption.get(1) : null;
+              if(value != null && value.length() > 0) {
+                if(value.equals(oValue)) {
+                  sSelected = " selected";
+                }
+                else if(oDesc != null && value.equals(oDesc)) {
+                  sSelected = " selected";
+                }
+              }
+              if(oDesc != null) {
+                sb.append("<option value=\"" + oValue + "\"" + sSelected + ">" + esc(oDesc.toString()) + "</option>");
+              }
+              else {
+                sb.append("<option" + sSelected + ">" + esc(oValue.toString()) + "</option>");
+              }
+            }
+            else {
+              if(oOption == null) oOption = "";
+              if(value != null && value.equals(oOption)) {
+                sSelected = " selected";
+              }
+              sb.append("<option" + sSelected + ">" + esc(oOption.toString()) + "</option>");
+            }
+          }
+        }
+        sb.append("</select>");
+      }
+      else if(type == Type.FILEFIELD) {
+        boolean boOnlyPdf    = false;
+        boolean boOnlyImages = false;
+        if(value != null && value.length() > 0) {
+          String sValueLC = value.toLowerCase();
+          if(sValueLC.indexOf("pdf") >= 0) {
+            boOnlyPdf = true;
+          }
+          if(sValueLC.indexOf("bmp") >= 0 || sValueLC.indexOf("jpg") >= 0 || sValueLC.indexOf("png") >= 0) {
+            boOnlyImages = true;
+          }
+        }
+        if(sTAttr == null || sTAttr.length() == 0) {
+          sTAttr = " style=\"width:100%\"";
+        }
+        if(boOnlyImages) {
+          sb.append("<input type=\"file\" accept=\".bmp, .jpg, .png, image/bmp, image/jpeg, image/png\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + value);
+        }
+        else if(boOnlyPdf) {
+          sb.append("<input type=\"file\" accept=\".pdf, application/pdf\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + value);
+        }
+        else {
+          sb.append("<input type=\"file\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">" + value);
+        }
+      }
+      return sb.toString();
+    }
   }
 }
