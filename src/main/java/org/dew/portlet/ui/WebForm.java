@@ -14,7 +14,7 @@ import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Classe per la costruzione di Form Web.
+ * Classe per la costruzione di Form HTML.
  */
 public 
 class WebForm implements Serializable
@@ -334,6 +334,27 @@ class WebForm implements Serializable
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.TEXTFIELD, sId, sLabel, sText, sAttributes));
+  }
+
+  public 
+  void addPassword(String sId, String sLabel)
+  {
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.PASSWORD, sId, sLabel));
+  }
+
+  public 
+  void addNumericField(String sId, String sLabel)
+  {
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.NUMBER, sId, sLabel));
+  }
+
+  public 
+  void addNumericField(String sId, String sLabel, String sAttributes, String sValue)
+  {
+    List<WField> currRow = getCurrentRow();
+    currRow.add(new WField(Type.NUMBER, sId, sLabel, sValue, sAttributes));
   }
 
   public 
@@ -987,7 +1008,7 @@ class WebForm implements Serializable
 
   static enum Type
   {
-    STATICTEXT, TEXTFIELD, TEXTAREA, CHECKBOX, RADIOBUTTON, DATEFIELD, TIMEFIELD, SELECT, FILEFIELD, HIDDEN, 
+    STATICTEXT, TEXTFIELD, TEXTAREA, CHECKBOX, RADIOBUTTON, DATEFIELD, TIMEFIELD, SELECT, FILEFIELD, NUMBER, PASSWORD, HIDDEN, 
     COMPONENT, BLANK, 
     BUTTON, SUBMIT, RESET 
   }
@@ -1253,6 +1274,12 @@ class WebForm implements Serializable
       
       if(type == Type.TEXTFIELD) {
         sb.append("<input type=\"text\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
+      }
+      else if(type == Type.NUMBER) {
+        sb.append("<input type=\"number\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
+      }
+      else if(type == Type.PASSWORD) {
+        sb.append("<input type=\"password\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\" id=\"" + sName + "\"" + sTAttr + ">");
       }
       else if(type == Type.HIDDEN) {
         sb.append("<input type=\"hidden\" name=\"" + namespace + sName +  "\" id=\"" + sName + "\" value=\"" + esc(value) + "\">");
