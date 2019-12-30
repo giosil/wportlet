@@ -155,7 +155,7 @@ class SnapTracer
       atomicInteger.set(0);
       index = 0;
     }
-    String logMessage = type + "|" + WUtil.formatDateTime(new Date(), "IT", true) + "|" + message;
+    String logMessage = type + "|" + Parameters.formatDateTime(new Date(), "-", true) + "|" + message;
     buffer[index] = logMessage;
   }
 }

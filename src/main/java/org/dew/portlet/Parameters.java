@@ -8,11 +8,10 @@ import javax.portlet.*;
 /**
  * Classe che estende HashMap per una gestione facilitata dei parametri.
  */
-@SuppressWarnings({"rawtypes","unchecked"})
 public 
 class Parameters extends HashMap<String,Object>
 {
-  private static final long serialVersionUID = 6564352456535533852L;
+  private static final long serialVersionUID = 8934574564749220887L;
   
   protected PortletConfig      _portletConfig;
   protected PortletPreferences _portletPreferences;
@@ -29,7 +28,7 @@ class Parameters extends HashMap<String,Object>
     this._portletPreferences = request.getPreferences();
     this._sNamespace         = sNamespace;
     this._actionRequest      = request;
-    Enumeration enumeration  = request.getParameterNames();
+    Enumeration<String> enumeration  = request.getParameterNames();
     while(enumeration.hasMoreElements()) {
       String sParName = (String) enumeration.nextElement();
       if(sNamespace != null && sParName.startsWith(sNamespace)) {
@@ -51,7 +50,7 @@ class Parameters extends HashMap<String,Object>
     this._portletPreferences = request.getPreferences();
     this._sNamespace         = sNamespace;
     this._renderRequest      = request;
-    Enumeration enumeration = request.getParameterNames();
+    Enumeration<String> enumeration = request.getParameterNames();
     while(enumeration.hasMoreElements()) {
       String sParName = (String) enumeration.nextElement();
       if(sNamespace != null && sParName.startsWith(sNamespace)) {
@@ -127,7 +126,7 @@ class Parameters extends HashMap<String,Object>
   {
     Properties propResult = new Properties();
     if(_portletConfig != null) {
-      Enumeration enumNames = _portletConfig.getInitParameterNames();
+      Enumeration<String> enumNames = _portletConfig.getInitParameterNames();
       while(enumNames.hasMoreElements()) {
         String sName = (String) enumNames.nextElement();
         propResult.setProperty(sName, _portletConfig.getInitParameter(sName));
@@ -141,7 +140,7 @@ class Parameters extends HashMap<String,Object>
   {
     Properties propResult = new Properties();
     if(_portletPreferences != null) {
-      Enumeration enumNames = _portletPreferences.getNames();
+      Enumeration<String> enumNames = _portletPreferences.getNames();
       while(enumNames.hasMoreElements()) {
         String sName  = (String) enumNames.nextElement();
         propResult.setProperty(sName, _portletPreferences.getValue(sName, ""));
@@ -151,16 +150,16 @@ class Parameters extends HashMap<String,Object>
   }
   
   public 
-  boolean storePreferences(Map mapPreferences) 
+  boolean storePreferences(Map<String,Object> mapPreferences) 
   {
     if(_portletPreferences != null) {
       try {
-        Iterator itEntries = mapPreferences.entrySet().iterator();
+        Iterator<Map.Entry<String,Object>> itEntries = mapPreferences.entrySet().iterator();
         while(itEntries.hasNext()) {
-          Map.Entry entry = (Map.Entry) itEntries.next();
-          String sKey = (String) entry.getKey(); 
-          String sVal = (String) entry.getValue();
-          _portletPreferences.setValue(sKey, sVal);
+          Map.Entry<String,Object> entry = itEntries.next();
+          String sKey = entry.getKey(); 
+          Object oVal = entry.getValue();
+          _portletPreferences.setValue(sKey, toString(oVal, ""));
         }
         _portletPreferences.store();
         return true;
@@ -175,12 +174,12 @@ class Parameters extends HashMap<String,Object>
   public
   void copyInAttributes(RenderRequest request)
   {
-    Iterator itEntries = entrySet().iterator();
+    Iterator<Map.Entry<String, Object>> itEntries = entrySet().iterator();
     while(itEntries.hasNext()) {
-      Map.Entry entry = (Map.Entry) itEntries.next();
-      String sKey = (String) entry.getKey();
-      Object oValue = entry.getValue();
-      request.setAttribute(sKey, oValue);
+      Map.Entry<String, Object> entry = itEntries.next();
+      String sKey = entry.getKey();
+      Object oVal = entry.getValue();
+      request.setAttribute(sKey, oVal);
     }
   }
   
@@ -206,11 +205,11 @@ class Parameters extends HashMap<String,Object>
   String getActionURL(RenderResponse response)
   {
     PortletURL portletURL = response.createActionURL();
-    Iterator itEntries = this.entrySet().iterator();
+    Iterator<Map.Entry<String, Object>> itEntries = this.entrySet().iterator();
     while(itEntries.hasNext()) {
-      Map.Entry entry = (Map.Entry) itEntries.next();
-      String sKey   = (String) entry.getKey();
-      String sValue = (String) entry.getValue();
+      Map.Entry<String, Object> entry = itEntries.next();
+      String sKey   = entry.getKey();
+      String sValue = toString(entry.getValue(), null);
       portletURL.setParameter(sKey, sValue);
     }
     return portletURL.toString();
@@ -220,11 +219,11 @@ class Parameters extends HashMap<String,Object>
   String getActionURL(RenderResponse response, String sAdditionalParameters)
   {
     PortletURL portletURL = response.createActionURL();
-    Iterator itEntries = this.entrySet().iterator();
+    Iterator<Map.Entry<String, Object>> itEntries = this.entrySet().iterator();
     while(itEntries.hasNext()) {
-      Map.Entry entry = (Map.Entry) itEntries.next();
-      String sKey   = (String) entry.getKey();
-      String sValue = (String) entry.getValue();
+      Map.Entry<String, Object> entry = itEntries.next();
+      String sKey   = entry.getKey();
+      String sValue = toString(entry.getValue(), null);
       portletURL.setParameter(sKey, sValue);
     }
     if(sAdditionalParameters != null && sAdditionalParameters.length() > 0) {
@@ -242,12 +241,12 @@ class Parameters extends HashMap<String,Object>
   }
   
   public
-  List getKeysStartsWith(String sStartKey)
+  List<String> getKeysStartsWith(String sStartKey)
   {
-    List listResult = new ArrayList();
-    Iterator itKeys = keySet().iterator();
+    List<String> listResult = new ArrayList<String>();
+    Iterator<String> itKeys = keySet().iterator();
     while(itKeys.hasNext()) {
-      String sKey = itKeys.next().toString();
+      String sKey = itKeys.next();
       if(sKey.startsWith(sStartKey)) {
         listResult.add(sKey);
       }
@@ -257,12 +256,12 @@ class Parameters extends HashMap<String,Object>
   }
   
   public
-  List getKeysEndsWith(String sEndKey)
+  List<String> getKeysEndsWith(String sEndKey)
   {
-    List listResult = new ArrayList();
-    Iterator itKeys = keySet().iterator();
+    List<String> listResult = new ArrayList<String>();
+    Iterator<String> itKeys = keySet().iterator();
     while(itKeys.hasNext()) {
-      String sKey = itKeys.next().toString();
+      String sKey = itKeys.next();
       if(sKey.endsWith(sEndKey)) {
         listResult.add(sKey);
       }
@@ -408,15 +407,15 @@ class Parameters extends HashMap<String,Object>
     return toStringTime(get(key), sDefault);
   }
   
-  public List getList(String key) {
+  public List<?> getList(String key) {
     return toList(get(key), false);
   }
   
-  public List getList(String key, boolean notNull) {
+  public List<?> getList(String key, boolean notNull) {
     return toList(get(key), notNull);
   }
   
-  public List getList(String key, Object oDefault) {
+  public List<?> getList(String key, Object oDefault) {
     return toList(get(key), oDefault);
   }
   
@@ -778,16 +777,16 @@ class Parameters extends HashMap<String,Object>
   }
   
   public static
-  List toList(Object object, boolean notNull)
+  List<?> toList(Object object, boolean notNull)
   {
-    if(object == null) return notNull ? new ArrayList(0) : null;
+    if(object == null) return notNull ? new ArrayList<Object>(0) : null;
     if(object instanceof ArrayList) {
-      return (ArrayList) object;
+      return (List<?>) object;
     }
     if(object instanceof Collection) {
-      Collection collection = (Collection) object;
-      ArrayList arrayList = new ArrayList(collection.size());
-      Iterator iterator = collection.iterator();
+      Collection<?> collection = (Collection<?>) object;
+      List<Object> arrayList = new ArrayList<Object>(collection.size());
+      Iterator<?> iterator = collection.iterator();
       while(iterator.hasNext()) {
         arrayList.add(iterator.next());
       }
@@ -795,7 +794,7 @@ class Parameters extends HashMap<String,Object>
     }
     if(object.getClass().isArray()) {
       int length = Array.getLength(object);
-      ArrayList arrayList = new ArrayList(length);
+      List<Object> arrayList = new ArrayList<Object>(length);
       for(int i = 0; i < length; i++) {
         arrayList.add(Array.get(object, i));
       }
@@ -804,15 +803,15 @@ class Parameters extends HashMap<String,Object>
     if(object instanceof String) {
       return stringToList((String) object);
     }
-    ArrayList arrayList = new ArrayList(1);
+    List<Object> arrayList = new ArrayList<Object>(1);
     arrayList.add(object);
     return arrayList;
   }
   
   public static
-  List toList(Object object, Object oDefault)
+  List<?> toList(Object object, Object oDefault)
   {
-    List list = toList(object, false);
+    List<?> list = toList(object, false);
     if(list == null) {
       if(oDefault == null) return null;
       return toList(oDefault, false);
@@ -823,11 +822,11 @@ class Parameters extends HashMap<String,Object>
   public static
   List<String> stringToList(String sText)
   {
-    if(sText == null || sText.length() == 0) return new ArrayList(0);
+    if(sText == null || sText.length() == 0) return new ArrayList<String>(0);
     if(sText.startsWith("[") && sText.endsWith("]")) {
       sText = sText.substring(1, sText.length()-1);
     }
-    ArrayList arrayList = new ArrayList();
+    List<String> arrayList = new ArrayList<String>();
     int iIndexOf = 0;
     int iBegin   = 0;
     iIndexOf     = sText.indexOf(',');
@@ -1172,5 +1171,189 @@ class Parameters extends HashMap<String,Object>
     try { iSS = Integer.parseInt(sSS); } catch(Throwable th) { return "000000"; }
     if(iSS < 0 || iSS > 59) return "000000";
     return sHH + sMM + sSS;
+  }
+  
+  public static
+  String formatDate(Object date, Object locale)
+  {
+    Calendar cal = toCalendar(date, null);
+    if(cal == null) return "";
+    
+    String sLocale = locale != null ? locale.toString() : "-";
+    char c0 = sLocale != null && sLocale.length() > 0 ? sLocale.charAt(0) : '-';
+    char cL = sLocale != null && sLocale.length() > 0 ? sLocale.charAt(sLocale.length()-1) : '/';
+    int iYear  = cal.get(Calendar.YEAR);
+    int iMonth = cal.get(Calendar.MONTH) + 1;
+    int iDay   = cal.get(Calendar.DATE);
+    String sYear  = String.valueOf(iYear);
+    String sMonth = iMonth < 10 ? "0" + iMonth : String.valueOf(iMonth);
+    String sDay   = iDay   < 10 ? "0" + iDay   : String.valueOf(iDay);
+    if(iYear < 10) {
+      sYear = "000" + sYear;
+    }
+    else
+    if(iYear < 100) {
+      sYear = "00" + sYear;
+    }
+    else
+    if(iYear < 1000) {
+      sYear = "0" + sYear;
+    }
+    if(c0 == '#') {
+      return sYear + sMonth + sDay;
+    }
+    else
+    if(c0 == '-' || c0 == 'j' || c0 == 'J') { // JAPAN
+      return sYear + "-" + sMonth + "-" + sDay;
+    }
+    else
+    if(c0 == 'e' || c0 == 'E' || c0 == 'u' || c0 == 'U' || c0 == '1') {
+      if(cL == 'K') return sDay + "/" + sMonth + "/" + sYear; // UK
+      return sMonth + "/" + sDay + "/" + sYear;
+    }
+    else
+    if(c0 == '.' || c0 == 'g' || c0 == 'G') { // GERMAN
+      return sDay + "." + sMonth + "." + sYear;
+    }
+    if(cL == '-') {
+      return sDay + "-" + sMonth + "-" + sYear;
+    }
+    return sDay + "/" + sMonth + "/" + sYear;
+  }
+  
+  public static
+  String formatTime(Object time, boolean second, boolean millis)
+  {
+    Calendar cal = toCalendar(time, null);
+    if(cal == null) return "";
+    
+    int iHour = cal.get(Calendar.HOUR_OF_DAY);
+    int iMin  = cal.get(Calendar.MINUTE);
+    String sHour = iHour  < 10 ? "0" + iHour  : String.valueOf(iHour);
+    String sMin  = iMin   < 10 ? "0" + iMin   : String.valueOf(iMin);
+    if(millis) second = true;
+    if(second) {
+      int iSec = cal.get(Calendar.SECOND);
+      String sSec = iSec < 10 ? "0" + iSec   : String.valueOf(iSec);
+      if(millis) {
+        int iMillis = cal.get(Calendar.MILLISECOND);
+        String sMillis = String.valueOf(iMillis);
+        if(iMillis < 10) {
+          sMillis = "00" + sMillis;
+        }
+        else
+        if(iMillis < 100) {
+          sMillis = "0" + sMillis;
+        }
+        return sHour + ":" + sMin + ":" + sSec + "." + sMillis;
+      }
+      return sHour + ":" + sMin + ":" + sSec;
+    }
+    return sHour + ":" + sMin;
+  }
+  
+  /**
+   * Format an object in a datetime representation.
+   *
+   * @param dateTime Object
+   * @param locale "!"=YYYY-MM-DD HH:mm:SS.SSS,"#"=YYYYMMDDHHmmSS, "+"=YYYYMMDDHHmmSS+Offs, "-"=YYYY-MM-DD HH:mm:SS, "E"=MM/DD/YYYY HH:mm:SS, "I"=DD/MM/YYYY HH:mm:SS, "."=DD.MM.YYYY HH:mm:SS
+   * @param second flag
+   * @return String
+   */
+  public static
+  String formatDateTime(Object dateTime, Object locale, boolean second)
+  {
+    Calendar cal = toCalendar(dateTime, null);
+    if(cal == null) return "";
+    
+    String sLocale = locale != null ? locale.toString() : "-";
+    char c0 = sLocale != null && sLocale.length() > 0 ? sLocale.charAt(0) : '-';
+    char cL = sLocale != null && sLocale.length() > 0 ? sLocale.charAt(sLocale.length()-1) : '/';
+    
+    int iYear  = cal.get(Calendar.YEAR);
+    int iMonth = cal.get(Calendar.MONTH) + 1;
+    int iDay   = cal.get(Calendar.DATE);
+    int iHour  = cal.get(Calendar.HOUR_OF_DAY);
+    int iMin   = cal.get(Calendar.MINUTE);
+    int iSec   = cal.get(Calendar.SECOND);
+    String sYear  = String.valueOf(iYear);
+    String sMonth = iMonth < 10 ? "0" + iMonth : String.valueOf(iMonth);
+    String sDay   = iDay   < 10 ? "0" + iDay   : String.valueOf(iDay);
+    String sHour  = iHour  < 10 ? "0" + iHour  : String.valueOf(iHour);
+    String sMin   = iMin   < 10 ? "0" + iMin   : String.valueOf(iMin);
+    String sSec   = iSec   < 10 ? "0" + iSec   : String.valueOf(iSec);
+    if(iYear < 10) {
+      sYear = "000" + sYear;
+    }
+    else
+    if(iYear < 100) {
+      sYear = "00" + sYear;
+    }
+    else
+    if(iYear < 1000) {
+      sYear = "0" + sYear;
+    }
+    if(c0 == '!') {
+      if(!second) {
+        return sYear + "-" + sMonth + "-" + sDay + " " + sHour + ":" + sMin;
+      }
+      int iMill = cal.get(Calendar.MILLISECOND);
+      String sMill = String.valueOf(iMill);
+      if(iMill < 10) {
+        sMill = "00" + sMill;
+      }
+      else
+      if(iMill < 100) {
+        sMill = "0" + sMill;
+      }
+      return sYear + "-" + sMonth + "-" + sDay + " " + sHour + ":" + sMin + ":" + sSec + "." + sMill;
+    }
+    else
+    if(c0 == '#') {
+      if(!second) return sYear + sMonth + sDay + sHour + sMin;
+      return sYear + sMonth + sDay + sHour + sMin + sSec;
+    }
+    else
+    if(c0 == '+') {
+      int iZoneOffset  = cal.get(Calendar.ZONE_OFFSET);
+      int iDST_Offset  = cal.get(Calendar.DST_OFFSET);
+      int iTot_Offset  = iZoneOffset + iDST_Offset;
+      String sOSSign   = "+";
+      if(iTot_Offset < 0) {
+        iTot_Offset = iTot_Offset * -1;
+        sOSSign = "-";
+      }
+      int iOffset_HH = iTot_Offset / 3600000;
+      int iOffset_MM = iTot_Offset % 3600000;
+      String sOSHH   = iOffset_HH < 10 ? "0" + iOffset_HH : String.valueOf(iOffset_HH);
+      String sOSMM   = iOffset_MM < 10 ? "0" + iOffset_MM : String.valueOf(iOffset_MM);
+      if(!second) return sYear + sMonth + sDay + sHour + sMin + sOSSign + sOSHH + sOSMM;
+      return sYear + sMonth + sDay + sHour + sMin + sSec + sOSSign + sOSHH + sOSMM;
+    }
+    else
+    if(c0 == '-' || c0 == 'j' || c0 == 'J') { // JAPAN
+      if(!second) return sYear + "-" + sMonth + "-" + sDay + " " + sHour + ":" + sMin;
+      return sYear + "-" + sMonth + "-" + sDay + " " + sHour + ":" + sMin + ":" + sSec;
+    }
+    else
+    if(c0 == '.' || c0 == 'g' || c0 == 'G') { // GERMAN
+      if(!second) return sDay + "." + sMonth + "." + sYear + " " + sHour + ":" + sMin;
+      return sDay + "." + sMonth + "." + sYear + " " + sHour + ":" + sMin + ":" + sSec;
+    }
+    else
+    if(c0 == 'e' || c0 == 'E' || c0 == 'u' || c0 == 'U' || c0 == '1') {
+      if(cL == 'K') { // UK
+        if(!second) return sDay + "/" + sMonth + "/" + sYear + " " + sHour + ":" + sMin;
+        return sDay + "/" + sMonth + "/" + sYear + " " + sHour + ":" + sMin + ":" + sSec;
+      }
+      if(!second) return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMin;
+      return sMonth + "/" + sDay + "/" + sYear + " " + sHour + ":" + sMin + ":" + sSec;
+    }
+    if(cL == '-') {
+      if(!second) return sDay + "-" + sMonth + "-" + sYear + " " + sHour + ":" + sMin;
+      return sDay + "-" + sMonth + "-" + sYear + " " + sHour + ":" + sMin + ":" + sSec;
+    }
+    if(!second) return sDay + "/" + sMonth + "/" + sYear + " " + sHour + ":" + sMin;
+    return sDay + "/" + sMonth + "/" + sYear + " " + sHour + ":" + sMin + ":" + sSec;
   }
 }

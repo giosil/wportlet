@@ -108,7 +108,7 @@ class DBUtil
   boolean getBoolean(HttpServletRequest request, String sSQL)
   {
     String sResult = getString(request, sSQL);
-    return WUtil.toBoolean(sResult, false);
+    return Parameters.toBoolean(sResult, false);
   }
   
   /**
@@ -123,7 +123,7 @@ class DBUtil
   boolean getBoolean(HttpServletRequest request, String sSQL, boolean boDefault)
   {
     String sResult = getString(request, sSQL);
-    return WUtil.toBoolean(sResult, boDefault);
+    return Parameters.toBoolean(sResult, boDefault);
   }
   
   /**
@@ -137,7 +137,7 @@ class DBUtil
   double getDouble(HttpServletRequest request, String sSQL)
   {
     String sResult = getString(request, sSQL);
-    return WUtil.toDouble(sResult, 0.0d);
+    return Parameters.toDouble(sResult, 0.0d);
   }
   
   /**
@@ -152,7 +152,7 @@ class DBUtil
   double getDouble(HttpServletRequest request, String sSQL, double dDefault)
   {
     String sResult = getString(request, sSQL);
-    return WUtil.toDouble(sResult, dDefault);
+    return Parameters.toDouble(sResult, dDefault);
   }
   
   /**
@@ -166,7 +166,7 @@ class DBUtil
   int getInt(HttpServletRequest request, String sSQL)
   {
     String sResult = getString(request, sSQL);
-    return WUtil.toInt(sResult, 0);
+    return Parameters.toInt(sResult, 0);
   }
   
   /**
@@ -181,7 +181,7 @@ class DBUtil
   int getInt(HttpServletRequest request, String sSQL, int iDefault)
   {
     String sResult = getString(request, sSQL);
-    return WUtil.toInt(sResult, iDefault);
+    return Parameters.toInt(sResult, iDefault);
   }
   
   /**

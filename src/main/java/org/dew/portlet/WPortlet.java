@@ -503,7 +503,7 @@ class WPortlet extends GenericPortlet implements WNames
     
     String sRemoteUser = request.getRemoteUser();
     List<String> listRoles = new ArrayList<String>();
-    int iAuthLevel = WUtil.toInt(request.getAuthType(), 0);
+    int iAuthLevel = Parameters.toInt(request.getAuthType(), 0);
     
     if(sRemoteUser != null && sRemoteUser.length() > 0) {
       IAction iaction = ResourcesMgr.getAction(_portletConfig, sACTION_LOGIN);
