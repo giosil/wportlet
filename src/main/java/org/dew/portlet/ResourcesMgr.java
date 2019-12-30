@@ -36,7 +36,6 @@ import javax.sql.DataSource;
 /**
  * Classe per la gestione delle risorse di WPortlet.
  */
-@SuppressWarnings({"rawtypes","unchecked"})
 public 
 class ResourcesMgr 
 {
@@ -325,7 +324,7 @@ class ResourcesMgr
   }
   
   public static
-  AMenuBuilder getMenuBuilder(Map mapMenu)
+  AMenuBuilder getMenuBuilder(Map<String, Object> mapMenu)
   {
     if(mapMenu == null || mapMenu.isEmpty()) {
       return new SimpleMenuBuilder();
@@ -341,7 +340,7 @@ class ResourcesMgr
       }
       else
       if(oClass instanceof Class) {
-        oNewInstance = ((Class) oClass).newInstance();
+        oNewInstance = ((Class<?>) oClass).newInstance();
       }
       else
       if(oClass instanceof String) {
@@ -361,7 +360,7 @@ class ResourcesMgr
   }
   
   public static
-  ATabsBuilder getTabsBuilder(Map mapTabs)
+  ATabsBuilder getTabsBuilder(Map<String, Object> mapTabs)
   {
     if(mapTabs == null || mapTabs.isEmpty()) {
       return new SimpleTabsBuilder();
@@ -377,7 +376,7 @@ class ResourcesMgr
       }
       else
       if(oClass instanceof Class) {
-        oNewInstance = ((Class) oClass).newInstance();
+        oNewInstance = ((Class<?>) oClass).newInstance();
       }
       else
       if(oClass instanceof String) {
@@ -410,7 +409,7 @@ class ResourcesMgr
       return ResourcesMgr.loadFileProperties(sFilePath);
     }
     Map<String,Object> mapResult = new HashMap<String,Object>();
-    List listTabs = new ArrayList();
+    List<String> listTabs = new ArrayList<String>();
     mapResult.put(ATabsBuilder.sTABS, listTabs);
     InputStream is    = null;
     BufferedReader br = null;
@@ -451,7 +450,7 @@ class ResourcesMgr
   }
   
   public static
-  Map loadMenu(PortletConfig portletConfig, String sMenuFile)
+  Map<String,Object> loadMenu(PortletConfig portletConfig, String sMenuFile)
   {
     if(sMenuFile == null || sMenuFile.length() == 0) {
       return null;
@@ -463,7 +462,7 @@ class ResourcesMgr
     if(sMenuFile.endsWith("properties")) {
       return ResourcesMgr.loadFileProperties(sFilePath);
     }
-    Map mapResult = new HashMap();
+    Map<String,Object> mapResult = new HashMap<String,Object>();
     List<Integer> listCounters = new ArrayList<Integer>();
     InputStream is    = null;
     BufferedReader br = null;
@@ -529,8 +528,9 @@ class ResourcesMgr
     return mapResult;
   }
   
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public static
-  Map loadFileProperties(String sFilePath)
+  Map<String,Object> loadFileProperties(String sFilePath)
   {
     Properties properties = new Properties();
     try {
@@ -539,7 +539,7 @@ class ResourcesMgr
     catch (Exception ex) {
       System.err.println("Exception in ResourcesMgr.loadFileProperties: " + ex);
     }
-    return properties;
+    return (Map) properties;
   }
   
   public static

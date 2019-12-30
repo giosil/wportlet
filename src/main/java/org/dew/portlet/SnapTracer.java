@@ -8,6 +8,8 @@ import java.util.Map;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.dew.portlet.ui.WebUtil;
+
 public 
 class SnapTracer
 {
@@ -154,7 +156,7 @@ class SnapTracer
       atomicInteger.set(0);
       index = 0;
     }
-    String logMessage = type + "|" + Parameters.formatDateTime(new Date(), "-", true) + "|" + message;
+    String logMessage = type + "|" + WebUtil.formatDateTime(new Date()) + "|" + message;
     buffer[index] = logMessage;
   }
 }
