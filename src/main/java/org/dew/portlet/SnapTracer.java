@@ -8,11 +8,10 @@ import java.util.Map;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@SuppressWarnings("rawtypes")
 public 
 class SnapTracer
 {
-  private final static int LENGTH = 250;
+  private final static int LENGTH = 100;
   private final static String[] buffer = new String[LENGTH];
   private final static AtomicInteger atomicInteger = new AtomicInteger(0);
   
@@ -25,7 +24,7 @@ class SnapTracer
     }
     else
     if(module instanceof Class) {
-      sModule = ((Class) module).getName();
+      sModule = ((Class<?>) module).getName();
     }
     else
     if(module != null) {
@@ -43,7 +42,7 @@ class SnapTracer
     }
     else
     if(module instanceof Class) {
-      sModule = ((Class) module).getName();
+      sModule = ((Class<?>) module).getName();
     }
     else
     if(module != null) {
@@ -64,7 +63,7 @@ class SnapTracer
     }
     else
     if(module instanceof Class) {
-      sModule = ((Class) module).getName();
+      sModule = ((Class<?>) module).getName();
     }
     else
     if(module != null) {
@@ -83,7 +82,7 @@ class SnapTracer
     }
     else
     if(module instanceof Class) {
-      sModule = ((Class) module).getName();
+      sModule = ((Class<?>) module).getName();
     }
     else
     if(module != null) {

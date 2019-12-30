@@ -6,7 +6,6 @@ import java.util.*;
 /**
  * Bean che raccoglie le informazioni dell'utente.
  */
-@SuppressWarnings({"rawtypes","unchecked"})
 public
 class User implements Serializable
 {
@@ -148,12 +147,12 @@ class User implements Serializable
    * @return Map
    */
   public
-  Map getResourcesByFather(String sFather, boolean boRemove)
+  Map<String,Object> getResourcesByFather(String sFather, boolean boRemove)
   {
-    Map mapResult = new HashMap();
+    Map<String,Object> mapResult = new HashMap<String,Object>();
     if(resources == null) return mapResult;
     String sPrefix = sFather + ".";
-    Iterator oItKeys = resources.keySet().iterator();
+    Iterator<String> oItKeys = resources.keySet().iterator();
     while(oItKeys.hasNext()) {
       String sKey = oItKeys.next().toString();
       if(sKey.startsWith(sPrefix)) {
@@ -178,11 +177,11 @@ class User implements Serializable
    * @return List
    */
   public
-  List getListResourceValuesByPrefix(String sPrefix)
+  List<Object> getListResourceValuesByPrefix(String sPrefix)
   {
-    List listResult = new ArrayList();
+    List<Object> listResult = new ArrayList<Object>();
     if(resources == null) return listResult;
-    Iterator oItKeys = resources.keySet().iterator();
+    Iterator<String> oItKeys = resources.keySet().iterator();
     while(oItKeys.hasNext()) {
       String sKey = oItKeys.next().toString();
       if(sKey.startsWith(sPrefix)) {
