@@ -8,10 +8,12 @@ import javax.portlet.*;
 /**
  * Classe che estende HashMap per una gestione facilitata dei parametri.
  */
-@SuppressWarnings({"rawtypes","unchecked","serial"})
+@SuppressWarnings({"rawtypes","unchecked"})
 public 
-class Parameters extends HashMap 
+class Parameters extends HashMap<String,Object>
 {
+  private static final long serialVersionUID = 6564352456535533852L;
+  
   protected PortletConfig      _portletConfig;
   protected PortletPreferences _portletPreferences;
   protected String             _sNamespace;
@@ -22,6 +24,7 @@ class Parameters extends HashMap
   Parameters(PortletConfig portletConfig, ActionRequest request, String sNamespace)
   {
     super();
+    
     this._portletConfig      = portletConfig;
     this._portletPreferences = request.getPreferences();
     this._sNamespace         = sNamespace;
@@ -43,6 +46,7 @@ class Parameters extends HashMap
   Parameters(PortletConfig portletConfig, RenderRequest request, String sNamespace)
   {
     super();
+    
     this._portletConfig      = portletConfig;
     this._portletPreferences = request.getPreferences();
     this._sNamespace         = sNamespace;

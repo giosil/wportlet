@@ -24,7 +24,6 @@ import org.dew.portlet.*;
  * Se ai metodi di DBUtil viene passato come sSQL una stringa che termina con ".sql"
  * allora l'SQL viene caricato dall'omonimo file di testo contenuto nella cartella sql.<br />
  */
-@SuppressWarnings({"rawtypes","unchecked"})
 public 
 class DBUtil 
 {
@@ -67,7 +66,7 @@ class DBUtil
     sResult += "</font></strong></p>";
     return sResult;
   }
-    
+  
   /**
    * Restituisce la lista di tabelle disponibili.
    * 
@@ -75,9 +74,9 @@ class DBUtil
    * @return List
    */
   public static
-  List getTables(HttpServletRequest request)
+  List<String> getTables(HttpServletRequest request)
   {
-    List listTables = new ArrayList();
+    List<String> listTables = new ArrayList<String>();
     Connection conn = null;
     try {
       conn = getConnection(request);
@@ -109,10 +108,7 @@ class DBUtil
   boolean getBoolean(HttpServletRequest request, String sSQL)
   {
     String sResult = getString(request, sSQL);
-    if(sResult == null || sResult.length() == 0) {
-      return false;
-    }
-    return "YST1".indexOf(sResult) >= 0;
+    return WUtil.toBoolean(sResult, false);
   }
   
   /**
@@ -127,10 +123,7 @@ class DBUtil
   boolean getBoolean(HttpServletRequest request, String sSQL, boolean boDefault)
   {
     String sResult = getString(request, sSQL);
-    if(sResult == null || sResult.length() == 0) {
-      return boDefault;
-    }
-    return "YST1".indexOf(sResult) >= 0;
+    return WUtil.toBoolean(sResult, boDefault);
   }
   
   /**
@@ -144,10 +137,7 @@ class DBUtil
   double getDouble(HttpServletRequest request, String sSQL)
   {
     String sResult = getString(request, sSQL);
-    if(sResult == null || sResult.length() == 0) {
-      return 0;
-    }
-    return Double.parseDouble(sResult.replace(',', '.'));
+    return WUtil.toDouble(sResult, 0.0d);
   }
   
   /**
@@ -162,10 +152,7 @@ class DBUtil
   double getDouble(HttpServletRequest request, String sSQL, double dDefault)
   {
     String sResult = getString(request, sSQL);
-    if(sResult == null || sResult.length() == 0) {
-      return dDefault;
-    }
-    return Double.parseDouble(sResult.replace(',', '.'));
+    return WUtil.toDouble(sResult, dDefault);
   }
   
   /**
@@ -179,10 +166,7 @@ class DBUtil
   int getInt(HttpServletRequest request, String sSQL)
   {
     String sResult = getString(request, sSQL);
-    if(sResult == null || sResult.length() == 0) {
-      return 0;
-    }
-    return Integer.parseInt(sResult);
+    return WUtil.toInt(sResult, 0);
   }
   
   /**
@@ -197,10 +181,7 @@ class DBUtil
   int getInt(HttpServletRequest request, String sSQL, int iDefault)
   {
     String sResult = getString(request, sSQL);
-    if(sResult == null || sResult.length() == 0) {
-      return iDefault;
-    }
-    return Integer.parseInt(sResult);
+    return WUtil.toInt(sResult, iDefault);
   }
   
   /**
@@ -248,13 +229,11 @@ class DBUtil
       return "Exception: " + ex;
     }
     finally {
-      if(rs != null)   try { rs.close(); }   catch(Exception ex) {};
-      if(stm != null)  try { stm.close(); }  catch(Exception ex) {};
-      if(conn != null) try { conn.close(); } catch(Exception ex) {};
+      if(rs   != null) try { rs.close();   } catch(Exception ex) {}
+      if(stm  != null) try { stm.close();  } catch(Exception ex) {}
+      if(conn != null) try { conn.close(); } catch(Exception ex) {}
     }
-    if(sResult == null) {
-      return sDefault;
-    }
+    if(sResult == null) return sDefault;
     return sResult;
   }
   
@@ -266,11 +245,11 @@ class DBUtil
    * @return Map
    */
   public static
-  Map getMap(HttpServletRequest request, String sSQL)
+  Map<String,Object> getMap(HttpServletRequest request, String sSQL)
   {
     sSQL = getSQL(request, sSQL);
     
-    Map mapResult = new HashMap();
+    Map<String,Object> mapResult = new HashMap<String,Object>();
     Connection conn = null;
     Statement stm = null;
     ResultSet rs = null;
@@ -307,10 +286,7 @@ class DBUtil
             mapResult.put(sColName, iValue);
           }
           else 
-          if(iColType == java.sql.Types.DECIMAL ||
-             iColType == java.sql.Types.DOUBLE ||
-             iColType == java.sql.Types.FLOAT ||
-             iColType == java.sql.Types.REAL) {
+          if(iColType == java.sql.Types.DECIMAL || iColType == java.sql.Types.DOUBLE || iColType == java.sql.Types.FLOAT || iColType == java.sql.Types.REAL) {
             double dValue = rs.getDouble(i + 1);
             mapResult.put(sColName, dValue);
           }
@@ -332,9 +308,9 @@ class DBUtil
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
     finally {
-      if(rs != null)   try { rs.close(); }   catch(Exception ex) {};
-      if(stm != null)  try { stm.close(); }  catch(Exception ex) {};
-      if(conn != null) try { conn.close(); } catch(Exception ex) {};
+      if(rs   != null) try { rs.close();   } catch(Exception ex) {}
+      if(stm  != null) try { stm.close();  } catch(Exception ex) {}
+      if(conn != null) try { conn.close(); } catch(Exception ex) {}
     }
     return mapResult;
   }
@@ -347,11 +323,11 @@ class DBUtil
    * @return Map
    */
   public static
-  Map getMapOfString(HttpServletRequest request, String sSQL)
+  Map<String,String> getMapOfString(HttpServletRequest request, String sSQL)
   {
     sSQL = getSQL(request, sSQL);
     
-    Map mapResult = new HashMap();
+    Map<String,String> mapResult = new HashMap<String,String>();
     Connection conn = null;
     Statement stm = null;
     ResultSet rs = null;
@@ -375,9 +351,9 @@ class DBUtil
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
     finally {
-      if(rs != null)   try { rs.close(); }   catch(Exception ex) {};
-      if(stm != null)  try { stm.close(); }  catch(Exception ex) {};
-      if(conn != null) try { conn.close(); } catch(Exception ex) {};
+      if(rs   != null) try { rs.close();   } catch(Exception ex) {}
+      if(stm  != null) try { stm.close();  } catch(Exception ex) {}
+      if(conn != null) try { conn.close(); } catch(Exception ex) {}
     }
     return mapResult;
   }
@@ -392,10 +368,10 @@ class DBUtil
   public static
   void setAttributes(HttpServletRequest request, String sSQL, String sPrefix)
   {
-    Map mapResult = getMap(request, sSQL);
-    Iterator itEntries = mapResult.entrySet().iterator();
+    Map<String,Object> mapResult = getMap(request, sSQL);
+    Iterator<Map.Entry<String,Object>> itEntries = mapResult.entrySet().iterator();
     while(itEntries.hasNext()) {
-      Map.Entry entry = (Map.Entry) itEntries.next();
+      Map.Entry<String,Object> entry = itEntries.next();
       if(sPrefix != null && sPrefix.length() > 0) {
         request.setAttribute(sPrefix + entry.getKey(), entry.getValue());
       }
@@ -415,11 +391,11 @@ class DBUtil
    * @return List
    */
   public static
-  List getList(HttpServletRequest request, String sSQL, int iMaxRows, boolean boIncludeColumnNames)
+  List<List<Object>> getList(HttpServletRequest request, String sSQL, int iMaxRows, boolean boIncludeColumnNames)
   {
     sSQL = getSQL(request, sSQL);
     
-    List listResult = new ArrayList();
+    List<List<Object>> listResult = new ArrayList<List<Object>>();
     Connection conn = null;
     Statement stm = null;
     ResultSet rs = null;
@@ -431,7 +407,7 @@ class DBUtil
       ResultSetMetaData rsmd = rs.getMetaData();
       int iColumnCount = rsmd.getColumnCount();
       if(boIncludeColumnNames) {
-        List listColNames = new ArrayList();
+        List<Object> listColNames = new ArrayList<Object>();
         for (int i = 0; i < iColumnCount; i++){
           listColNames.add(rsmd.getColumnName(i + 1));
         }
@@ -440,7 +416,7 @@ class DBUtil
       
       int iRow = 0;
       while(rs.next()) {
-        List listRecord = new ArrayList(iColumnCount);
+        List<Object> listRecord = new ArrayList<Object>(iColumnCount);
         for (int i = 0; i < iColumnCount; i++){
           int iColType = rsmd.getColumnType(i + 1);
           if(iColType == java.sql.Types.NUMERIC) {
@@ -465,10 +441,7 @@ class DBUtil
             listRecord.add(iValue);
           }
           else 
-          if(iColType == java.sql.Types.DECIMAL ||
-             iColType == java.sql.Types.DOUBLE ||
-             iColType == java.sql.Types.FLOAT ||
-             iColType == java.sql.Types.REAL) {
+          if(iColType == java.sql.Types.DECIMAL || iColType == java.sql.Types.DOUBLE || iColType == java.sql.Types.FLOAT || iColType == java.sql.Types.REAL) {
             double dValue = rs.getDouble(i + 1);
             listRecord.add(dValue);
           }
@@ -495,9 +468,9 @@ class DBUtil
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
     finally {
-      if(rs != null)   try { rs.close(); }   catch(Exception ex) {};
-      if(stm != null)  try { stm.close(); }  catch(Exception ex) {};
-      if(conn != null) try { conn.close(); } catch(Exception ex) {};
+      if(rs   != null) try { rs.close();   } catch(Exception ex) {}
+      if(stm  != null) try { stm.close();  } catch(Exception ex) {}
+      if(conn != null) try { conn.close(); } catch(Exception ex) {}
     }
     
     return listResult;
@@ -509,14 +482,14 @@ class DBUtil
    * @param request
    * @param sSQL
    * @param iMaxRows
-   * @return List
+   * @return List<String>
    */
   public static
-  List getListOfString(HttpServletRequest request, String sSQL, int iMaxRows)
+  List<String> getListOfString(HttpServletRequest request, String sSQL, int iMaxRows)
   {
     sSQL = getSQL(request, sSQL);
     
-    List listResult = new ArrayList();
+    List<String> listResult = new ArrayList<String>();
     Connection conn = null;
     Statement stm = null;
     ResultSet rs = null;
@@ -540,9 +513,9 @@ class DBUtil
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
     finally {
-      if(rs != null)   try { rs.close(); }   catch(Exception ex) {};
-      if(stm != null)  try { stm.close(); }  catch(Exception ex) {};
-      if(conn != null) try { conn.close(); } catch(Exception ex) {};
+      if(rs != null)   try { rs.close(); }   catch(Exception ex) {}
+      if(stm != null)  try { stm.close(); }  catch(Exception ex) {}
+      if(conn != null) try { conn.close(); } catch(Exception ex) {}
     }
     return listResult;
   }
@@ -587,9 +560,7 @@ class DBUtil
       rs = stm.executeQuery(sSQL);
       while(rs.next()) {
         String sValue = rs.getString(1);
-        if(sValue == null || sValue.length() == 0) {
-          sValue = "&nbsp;";
-        }
+        if(sValue == null || sValue.length() == 0) sValue = "&nbsp;";
         sb.append(sLeftTag + sValue + sRightTag + "\n");
       }
     }
@@ -599,9 +570,9 @@ class DBUtil
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
     finally {
-      if(rs != null)   try { rs.close(); }   catch(Exception ex) {};
-      if(stm != null)  try { stm.close(); }  catch(Exception ex) {};
-      if(conn != null) try { conn.close(); } catch(Exception ex) {};
+      if(rs   != null) try { rs.close();   } catch(Exception ex) {}
+      if(stm  != null) try { stm.close();  } catch(Exception ex) {}
+      if(conn != null) try { conn.close(); } catch(Exception ex) {}
     }
     return sb.toString();
   }
@@ -634,7 +605,7 @@ class DBUtil
   {
     sSQL = getSQL(request, sSQL);
     
-    List listResult = new ArrayList();
+    List<List<Object>> listResult = new ArrayList<List<Object>>();
     Connection conn = null;
     Statement stm = null;
     ResultSet rs = null;
@@ -647,7 +618,7 @@ class DBUtil
       int iColumnCount = rsmd.getColumnCount();
       int iCols = iColumnCount >= 2 ? 2 : 1;
       while(rs.next()) {
-        List listRecord = new ArrayList(iCols);
+        List<Object> listRecord = new ArrayList<Object>(iCols);
         for (int i = 0; i < iCols; i++){
           String sValue = rs.getString(i + 1);
           listRecord.add(sValue);
@@ -662,9 +633,9 @@ class DBUtil
       return "";
     }
     finally {
-      if(rs != null)   try { rs.close(); }   catch(Exception ex) {};
-      if(stm != null)  try { stm.close(); }  catch(Exception ex) {};
-      if(conn != null) try { conn.close(); } catch(Exception ex) {};
+      if(rs   != null) try { rs.close();   } catch(Exception ex) {}
+      if(stm  != null) try { stm.close();  } catch(Exception ex) {}
+      if(conn != null) try { conn.close(); } catch(Exception ex) {}
     }
     return WebUtil.buildOptions(listResult, oSelected);
   }
@@ -678,7 +649,7 @@ class DBUtil
    */
   public static
   String buildTableContent(HttpServletRequest request, String sSQL)
-  {    
+  {
     return buildTableContent(request, sSQL, 0);
   }
   
@@ -692,8 +663,8 @@ class DBUtil
    */
   public static
   String buildTableContent(HttpServletRequest request, String sSQL, int iMaxRows)
-  {    
-    List listResult = getList(request, sSQL, iMaxRows, true);
+  {
+    List<List<Object>> listResult = getList(request, sSQL, iMaxRows, true);
     
     return WebUtil.buildTableContent(listResult, true);
   }
@@ -718,10 +689,10 @@ class DBUtil
     if(sSQL.indexOf('[') < 0) return sSQL;
     
     sSQL = removeNullRegions(sSQL, parameters);
-    Iterator oItEntries = parameters.entrySet().iterator();
+    Iterator<Map.Entry<String, Object>> oItEntries = parameters.entrySet().iterator();
     while(oItEntries.hasNext()) {
-      Map.Entry entry = (Map.Entry) oItEntries.next();
-      String sKey = (String) entry.getKey();
+      Map.Entry<String, Object> entry = oItEntries.next();
+      String sKey   = entry.getKey();
       String sValue = null;
       Object oValue = entry.getValue();
       if(oValue == null) {
@@ -735,7 +706,7 @@ class DBUtil
     sSQL = correctWhereClause(sSQL);
     return sSQL;
   }
-
+  
   /**
    * Permette di ottenere un comando SQL dal template in cui vengono
    * sostituiti i parametri. 
@@ -753,10 +724,10 @@ class DBUtil
     if(sSQL.indexOf('[') < 0) return sSQL;
     
     sSQL = removeNullRegions(sSQL, parameters);
-    Iterator oItEntries = parameters.entrySet().iterator();
+    Iterator<Map.Entry<String, Object>> oItEntries = parameters.entrySet().iterator();
     while(oItEntries.hasNext()) {
-      Map.Entry entry = (Map.Entry) oItEntries.next();
-      String sKey = (String) entry.getKey();
+      Map.Entry<String, Object> entry = oItEntries.next();
+      String sKey   = entry.getKey();
       String sValue = null;
       Object oValue = entry.getValue();
       if(oValue == null) {
@@ -822,7 +793,7 @@ class DBUtil
    * Rimuove le regioni delimitate da { e } in cui vi sono parametri nulli.
    *
    * @param sSQL String
-   * @param parametri LJSAMap
+   * @param parametri Parameters
    * @return String
    */
   private static
@@ -872,10 +843,8 @@ class DBUtil
   }
   
   /**
-   * Corregge eventuali errori derivanti dalla sostituizione dei parametri
-   * nel comando SQL.
-   * Puo' succedere ad esempio che la clausola WHERE rimanga vuota. In tal
-   * caso viene eliminata del tutto.
+   * Corregge eventuali errori derivanti dalla sostituizione dei parametri nel comando SQL.
+   * Puo' succedere ad esempio che la clausola WHERE rimanga vuota. In tal caso viene eliminata del tutto.
    * Se dopo la WHERE si ha un AND oppure un OR esso viene eliminato.
    *
    * @param sSQL String
