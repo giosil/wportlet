@@ -82,7 +82,6 @@ import org.dew.portlet.ui.WebUtil;
  * </pre>
  * Il listener deve implementare l'interfaccia {@link IPortletListener}.
  */
-@SuppressWarnings({"rawtypes","unchecked"})
 public 
 class WPortlet extends GenericPortlet implements WNames
 {
@@ -207,7 +206,7 @@ class WPortlet extends GenericPortlet implements WNames
         
         if(boActionLogin && (actionResult instanceof User)) {
           session.setAttribute(sSESS_USER, actionResult, PortletSession.PORTLET_SCOPE);
-          Map mapMenu = ((User) actionResult).getMenu();
+          Map<String,Object> mapMenu = ((User) actionResult).getMenu();
           if(mapMenu != null && !mapMenu.isEmpty()) {
             session.setAttribute(sSESS_MENU, mapMenu, PortletSession.PORTLET_SCOPE);
           }
@@ -300,7 +299,8 @@ class WPortlet extends GenericPortlet implements WNames
     request.setAttribute(sATTR_PARAMETERS, parameters);
     
     // Gestione menu
-    Map mapMenu = (Map) session.getAttribute(sSESS_MENU);
+    @SuppressWarnings("unchecked")
+    Map<String,Object> mapMenu = (Map<String,Object>) session.getAttribute(sSESS_MENU);
     if(mapMenu == null) {
       if(_sMenu != null && _sMenu.length() > 0) {
         if(_boHasLogin) {
