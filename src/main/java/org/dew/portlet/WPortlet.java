@@ -289,7 +289,7 @@ class WPortlet extends GenericPortlet implements WNames
     }
     
     // Recupero parametri
-    Parameters parameters = (Parameters) session.getAttribute(sSESS_PARARAMETERS);
+    Parameters parameters = DataUtil.expect(session.getAttribute(sSESS_PARARAMETERS), Parameters.class);
     if(parameters == null) {
       parameters = new Parameters(_portletConfig, request, _sNamespace);
     }
@@ -299,8 +299,7 @@ class WPortlet extends GenericPortlet implements WNames
     request.setAttribute(sATTR_PARAMETERS, parameters);
     
     // Gestione menu
-    @SuppressWarnings("unchecked")
-    Map<String,Object> mapMenu = (Map<String,Object>) session.getAttribute(sSESS_MENU);
+    Map<String,Object> mapMenu = DataUtil.expectMap(session.getAttribute(sSESS_MENU));
     if(mapMenu == null) {
       if(_sMenu != null && _sMenu.length() > 0) {
         if(_boHasLogin) {

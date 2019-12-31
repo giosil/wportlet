@@ -528,7 +528,6 @@ class ResourcesMgr
     return mapResult;
   }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   public static
   Map<String,Object> loadFileProperties(String sFilePath)
   {
@@ -539,7 +538,7 @@ class ResourcesMgr
     catch (Exception ex) {
       System.err.println("Exception in ResourcesMgr.loadFileProperties: " + ex);
     }
-    return (Map) properties;
+    return DataUtil.expectMap(properties, true);
   }
   
   public static
