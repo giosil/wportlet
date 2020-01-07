@@ -12,6 +12,9 @@ class WebDialog implements Serializable
 {
   private static final long serialVersionUID = -111871847880334508L;
   
+  public static final int JQUERY_UI = 0;
+  public static final int BOOTSTRAP = 1;
+  
   protected String id;
   protected String title;
   protected String before;
@@ -22,6 +25,7 @@ class WebDialog implements Serializable
   protected int height;
   protected int width;
   protected boolean modal = true;
+  protected int framework = JQUERY_UI;
   
   protected List<String> buttonsCaption;
   protected List<String> buttonsOnClick;
@@ -30,17 +34,28 @@ class WebDialog implements Serializable
   
   public WebDialog()
   {
+    if("liferay".equals(ResourcesMgr.sPORTAL_PLATFORM) && ResourcesMgr.iPORTAL_VERSION == 7) {
+      framework = BOOTSTRAP;
+    }
   }
   
   public WebDialog(String id)
   {
     this.id     = id;
+    
+    if("liferay".equals(ResourcesMgr.sPORTAL_PLATFORM) && ResourcesMgr.iPORTAL_VERSION == 7) {
+      framework = BOOTSTRAP;
+    }
   }
   
   public WebDialog(String id, String title)
   {
     this.id     = id;
     this.title  = title;
+    
+    if("liferay".equals(ResourcesMgr.sPORTAL_PLATFORM) && ResourcesMgr.iPORTAL_VERSION == 7) {
+      framework = BOOTSTRAP;
+    }
   }
   
   public WebDialog(String id, String title, Object body)
@@ -48,6 +63,10 @@ class WebDialog implements Serializable
     this.id     = id;
     this.title  = title;
     this.body   = body;
+    
+    if("liferay".equals(ResourcesMgr.sPORTAL_PLATFORM) && ResourcesMgr.iPORTAL_VERSION == 7) {
+      framework = BOOTSTRAP;
+    }
   }
   
   public WebDialog(String id, String title, String before, Object body)
@@ -56,6 +75,10 @@ class WebDialog implements Serializable
     this.title  = title;
     this.before = before;
     this.body   = body;
+    
+    if("liferay".equals(ResourcesMgr.sPORTAL_PLATFORM) && ResourcesMgr.iPORTAL_VERSION == 7) {
+      framework = BOOTSTRAP;
+    }
   }
   
   public WebDialog(String id, String title, String before, Object body, String after)
@@ -65,6 +88,10 @@ class WebDialog implements Serializable
     this.before = before;
     this.body   = body;
     this.after  = after;
+    
+    if("liferay".equals(ResourcesMgr.sPORTAL_PLATFORM) && ResourcesMgr.iPORTAL_VERSION == 7) {
+      framework = BOOTSTRAP;
+    }
   }
 
   public String getId() {
@@ -204,7 +231,7 @@ class WebDialog implements Serializable
   public 
   String getShowCode(String varName)
   {
-    if(ResourcesMgr.iPORTAL_VERSION > 6) {
+    if(framework == BOOTSTRAP) {
       return bootstrap_show(varName);
     }
     return jqueryui_show(varName);
@@ -213,7 +240,7 @@ class WebDialog implements Serializable
   public 
   String getHideCode(String varName)
   {
-    if(ResourcesMgr.iPORTAL_VERSION > 6) {
+    if(framework == BOOTSTRAP) {
       return bootstrap_hide(varName);
     }
     return jqueryui_hide(varName);
@@ -222,7 +249,7 @@ class WebDialog implements Serializable
   public 
   String getInitCode(String varName)
   {
-    if(ResourcesMgr.iPORTAL_VERSION > 6) {
+    if(framework == BOOTSTRAP) {
       return bootstrap_init(varName);
     }
     return jqueryui_init(varName);
@@ -267,30 +294,16 @@ class WebDialog implements Serializable
   public
   String toString()
   {
-    if(ResourcesMgr.iPORTAL_VERSION > 6) {
+    if(framework == BOOTSTRAP) {
       return bootstrap_dialog();
     }
     return jqueryui_dialog();
   }
   
-  // Liferay Dialog Implementation
-  
-  // Bootstrap Dialog Implementation
-  
+  // Bootstrap Dialog Implementation -------------------------------------------
   protected
   String bootstrap_dialog()
   {
-    // In Liferay 7 il framework JS e' YUI, mentre bootstrap e' utilizzato come framework CSS.
-    // Per questo motivo la gestione dei modal bootstrap e' da gestire programmaticamente.
-    // 
-    // In alternativa occorre utilizzare le API di liferay. Ad esempio:
-    //
-    // Liferay.Util.openWindow({
-    // dialog:{width:500,height:300,draggable:false,resizable:false,visible:true,after:{ render:function(e){ console.log('render',e); }}},
-    // id:'dlgtest',
-    // title:'Test'
-    // });
-    
     StringBuilder sb = new StringBuilder();
     
     // sb.append("<div id=\"" + getNotNullId() + "\" class=\"modal\" tabindex=\"-1\" role=\"dialog\">");
@@ -424,8 +437,7 @@ class WebDialog implements Serializable
     return sb.toString();
   }
   
-  // JQuery UI Dialog Implementation
-  
+  // JQuery UI Dialog Implementation -------------------------------------------
   protected
   String jqueryui_dialog()
   {
