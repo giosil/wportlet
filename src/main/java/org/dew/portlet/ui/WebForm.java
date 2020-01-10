@@ -58,8 +58,8 @@ class WebForm implements Serializable
   public static String COL_CLASS_BEG    = "col span_";
   public static String COL_CLASS_END    = "_of_12";
 
-  public static String STYLE_STATIC_TXT = "line-height:2;vertical-align:middle;";
-  public static String STYLE_DIV_LABEL  = "line-height:2;vertical-align:middle;text-align:right;";
+  public static String STYLE_STATIC_TXT = "line-height:2;padding-top:5px;";
+  public static String STYLE_DIV_LABEL  = "line-height:2;padding-top:5px;text-align:right;";
   public static String STYLE_DIV_BLANK  = "padding:2px 0 2px 0;";
   public static String STYLE_DIV_INPUT  = "padding:2px 0 2px 0;";
   public static String STYLE_DIV_FIELD  = "padding:2px 0 2px 0;";
