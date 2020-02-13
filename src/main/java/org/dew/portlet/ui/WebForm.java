@@ -582,35 +582,75 @@ class WebForm implements Serializable
   void addButton(String sLabel, String sOnClick)
   {
     if(btns == null) btns = new ArrayList<WField>();
-    btns.add(new WField(Type.BUTTON, "", sLabel, sOnClick));
+    String sId = "";
+    if(sLabel != null && sLabel.length() > 0) {
+      int iSep = sLabel.indexOf('#');
+      if(iSep > 0) {
+        sId    = sLabel.substring(iSep+1);
+        sLabel = sLabel.substring(0,iSep);
+      }
+    }
+    btns.add(new WField(Type.BUTTON, sId, sLabel, sOnClick));
   }
 
   public 
   void addSubmit(String sLabel, String sOnClick)
   {
     if(btns == null) btns = new ArrayList<WField>();
-    btns.add(new WField(Type.SUBMIT, "", sLabel, sOnClick));
+    String sId = "";
+    if(sLabel != null && sLabel.length() > 0) {
+      int iSep = sLabel.indexOf('#');
+      if(iSep > 0) {
+        sId    = sLabel.substring(iSep+1);
+        sLabel = sLabel.substring(0,iSep);
+      }
+    }
+    btns.add(new WField(Type.SUBMIT, sId, sLabel, sOnClick));
   }
 
   public 
   void addSubmit(String sLabel)
   {
     if(btns == null) btns = new ArrayList<WField>();
-    btns.add(new WField(Type.SUBMIT, "", sLabel));
+    String sId = "";
+    if(sLabel != null && sLabel.length() > 0) {
+      int iSep = sLabel.indexOf('#');
+      if(iSep > 0) {
+        sId    = sLabel.substring(iSep+1);
+        sLabel = sLabel.substring(0,iSep);
+      }
+    }
+    btns.add(new WField(Type.SUBMIT, sId, sLabel));
   }
 
   public 
   void addCancel(String sLabel, String sOnClick)
   {
     if(btns == null) btns = new ArrayList<WField>();
-    btns.add(new WField(Type.RESET, "", sLabel, sOnClick));
+    String sId = "";
+    if(sLabel != null && sLabel.length() > 0) {
+      int iSep = sLabel.indexOf('#');
+      if(iSep > 0) {
+        sId    = sLabel.substring(iSep+1);
+        sLabel = sLabel.substring(0,iSep);
+      }
+    }
+    btns.add(new WField(Type.RESET, sId, sLabel, sOnClick));
   }
 
   public 
   void addCancel(String sLabel)
   {
     if(btns == null) btns = new ArrayList<WField>();
-    btns.add(new WField(Type.RESET, "", sLabel));
+    String sId = "";
+    if(sLabel != null && sLabel.length() > 0) {
+      int iSep = sLabel.indexOf('#');
+      if(iSep > 0) {
+        sId    = sLabel.substring(iSep+1);
+        sLabel = sLabel.substring(0,iSep);
+      }
+    }
+    btns.add(new WField(Type.RESET, sId, sLabel));
   }
 
   public
@@ -1223,14 +1263,18 @@ class WebForm implements Serializable
         if(value != null && value.length() > 0) {
           onClickAttr = "onclick=\"" + esc(value) + "\" ";
         }
+        String idAttr = "";
+        if(id != null && id.length() > 0) {
+          idAttr = "id=\"" + id + "\" ";
+        }
         if(type == Type.SUBMIT) {
-          sb.append("<button " + onClickAttr + "type=\"submit\">");
+          sb.append("<button " + onClickAttr + idAttr + "type=\"submit\">");
         }
         else if(type == Type.RESET) {
-          sb.append("<button " + onClickAttr + "type=\"reset\">");
+          sb.append("<button " + onClickAttr + idAttr + "type=\"reset\">");
         }
         else {
-          sb.append("<button " + onClickAttr + "type=\"button\">");
+          sb.append("<button " + onClickAttr + idAttr + "type=\"button\">");
         }
         sb.append(esc(label));
         sb.append("</button>");
