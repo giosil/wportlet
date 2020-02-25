@@ -305,7 +305,8 @@ class WebForm implements Serializable
         if(!sStyle.endsWith(";")) sStyle += ";";
         sStyle += STYLE_STATIC_TXT;
       }
-      currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + sStyle + "\">" + esc(sText) + "</span>"));
+      String sAttrStyle = sStyle.indexOf('=') > 0 ? sStyle : "style=\"" + sStyle + "\"";
+      currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" " + sAttrStyle + ">" + esc(sText) + "</span>"));
     }
     else if(STYLE_STATIC_TXT != null && STYLE_STATIC_TXT.length() > 0) {
       currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + STYLE_STATIC_TXT + "\">" + esc(sText) + "</span>"));
@@ -337,6 +338,28 @@ class WebForm implements Serializable
   }
 
   public 
+  void addTextField(String sId, String sLabel, String sAttributes, String sText, boolean boEnabled)
+  {
+    if(boEnabled) {
+      addTextField(sId, sLabel, sAttributes, sText);
+    }
+    else {
+      addStaticText(sId, sLabel, sAttributes, sText);
+    }
+  }
+
+  public 
+  void addTextField(String sId, String sLabel, String sText, boolean boEnabled)
+  {
+    if(boEnabled) {
+      addTextField(sId, sLabel, "", sText);
+    }
+    else {
+      addStaticText(sId, sLabel, sText);
+    }
+  }
+
+  public 
   void addPassword(String sId, String sLabel)
   {
     List<WField> currRow = getCurrentRow();
@@ -355,17 +378,6 @@ class WebForm implements Serializable
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.NUMBER, sId, sLabel, sValue, sAttributes));
-  }
-
-  public 
-  void addTextField(String sId, String sLabel, String sAttributes, boolean boEnabled)
-  {
-    if(boEnabled) {
-      addTextField(sId, sLabel, sAttributes);
-    }
-    else {
-      addStaticText(sId, sLabel, sAttributes);
-    }
   }
 
   public 
@@ -446,6 +458,28 @@ class WebForm implements Serializable
     }
     else {
       currRow.add(new WField(Type.CHECKBOX, sId, sLabel));
+    }
+  }
+
+  public 
+  void addCheckBox(String sId, String sLabel, boolean checked, boolean boEnabled)
+  {
+    List<WField> currRow = getCurrentRow();
+    if(checked) {
+      if(!boEnabled) {
+        currRow.add(new WField(Type.CHECKBOX, sId, sLabel, "", "checked=\"checked\" disabled"));
+      }
+      else {
+        currRow.add(new WField(Type.CHECKBOX, sId, sLabel, "", "checked=\"checked\""));
+      }
+    }
+    else {
+      if(!boEnabled) {
+        currRow.add(new WField(Type.CHECKBOX, sId, sLabel, "", "disabled"));
+      }
+      else {
+        currRow.add(new WField(Type.CHECKBOX, sId, sLabel));
+      }
     }
   }
 
