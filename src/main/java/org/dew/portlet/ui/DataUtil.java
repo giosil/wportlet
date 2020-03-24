@@ -1,5 +1,6 @@
 package org.dew.portlet.ui;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,6 +100,56 @@ class DataUtil
     if(emptyListDefault) {
       return new ArrayList<T>();
     }
+    return null;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  T[] expectArray(Object o, Class<T> itemClass)
+  {
+    if(o == null) {
+      return null;
+    }
+    if(!o.getClass().isArray()) {
+      return null;
+    }
+    int length = Array.getLength(o);
+    if(length == 0) {
+      return (T[]) o;
+    }
+    Object o0 = Array.get(o, 0);
+    if(o0 == null) {
+      return (T[]) o;
+    }
+    if(itemClass.isInstance(o0)) {
+      return (T[]) o;
+    }
+    return null;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  T[] expectArray(Object o, Class<T> itemClass, Object module, Object parameters)
+  {
+    if(o == null) {
+      return null;
+    }
+    if(!o.getClass().isArray()) {
+      warn(o, "Array", null, module, parameters);
+      return null;
+    }
+    int length = Array.getLength(o);
+    if(length == 0) {
+      return (T[]) o;
+    }
+    Object o0 = Array.get(o, 0);
+    if(o0 == null) {
+      return (T[]) o;
+    }
+    if(itemClass.isInstance(o0)) {
+      return (T[]) o;
+    }
+    warn(o, "Array", null, module, parameters);
     return null;
   }
   
