@@ -1,7 +1,9 @@
 package org.dew.portlet.ui;
 
 import java.lang.reflect.Array;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,16 @@ class DataUtil
         return new ArrayList<T>();
       }
       return null;
+    }
+    if(o.getClass().isArray()) {
+      int length = Array.getLength(o);
+      if(length == 0) {
+        return new ArrayList<T>();
+      }
+      Object item0 = Array.get(o, 0);
+      if(item0 != null && itemClass != null && itemClass.isInstance(item0)) {
+        return Arrays.asList((T[]) o);
+      }
     }
     if(!(o instanceof List)) {
       if(itemClass != null && itemClass.isInstance(o)) {
@@ -67,6 +79,16 @@ class DataUtil
         return new ArrayList<T>();
       }
       return null;
+    }
+    if(o.getClass().isArray()) {
+      int length = Array.getLength(o);
+      if(length == 0) {
+        return new ArrayList<T>();
+      }
+      Object item0 = Array.get(o, 0);
+      if(item0 != null && itemClass != null && itemClass.isInstance(item0)) {
+        return Arrays.asList((T[]) o);
+      }
     }
     if(!(o instanceof List)) {
       if(itemClass != null && itemClass.isInstance(o)) {
@@ -110,6 +132,22 @@ class DataUtil
     if(o == null) {
       return null;
     }
+    if(o instanceof List) {
+      int size = ((List<?>) o).size();
+      if(size == 0) {
+        return (T[]) Array.newInstance(itemClass, 0);
+      }
+      else {
+        Object item0 = ((List<?>) o).get(0);
+        if(item0 != null && itemClass != null && itemClass.isInstance(item0)) {
+          T[] array = (T[]) Array.newInstance(itemClass, size);
+          for(int i = 0; i < size; i++) {
+            array[i] = ((List<T>) o).get(i);
+          }
+          return array;
+        }
+      }
+    }
     if(!o.getClass().isArray()) {
       return null;
     }
@@ -117,11 +155,14 @@ class DataUtil
     if(length == 0) {
       return (T[]) o;
     }
-    Object o0 = Array.get(o, 0);
-    if(o0 == null) {
+    Object item0 = Array.get(o, 0);
+    if(item0 == null) {
       return (T[]) o;
     }
-    if(itemClass.isInstance(o0)) {
+    if(itemClass == null) {
+      return (T[]) o;
+    }
+    if(itemClass.isInstance(item0)) {
       return (T[]) o;
     }
     return null;
@@ -134,6 +175,22 @@ class DataUtil
     if(o == null) {
       return null;
     }
+    if(o instanceof List) {
+      int size = ((List<?>) o).size();
+      if(size == 0) {
+        return (T[]) Array.newInstance(itemClass, 0);
+      }
+      else {
+        Object item0 = ((List<?>) o).get(0);
+        if(item0 != null && itemClass != null && itemClass.isInstance(item0)) {
+          T[] array = (T[]) Array.newInstance(itemClass, size);
+          for(int i = 0; i < size; i++) {
+            array[i] = ((List<T>) o).get(i);
+          }
+          return array;
+        }
+      }
+    }
     if(!o.getClass().isArray()) {
       warn(o, "Array", null, module, parameters);
       return null;
@@ -142,11 +199,14 @@ class DataUtil
     if(length == 0) {
       return (T[]) o;
     }
-    Object o0 = Array.get(o, 0);
-    if(o0 == null) {
+    Object item0 = Array.get(o, 0);
+    if(item0 == null) {
       return (T[]) o;
     }
-    if(itemClass.isInstance(o0)) {
+    if(itemClass == null) {
+      return (T[]) o;
+    }
+    if(itemClass.isInstance(item0)) {
       return (T[]) o;
     }
     warn(o, "Array", null, module, parameters);
