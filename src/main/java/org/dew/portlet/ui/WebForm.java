@@ -28,6 +28,7 @@ class WebForm implements Serializable
   protected String  focusOn;
 
   protected List<List<WField>> rows = new ArrayList<List<WField>>();
+  protected List<String> rowe = new ArrayList<String>();
   protected List<WField> btns;
   protected List<WField> hidd;
   protected List<String> date;
@@ -62,6 +63,7 @@ class WebForm implements Serializable
   public static String STYLE_DIV_LABEL  = "line-height:2;padding-top:5px;text-align:right;";
   public static String STYLE_DIV_BLANK  = "padding:2px 0 2px 0;";
   public static String STYLE_DIV_INPUT  = "padding:2px 0 2px 0;";
+  public static String STYLE_DIV_RADIO  = "padding:12px 0 2px 0;";
   public static String STYLE_DIV_FIELD  = "padding:2px 0 2px 0;";
   public static String STYLE_DIV_STATIC = "padding:0px 0 0px 0;";
   
@@ -268,6 +270,14 @@ class WebForm implements Serializable
   void addRow()
   {
     rows.add(new ArrayList<WField>());
+    rowe.add("");
+  }
+  
+  public
+  void addRow(String sElement)
+  {
+    rows.add(new ArrayList<WField>());
+    rowe.add(sElement);
   }
 
   public 
@@ -289,7 +299,12 @@ class WebForm implements Serializable
   {
     List<WField> currRow = getCurrentRow();
     if(STYLE_STATIC_TXT != null && STYLE_STATIC_TXT.length() > 0) {
-      currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + STYLE_STATIC_TXT + "\">" + esc(sText) + "</span>"));
+      if(isHtml(sText)) {
+        currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + STYLE_STATIC_TXT + "\">" + sText + "</span>"));
+      }
+      else {
+        currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + STYLE_STATIC_TXT + "\">" + esc(sText) + "</span>"));
+      }
     }
     else {
       currRow.add(new WField(Type.STATICTEXT, sId, sLabel, sText));
@@ -306,10 +321,20 @@ class WebForm implements Serializable
         sStyle += STYLE_STATIC_TXT;
       }
       String sAttrStyle = sStyle.indexOf('=') > 0 ? sStyle : "style=\"" + sStyle + "\"";
-      currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" " + sAttrStyle + ">" + esc(sText) + "</span>"));
+      if(isHtml(sText)) {
+        currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" " + sAttrStyle + ">" + sText + "</span>"));
+      }
+      else {
+        currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" " + sAttrStyle + ">" + esc(sText) + "</span>"));
+      }
     }
     else if(STYLE_STATIC_TXT != null && STYLE_STATIC_TXT.length() > 0) {
-      currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + STYLE_STATIC_TXT + "\">" + esc(sText) + "</span>"));
+      if(isHtml(sText)) {
+        currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + STYLE_STATIC_TXT + "\">" + sText + "</span>"));
+      }
+      else {
+        currRow.add(new WField(Type.STATICTEXT, sId, sLabel).append("<span id=\"" + sId + "\" style=\"" + STYLE_STATIC_TXT + "\">" + esc(sText) + "</span>"));
+      }
     }
     else {
       currRow.add(new WField(Type.STATICTEXT, sId, sLabel, sText));
@@ -484,17 +509,17 @@ class WebForm implements Serializable
   }
 
   public 
-  void addRadioButton(String sId, String sName, boolean checked)
+  void addRadioButton(String sId, String sLabel, boolean checked)
   {
     List<WField> currRow = getCurrentRow();
-    currRow.add(new WField(Type.RADIOBUTTON, sId, sName, checked));
+    currRow.add(new WField(Type.RADIOBUTTON, sId, sLabel, checked));
   }
 
   public 
-  void addRadioButton(String sId, String sName, String sValue, boolean checked)
+  void addRadioButton(String sId, String sLabel, String sValue, boolean checked)
   {
     List<WField> currRow = getCurrentRow();
-    currRow.add(new WField(Type.RADIOBUTTON, sId, sName, sValue, checked));
+    currRow.add(new WField(Type.RADIOBUTTON, sId, sLabel, sValue, checked));
   }
 
   public 
@@ -706,11 +731,22 @@ class WebForm implements Serializable
     if(rows.size() == 0) {
       listResult = new ArrayList<WField>();
       rows.add(listResult);
+      rowe.add("");
     }
     else {
       listResult = rows.get(rows.size()-1);
     }
     return listResult;
+  }
+
+  protected static
+  boolean isHtml(String sText)
+  {
+    if(sText == null) return false;
+    if(sText.startsWith("<") && sText.endsWith(">")) return true;
+    if(sText.indexOf("<br") >= 0 || sText.indexOf("<hr") >= 0) return true;
+    if(sText.indexOf("&nbsp;") >= 0) return true;
+    return false;
   }
 
   protected static
@@ -865,7 +901,16 @@ class WebForm implements Serializable
       sb.append("<br/>");
     }
     for(int r = 0; r < rows.size(); r++) {
-      if(!columnLayout) sb.append("<div class=\"" + ROW_CLASS + "\">");
+      if(!columnLayout) {
+        sb.append("<div class=\"" + ROW_CLASS + "\">");
+      }
+      
+      if(rowe != null && rowe.size() > r) {
+        String sRowElement = rowe.get(r);
+        if(sRowElement != null && sRowElement.length() > 0) {
+          sb.append(sRowElement);
+        }
+      }
       
       List<WField> currRow = rows.get(r);
       
@@ -978,6 +1023,14 @@ class WebForm implements Serializable
           else if(type == Type.STATICTEXT) {
             if(STYLE_DIV_STATIC != null && STYLE_DIV_STATIC.length() > 0) {
               sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\" style=\"" + STYLE_DIV_STATIC + "\">");
+            }
+            else {
+              sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\">");
+            }
+          }
+          else if(type == Type.RADIOBUTTON) {
+            if(STYLE_DIV_RADIO != null && STYLE_DIV_RADIO.length() > 0) {
+              sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\" style=\"" + STYLE_DIV_RADIO + "\">");
             }
             else {
               sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\">");
@@ -1363,7 +1416,7 @@ class WebForm implements Serializable
         sb.append("<input type=\"hidden\" name=\"" + namespace + sName +  "\" id=\"" + sName + "\" value=\"" + esc(value) + "\">");
       }
       else if(type == Type.STATICTEXT) {
-        if(value != null && value.startsWith("<") && value.endsWith(">")) {
+        if(isHtml(value)) {
           sb.append(value);
         }
         else {
@@ -1387,11 +1440,18 @@ class WebForm implements Serializable
         sb.append("<input type=\"text\" class=\"ftime\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
       }
       else if(type == Type.RADIOBUTTON) {
+        String sInputName = sName;
+        String sInputId   = sName;
+        int iSep = sName.indexOf('#');
+        if(iSep > 0) {
+          sInputName = sName.substring(0, iSep);
+          sInputId   = sName.replace('#', '_');
+        }
         if(value != null && value.length() > 0) {
-          sb.append("<input type=\"radio\" name=\"" + namespace + sLabel + "\" id=\"" + sName + "\" " + (checked ? "checked" : "") + " value=\"" + esc(value) + "\"> " + esc(value));
+          sb.append("<input type=\"radio\" name=\"" + namespace + sInputName + "\" id=\"" + sInputId + "\" " + (checked ? "checked" : "") + " value=\"" + esc(value) + "\"> " + esc(value));
         }
         else {
-          sb.append("<input type=\"radio\" name=\"" + namespace + sLabel + "\" id=\"" + sName + "\"" + sTAttr + "> ");
+          sb.append("<input type=\"radio\" name=\"" + namespace + sInputName + "\" id=\"" + sInputId + "\"" + sTAttr + "> ");
         }
       }
       else if(type == Type.COMPONENT) {
