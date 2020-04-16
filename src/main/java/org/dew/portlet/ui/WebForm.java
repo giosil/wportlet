@@ -738,17 +738,16 @@ class WebForm implements Serializable
     }
     return listResult;
   }
-
+  
   protected static
   boolean isHtml(String sText)
   {
     if(sText == null) return false;
-    if(sText.startsWith("<") && sText.endsWith(">")) return true;
-    if(sText.indexOf("<br") >= 0 || sText.indexOf("<hr") >= 0) return true;
+    if(sText.startsWith("<") && sText.indexOf('>') > 1) return true;
     if(sText.indexOf("&nbsp;") >= 0) return true;
     return false;
   }
-
+  
   protected static
   String esc(String sText)
   {
@@ -773,7 +772,31 @@ class WebForm implements Serializable
     }
     return sb.toString();
   }
-
+  
+  protected static
+  String label(String sText)
+  {
+    if(sText == null) return "";
+    int iLength = sText.length();
+    if(iLength == 0) return "";
+    StringBuilder sb = new StringBuilder(iLength);
+    for(int i = 0; i < iLength; i++) {
+      char c = sText.charAt(i);
+      if(c == '<')  sb.append("&lt;");
+      else if(c == '>')  sb.append("&gt;");
+      else if(c == '"')  sb.append("&quot;");
+      else if(c == '\'') sb.append("&apos;");
+      else if(c > 127) {
+        int code = (int) c;
+        sb.append("&#" + code + ";");
+      }
+      else {
+        sb.append(c);
+      }
+    }
+    return sb.toString();
+  }
+  
   public
   String buildReadyFunction(String sBefore, String sAfter)
   {
@@ -975,15 +998,15 @@ class WebForm implements Serializable
         }
         if(columnLayout) {
           if(sLabel != null && sLabel.length() > 0) {
-            if(sLabel.startsWith("<")) {
+            if(isHtml(sLabel)) {
               sb.append(sLabel);
             }
             else {
               if(labelStyle != null && labelStyle.length() > 0) {
-                sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;" + labelStyle + "\">" + esc(sLabel) + ":</label>");
+                sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;" + labelStyle + "\">" + label(sLabel) + ":</label>");
               }
               else {
-                sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;\">" + esc(sLabel) + ":</label>");
+                sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;\">" + label(sLabel) + ":</label>");
               }
             }
           }
@@ -996,15 +1019,15 @@ class WebForm implements Serializable
             sb.append("<div class=\"" + COL_CLASS_BEG + iSmL + COL_CLASS_END + "\">");
           }
           if(sLabel != null && sLabel.length() > 0) {
-            if(sLabel.startsWith("<")) {
+            if(isHtml(sLabel)) {
               sb.append(sLabel);
             }
             else {
               if(labelStyle != null && labelStyle.length() > 0) {
-                sb.append("<label for=\"" + sName + "\" style=\"" + labelStyle + "\">" + esc(sLabel) + ":</label>");
+                sb.append("<label for=\"" + sName + "\" style=\"" + labelStyle + "\">" + label(sLabel) + ":</label>");
               }
               else {
-                sb.append("<label for=\"" + sName + "\">" + esc(sLabel) + ":</label>");
+                sb.append("<label for=\"" + sName + "\">" + label(sLabel) + ":</label>");
               }
             }
           }
