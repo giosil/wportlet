@@ -4,7 +4,9 @@ import java.lang.reflect.Array;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -345,6 +347,81 @@ class DataUtil
     return (Map<String,Object>) o;
   }
   
+  public static <T> 
+  Map<String, T> expectMapOf(Object o, Class<T> itemClass)
+  {
+    return expectMapOf(o, itemClass, false);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  Map<String, T> expectMapOf(Object o, Class<T> itemClass, boolean emptyMapDefault)
+  {
+    if(o == null) {
+      if(emptyMapDefault) {
+        return new HashMap<String, T>();
+      }
+      return null;
+    }
+    if(!(o instanceof Map)) {
+      if(emptyMapDefault) {
+        return new HashMap<String, T>();
+      }
+      return null;
+    }
+    Map<String, Object> map = (Map<String, Object>) o;
+    Iterator<Object> iterator = map.values().iterator();
+    if(iterator.hasNext()) {
+      Object o0 = iterator.next();
+      if(o0 != null && itemClass != null && !itemClass.isInstance(o0)) {
+        if(emptyMapDefault) {
+          return new HashMap<String, T>();
+        }
+        return null;
+      }
+    }
+    return (Map<String, T>) o;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  Map<String, T> expectMapOf(Object o, Class<T> itemClass, boolean emptyMapDefault, Object module, Object parameters)
+  {
+    if(o == null) {
+      if(emptyMapDefault) {
+        return new HashMap<String, T>();
+      }
+      return null;
+    }
+    if(!(o instanceof Map)) {
+      // WARNING
+      if(itemClass == null) {
+        warn(o, "Map<String,?>", null, module, parameters);
+      }
+      else {
+        warn(o, "Map<String," + itemClass + ">", null, module, parameters);
+      }
+      if(emptyMapDefault) {
+        return new HashMap<String, T>();
+      }
+      return null;
+    }
+    Map<String, Object> map = (Map<String, Object>) o;
+    Iterator<Object> iterator = map.values().iterator();
+    if(iterator.hasNext()) {
+      Object o0 = iterator.next();
+      if(o0 != null && itemClass != null && !itemClass.isInstance(o0)) {
+        // WARNING
+        warn(o, "Map<String," + itemClass + ">", null, module, parameters);
+        if(emptyMapDefault) {
+          return new HashMap<String, T>();
+        }
+        return null;
+      }
+    }
+    return (Map<String, T>) o;
+  }
+  
   @SuppressWarnings("unchecked")
   public static <T> 
   T expect(Object o, Class<T> itemClass)
@@ -406,13 +483,22 @@ class DataUtil
     }
     else {
       String g = "";
-      if(o instanceof List) {
-        int size = ((List<?>) o).size();
-        if(size > 0) {
-          Object item0 = ((List<?>) o).get(0);
-          if(item0 != null) {
-            g += "<" + item0.getClass().getCanonicalName() + ">";
-          }
+      if(o instanceof Collection) {
+        Iterator<?> iterator = ((Collection<?>) o).iterator();
+        if(iterator.hasNext()) {
+          Object val = iterator.next();
+          String v = val != null ? val.getClass().getCanonicalName() : "?";
+          g = "<" + v + ">";
+        }
+      }
+      else if(o instanceof Map) {
+        Iterator<?> iterator = ((Map<?, ?>) o).keySet().iterator();
+        if(iterator.hasNext()) {
+          Object key = iterator.next();
+          Object val = ((Map<?, ?>) o).get(key);
+          String k = key != null ? key.getClass().getCanonicalName() : "?";
+          String v = val != null ? val.getClass().getCanonicalName() : "?";
+          g = "<" + k + "," + v + ">";
         }
       }
       message += " Found: " + o.getClass().getCanonicalName() + g;

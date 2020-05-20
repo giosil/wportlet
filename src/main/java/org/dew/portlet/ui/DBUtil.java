@@ -275,23 +275,19 @@ class DBUtil
               mapResult.put(sColName, iValue);
             }
           }
-          else 
-          if(iColType == java.sql.Types.BIGINT) {
+          else if(iColType == java.sql.Types.BIGINT) {
             long lValue = rs.getLong(i + 1);
             mapResult.put(sColName, lValue);
           }
-          else 
-          if(iColType == java.sql.Types.INTEGER || iColType == java.sql.Types.SMALLINT) {
+          else if(iColType == java.sql.Types.INTEGER || iColType == java.sql.Types.SMALLINT) {
             int iValue = rs.getInt(i + 1);
             mapResult.put(sColName, iValue);
           }
-          else 
-          if(iColType == java.sql.Types.DECIMAL || iColType == java.sql.Types.DOUBLE || iColType == java.sql.Types.FLOAT || iColType == java.sql.Types.REAL) {
+          else if(iColType == java.sql.Types.DECIMAL || iColType == java.sql.Types.DOUBLE || iColType == java.sql.Types.FLOAT || iColType == java.sql.Types.REAL) {
             double dValue = rs.getDouble(i + 1);
             mapResult.put(sColName, dValue);
           }
-          else 
-          if(iColType == java.sql.Types.DATE || iColType == java.sql.Types.TIMESTAMP) {
+          else if(iColType == java.sql.Types.DATE || iColType == java.sql.Types.TIMESTAMP) {
             java.sql.Date dValue = rs.getDate(i + 1);
             mapResult.put(sColName, dValue);
           }
@@ -430,23 +426,19 @@ class DBUtil
               listRecord.add(iValue);
             }
           }
-          else 
-          if(iColType == java.sql.Types.BIGINT) {
+          else if(iColType == java.sql.Types.BIGINT) {
             long lValue = rs.getLong(i + 1);
             listRecord.add(lValue);
           }
-          else 
-          if(iColType == java.sql.Types.INTEGER || iColType == java.sql.Types.SMALLINT) {
+          else if(iColType == java.sql.Types.INTEGER || iColType == java.sql.Types.SMALLINT) {
             int iValue = rs.getInt(i + 1);
             listRecord.add(iValue);
           }
-          else 
-          if(iColType == java.sql.Types.DECIMAL || iColType == java.sql.Types.DOUBLE || iColType == java.sql.Types.FLOAT || iColType == java.sql.Types.REAL) {
+          else if(iColType == java.sql.Types.DECIMAL || iColType == java.sql.Types.DOUBLE || iColType == java.sql.Types.FLOAT || iColType == java.sql.Types.REAL) {
             double dValue = rs.getDouble(i + 1);
             listRecord.add(dValue);
           }
-          else 
-          if(iColType == java.sql.Types.DATE || iColType == java.sql.Types.TIMESTAMP) {
+          else if(iColType == java.sql.Types.DATE || iColType == java.sql.Types.TIMESTAMP) {
             java.sql.Date dValue = rs.getDate(i + 1);
             listRecord.add(dValue);
           }

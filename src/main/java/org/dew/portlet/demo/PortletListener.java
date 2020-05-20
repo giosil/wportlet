@@ -8,8 +8,7 @@ public
 class PortletListener implements IPortletListener
 {
   public
-  void init(PortletConfig portletConfig) 
-  {
+  void init(PortletConfig portletConfig) {
     System.out.println("[org.dew.test.PortletListener] init");
   }
   

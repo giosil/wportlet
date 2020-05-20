@@ -51,18 +51,15 @@ class ForwardAction implements IAction
       request.setAttribute("title", "Configuration");
       request.setAttribute("result", parameters.getConfig());
     }
-    else
-    if(sMap.equals("parameters")) {
+    else if(sMap.equals("parameters")) {
       request.setAttribute("title", "Parameters");
       request.setAttribute("result", parameters);
     }
-    else
-    if(sMap.equals("preferences")) {
+    else if(sMap.equals("preferences")) {
       request.setAttribute("title", "Preferences");
       request.setAttribute("result", parameters.getPreferences());
     }
-    else
-    if(sMap.equals("session")) {
+    else if(sMap.equals("session")) {
       PortletSession portletSession = request.getPortletSession();
       
       Map<String,Object> mapSession = new HashMap<String,Object>();
