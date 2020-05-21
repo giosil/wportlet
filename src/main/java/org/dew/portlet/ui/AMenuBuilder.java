@@ -25,131 +25,129 @@ class AMenuBuilder
   public static final String sIMG_PATH = "img_path";
   public static final String sJS_PATH  = "js_path";
   public static final String sCTX_PATH = "ctx_path";
-
+  
   public static final String sREFERENCES         = "references";
   public static final String sCACHE_TREE         = "tree";
   public static final String sLAST_ITEM_SELECTED = "lastItemSelected";
-
+  
   public static final String sITEM_DESCRIPTION = "@d";
   public static final String sITEM_INDEX       = "@i";
   public static final String sITEM_REFERENCE   = "@r";
-
+  
   protected String _sToString;
   protected int _iIndex = 0;
   protected int _iLastItemSelected = 0;
   protected WindowState _defaultWindowState = WindowState.MAXIMIZED;
   protected String _contextPath = "";
-
+  
   public
   String build(HttpServletRequest request, Map mapMenu)
   {  
     _sToString = "";
     _iIndex = 0;
-
+    
     if(mapMenu == null || mapMenu.isEmpty()) {
       return _sToString;
     }
-
+    
     Object oLastItemSelected = mapMenu.get(sLAST_ITEM_SELECTED);
     if(oLastItemSelected instanceof Integer) {
       _iLastItemSelected = ((Integer) oLastItemSelected).intValue();
     }
-    else
-      if(oLastItemSelected instanceof String) {
-        if(((String) oLastItemSelected).length() > 0) {
-          _iLastItemSelected = Integer.parseInt((String) oLastItemSelected);
-        }
+    else if(oLastItemSelected instanceof String) {
+      if(((String) oLastItemSelected).length() > 0) {
+        _iLastItemSelected = Integer.parseInt((String) oLastItemSelected);
       }
-      else {
-        _iLastItemSelected = 0; 
-      }
-
+    }
+    else {
+      _iLastItemSelected = 0; 
+    }
+  
     String sState = (String) mapMenu.get(sSTATE);
     if(sState != null) {
       sState = sState.toLowerCase();
       if(sState.startsWith("nor")) {
         _defaultWindowState = WindowState.NORMAL;
       }
-      else
-        if(sState.startsWith("max")) {
-          _defaultWindowState = WindowState.MAXIMIZED;
-        }
+      else if(sState.startsWith("max")) {
+        _defaultWindowState = WindowState.MAXIMIZED;
+      }
     }
-
+    
     TreeMenuNode root = (TreeMenuNode) mapMenu.get(sCACHE_TREE);
     if(root == null) {
       root = buildTree(mapMenu);
     }
-
+    
     RenderResponse renderResponse = null;
     if(request != null) {
       _contextPath = request.getContextPath();
       mapMenu.put(sCTX_PATH, request.getContextPath());
       renderResponse = (RenderResponse) request.getAttribute(WNames.sATTR_RENDER_RESPONSE);
     }
-
+    
     if(_contextPath == null) _contextPath = "";
-
+    
     beginMenu(mapMenu);
-
+    
     walkTree(root, -1, renderResponse);
-
+    
     endMenu();
-
+    
     return _sToString;
   }
-
+  
   public
   String buildReadyFunction(HttpServletRequest request, Map mapMenu)
   {
     return "";
   }
-
+  
   protected
   void walkTree(TreeMenuNode node, int iParentId, RenderResponse renderResponse)
   {
     int iIdNode  = _iIndex + 1; 
     String sDesc = node.toString();
     String sURL  = normalizeURL(renderResponse, node.getURL(), iIdNode);
-
+    
     addNode(_iIndex, iIdNode, iParentId, node.getLevel(), node.getDepth(), sDesc, sURL);
-
+    
     _iIndex++;
-
+    
     int iChildCount = node.getChildCount();
     for(int i = 0; i < iChildCount; i++) {
       TreeMenuNode child = (TreeMenuNode) node.getChildAt(i);
       walkTree(child, iIdNode, renderResponse);
     }
-
+    
     endNode(_iIndex, iIdNode, iParentId, node.getLevel(), node.getDepth(), sDesc, sURL);
   }
-
+  
   protected
   TreeMenuNode buildTree(Map mapMenu)
   {
     String sRoot = (String) mapMenu.get(sROOT);
     if(sRoot == null) sRoot = "Menu";
     Map mapReferences = (Map) mapMenu.get(sREFERENCES);
-
+    
     Map mapNodes = new HashMap();
     List listNodes = new ArrayList();
     List listNodesToRemove = new ArrayList();
-
+    
     TreeMenuNode oRoot = new TreeMenuNode(sRoot);
     listNodes.add(oRoot);
-
+    
     List listKeys = getSortedKeys(mapMenu);
     for(int i = 0; i < listKeys.size(); i++) {
       String sKey = (String) listKeys.get(i);
       if(sKey.indexOf('.') < 0) continue;
-
+      
       StringTokenizer st = new StringTokenizer(sKey, ".");
       TreeMenuNode oPrevNode = oRoot;
       String sIdNode = null;
       while(st.hasMoreTokens()) {
         String sToken = st.nextToken().trim();
-
+        
         if(sToken.equals(sITEM_DESCRIPTION)) continue;
         if(sToken.equals(sITEM_INDEX)) continue;
         if(sToken.equals(sITEM_REFERENCE)) continue;
@@ -159,14 +157,14 @@ class AMenuBuilder
         else {
           sIdNode = sIdNode + "." + sToken;
         }
-
+        
         TreeMenuNode oCurrNode = null;
         oCurrNode = (TreeMenuNode) mapNodes.get(sIdNode);
         if(oCurrNode == null) {
           String sDesc = (String) mapMenu.get(sIdNode + "." + sITEM_DESCRIPTION);
           if(sDesc == null) sDesc = sToken;
           String sReference = (String) mapMenu.get(sIdNode + "." + sITEM_REFERENCE);
-
+          
           if(sReference != null) {
             String sURL = null;
             if(mapReferences != null) {
@@ -188,30 +186,30 @@ class AMenuBuilder
           else {
             oCurrNode = new TreeMenuNode(sDesc);
           }
-
+          
           mapNodes.put(sIdNode, oCurrNode);
           listNodes.add(oCurrNode);
           if(oPrevNode != null) {
             oPrevNode.add(oCurrNode);
           }
         }
-
+        
         oPrevNode = oCurrNode;
       }
     }
-
+    
     for(int i = 0; i < listNodesToRemove.size(); i++) {
       remove((DefaultMutableTreeNode) listNodesToRemove.get(i));
     }
-
+    
     return oRoot;
   }
-
+  
   protected static
   List getSortedKeys(Map mapMenu)
   {
     List listResult = new ArrayList();
-
+    
     Iterator oItKeys = mapMenu.keySet().iterator();
     while(oItKeys.hasNext()) {
       String sKey = (String) oItKeys.next();
@@ -236,9 +234,9 @@ class AMenuBuilder
       String sKeyToAdd = s1 + "'" + sIndex + "'" + s2;
       listResult.add(sKeyToAdd);
     }
-
+    
     Collections.sort(listResult);
-
+    
     for(int i = 0; i < listResult.size(); i++) {
       String sKey = (String) listResult.get(i);
       int iBegin = sKey.indexOf('\'');
@@ -246,10 +244,10 @@ class AMenuBuilder
       String sKeyToSet = sKey.substring(0, iBegin) + sKey.substring(iEnd + 1);
       listResult.set(i, sKeyToSet);
     }
-
+    
     return listResult;
   }
-
+  
   protected static
   void remove(DefaultMutableTreeNode oNode)
   {
@@ -258,7 +256,7 @@ class AMenuBuilder
     oParent.remove(oNode);
     remove(oParent);
   }
-
+  
   protected static
   String getConfig(Map map, String sKey)
   {
@@ -268,7 +266,7 @@ class AMenuBuilder
     }
     return sValue;
   }
-
+  
   protected static
   String getConfig(Map map, String sKey, String sDefault)
   {
@@ -281,7 +279,7 @@ class AMenuBuilder
     }
     return sValue;
   }
-
+  
   protected static
   String normalizeJSString(String text)
   {
@@ -294,14 +292,14 @@ class AMenuBuilder
     }
     return sbResult.toString();
   }
-
+  
   protected
   String normalizeURL(RenderResponse renderResponse, String sURL, int iIdNode)
   {
     if(sURL == null) return null;
     if(renderResponse == null) return sURL;
     boolean boActionURL = false;
-
+    
     if(sURL.startsWith("#")) {
       return sURL;
     }
@@ -316,10 +314,10 @@ class AMenuBuilder
     if(iColon >= 0) {
       return sURL;
     }
-
+    
     int iSepPar = sURL.indexOf('?');
     String sForward = (iSepPar > 0) ? sURL.substring(0, iSepPar) : sURL;
-
+    
     PortletURL portletURL = renderResponse.createActionURL();
     if(_defaultWindowState != null) {
       try { portletURL.setWindowState(_defaultWindowState); } catch (Exception e) {};
@@ -345,7 +343,7 @@ class AMenuBuilder
     }
     return portletURL.toString();
   }
-
+  
   protected static
   int getTabs(String sLine)
   {
@@ -361,47 +359,47 @@ class AMenuBuilder
     }
     return iResult;
   }
-
+  
   public
   String toString()
   {
     return _sToString;
   }
-
-  // Metodi da implementare
-
+  
+  // Abstract methods
+  
   protected abstract
   void beginMenu(Map mapMenu);
-
+  
   protected abstract
   void addNode(int iIndex, int iIdNode, int iIdParent, int iLevel, int iDepth, String sDescription, String sURL);
-
+  
   protected abstract
   void endNode(int iIndex, int iIdNode, int iIdParent, int iLevel, int iDepth, String sDescription, String sURL);
-
+  
   protected abstract
   void endMenu();
-
+  
   static
   class TreeMenuNode extends DefaultMutableTreeNode
   {
     private static final long serialVersionUID = 1L;
-
+    
     private String sURL;
-
+    
     public
     TreeMenuNode(Object oDescription)
     {
       super(oDescription);
     }
-
+    
     public
     TreeMenuNode(Object oDescription, String sURL)
     {
       super(oDescription);
       this.sURL = sURL;
     }
-
+    
     public
     String getURL()
     {

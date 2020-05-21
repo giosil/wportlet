@@ -45,8 +45,7 @@ class ATabsBuilder
     if(sTabsName == null) sTabsName = sTABS;
     String sParSelected = request.getParameter(sTabsName + sSELECTED);
     if(sParSelected == null) {
-      Parameters parameters = 
-          (Parameters) request.getAttribute(WNames.sATTR_PARAMETERS);
+      Parameters parameters = (Parameters) request.getAttribute(WNames.sATTR_PARAMETERS);
       if(parameters != null) {
         sParSelected = parameters.getString(sTabsName + sSELECTED);
       }
@@ -59,15 +58,14 @@ class ATabsBuilder
     if(oLastItemSelected instanceof Integer) {
       _iLastItemSelected = ((Integer) oLastItemSelected).intValue();
     }
-    else
-      if(oLastItemSelected instanceof String) {
-        if(((String) oLastItemSelected).length() > 0) {
-          _iLastItemSelected = Integer.parseInt((String) oLastItemSelected);
-        }
+    else if(oLastItemSelected instanceof String) {
+      if(((String) oLastItemSelected).length() > 0) {
+        _iLastItemSelected = Integer.parseInt((String) oLastItemSelected);
       }
-      else {
-        _iLastItemSelected = 0; 
-      }
+    }
+    else {
+      _iLastItemSelected = 0; 
+    }
     
     List listTabs = getTabs(mapTabs);
     if(listTabs == null || listTabs.size() == 0) {
@@ -200,7 +198,7 @@ class ATabsBuilder
     return portletURL.toString();
   }
   
-  // Metodi da implementare
+  // Abstract methods
   
   protected abstract
   void beginTabs(Map mapTabs);

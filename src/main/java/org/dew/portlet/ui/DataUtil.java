@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.dew.portlet.SnapTracer;
 
@@ -123,6 +125,118 @@ class DataUtil
     warn(o, "List", itemClass, module, parameters);
     if(emptyListDefault) {
       return new ArrayList<T>();
+    }
+    return null;
+  }
+  
+  public static <T> 
+  Set<T> expectSet(Object o, Class<T> itemClass)
+  {
+    return expectSet(o, itemClass, false);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  Set<T> expectSet(Object o, Class<T> itemClass, boolean emptyListDefault)
+  {
+    if(o == null) {
+      if(emptyListDefault) {
+        return new HashSet<T>();
+      }
+      return null;
+    }
+    if(o.getClass().isArray()) {
+      int length = Array.getLength(o);
+      if(length == 0) {
+        return new HashSet<T>();
+      }
+      Object item0 = Array.get(o, 0);
+      if(item0 != null && itemClass != null && itemClass.isInstance(item0)) {
+        return new HashSet<T>(Arrays.asList((T[]) o));
+      }
+    }
+    if(!(o instanceof Set)) {
+      if(itemClass != null && itemClass.isInstance(o)) {
+        Set<T> setResult = new HashSet<T>();
+        setResult.add((T) o);
+        return setResult;
+      }
+      if(emptyListDefault) {
+        return new HashSet<T>();
+      }
+      return null;
+    }
+    int size = ((List<?>) o).size();
+    if(size == 0) {
+      return (Set<T>) o;
+    }
+    Object item0 = ((List<?>) o).get(0);
+    if(item0 == null) {
+      return (Set<T>) o;
+    }
+    if(itemClass == null) {
+      return (Set<T>) o;
+    }
+    if(itemClass.isInstance(item0)) {
+      return (Set<T>) o;
+    }
+    if(emptyListDefault) {
+      return new HashSet<T>();
+    }
+    return null;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> 
+  Set<T> expectSet(Object o, Class<T> itemClass, boolean emptyListDefault, Object module, Object parameters)
+  {
+    if(o == null) {
+      if(emptyListDefault) {
+        return new HashSet<T>();
+      }
+      return null;
+    }
+    if(o.getClass().isArray()) {
+      int length = Array.getLength(o);
+      if(length == 0) {
+        return new HashSet<T>();
+      }
+      Object item0 = Array.get(o, 0);
+      if(item0 != null && itemClass != null && itemClass.isInstance(item0)) {
+        return new HashSet<T>(Arrays.asList((T[]) o));
+      }
+    }
+    if(!(o instanceof Set)) {
+      if(itemClass != null && itemClass.isInstance(o)) {
+        Set<T> setResult = new HashSet<T>();
+        setResult.add((T) o);
+        return setResult;
+      }
+      // WARNING
+      warn(o, "Set", itemClass, module, parameters);
+      if(emptyListDefault) {
+        return new HashSet<T>();
+      }
+      return null;
+    }
+    int size = ((Set<?>) o).size();
+    if(size == 0) {
+      return (Set<T>) o;
+    }
+    Object item0 = ((List<?>) o).get(0);
+    if(item0 == null) {
+      return (Set<T>) o;
+    }
+    if(itemClass == null) {
+      return (Set<T>) o;
+    }
+    if(itemClass.isInstance(item0)) {
+      return (Set<T>) o;
+    }
+    // WARNING
+    warn(o, "Set", itemClass, module, parameters);
+    if(emptyListDefault) {
+      return new HashSet<T>();
     }
     return null;
   }

@@ -24,12 +24,10 @@ class SnapTracer
     if(module instanceof String) {
       sModule = (String) module;
     }
-    else
-    if(module instanceof Class) {
+    else if(module instanceof Class) {
       sModule = ((Class<?>) module).getName();
     }
-    else
-    if(module != null) {
+    else if(module != null) {
       sModule = module.getClass().getName();
     }
     write(0, sModule + "|" + message);
@@ -42,12 +40,10 @@ class SnapTracer
     if(module instanceof String) {
       sModule = (String) module;
     }
-    else
-    if(module instanceof Class) {
+    else if(module instanceof Class) {
       sModule = ((Class<?>) module).getName();
     }
-    else
-    if(module != null) {
+    else if(module != null) {
       sModule = module.getClass().getName();
     }
     if(method != null && method.length() > 0) {
@@ -63,12 +59,10 @@ class SnapTracer
     if(module instanceof String) {
       sModule = (String) module;
     }
-    else
-    if(module instanceof Class) {
+    else if(module instanceof Class) {
       sModule = ((Class<?>) module).getName();
     }
-    else
-    if(module != null) {
+    else if(module != null) {
       sModule = module.getClass().getName();
     }
     String message = throwable != null ? throwable.toString() : "throwable=null"; 
@@ -82,12 +76,10 @@ class SnapTracer
     if(module instanceof String) {
       sModule = (String) module;
     }
-    else
-    if(module instanceof Class) {
+    else if(module instanceof Class) {
       sModule = ((Class<?>) module).getName();
     }
-    else
-    if(module != null) {
+    else if(module != null) {
       sModule = module.getClass().getName();
     }
     if(method != null && method.length() > 0) {
