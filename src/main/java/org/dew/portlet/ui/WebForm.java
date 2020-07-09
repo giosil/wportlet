@@ -535,7 +535,13 @@ class WebForm implements Serializable
   void addDateField(String sId, String sLabel, String sAttributes)
   {
     List<WField> currRow = getCurrentRow();
-    currRow.add(new WField(Type.DATEFIELD, sId, sLabel, "", sAttributes));
+    if(sAttributes != null && sAttributes.indexOf('=') < 0) {
+      // sAttributes is value
+      currRow.add(new WField(Type.DATEFIELD, sId, sLabel, sAttributes, ""));
+    }
+    else {
+      currRow.add(new WField(Type.DATEFIELD, sId, sLabel, "", sAttributes));
+    }    
     if(date == null) date = new ArrayList<String>();
     date.add(sId);
   }
@@ -545,6 +551,19 @@ class WebForm implements Serializable
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.TIMEFIELD, sId, sLabel));
+  }
+
+  public 
+  void addTimeField(String sId, String sLabel, String sAttributes)
+  {
+    List<WField> currRow = getCurrentRow();
+    if(sAttributes != null && sAttributes.indexOf('=') < 0) {
+      // sAttributes is value
+      currRow.add(new WField(Type.TIMEFIELD, sId, sLabel, sAttributes, ""));
+    }
+    else {
+      currRow.add(new WField(Type.TIMEFIELD, sId, sLabel, "", sAttributes));
+    }
   }
 
   public 
