@@ -22,6 +22,11 @@ class PortletListener implements IPortletListener
     System.out.println("[org.dew.test.PortletListener] beforeLogout(" + user + ")");
   }
   
+  public 
+  void exception(String sAction, Parameters parameters, Exception actionException, RenderRequest request, RenderResponse response) {
+    System.out.println("[org.dew.test.PortletListener] exception(" + sAction + "," + actionException + ")");
+  }
+  
   public
   void destroy() {
     System.out.println("[org.dew.test.PortletListener] destroy");

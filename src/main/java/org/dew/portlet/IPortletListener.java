@@ -3,6 +3,8 @@ package org.dew.portlet;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 
 /**
  * Interfaccia da implementare per gestire gli eventi fondamentali della Portlet.
@@ -34,6 +36,18 @@ interface IPortletListener
    * @param response javax.portlet.ActionResponse
    */
   public void beforeLogout(User user, ActionRequest request, ActionResponse response);
+  
+  /**
+   * Metodo richiamato nel caso in cui nell'invocazione
+   * del metodo di una action si verifica un'eccezione.
+   * 
+   * @param sAction Azione
+   * @param parameters Parametri
+   * @param actionException Eccezione
+   * @param request javax.portlet.RenderRequest
+   * @param response javax.portlet.RenderResponse
+   */
+  public void exception(String sAction, Parameters parameters, Exception actionException, RenderRequest request, RenderResponse response);
   
   /**
    * Invocato alla fine del metodo <code>WPortlet.destroy</code>. 
