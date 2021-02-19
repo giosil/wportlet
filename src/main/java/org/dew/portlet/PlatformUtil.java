@@ -135,7 +135,7 @@ class PlatformUtil
     }
     
     if(sLiferayUser != null && sLiferayUser.length() > 0) {
-      PlatformUtil.log("ISEDPortlet liferayUser: " + sLiferayUser);
+      PlatformUtil.log("liferayUser: " + sLiferayUser);
     }
     
     org.dew.portlet.User result = new org.dew.portlet.User();
