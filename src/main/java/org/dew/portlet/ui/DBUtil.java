@@ -88,7 +88,7 @@ class DBUtil
       }
     } 
     catch (Exception ex) {
-      System.err.println("Exception in DBUtil.getTables: " + ex);
+      PlatformUtil.log("Exception in DBUtil.getTables", ex);
       request.setAttribute(WNames.sATTR_MESSAGE, ex.getMessage());
     }
     finally {
@@ -223,7 +223,7 @@ class DBUtil
       }
     }
     catch(Exception ex) {
-      System.err.println("Exception in DBUtil.getString: " + ex);
+      PlatformUtil.log("Exception in DBUtil.getString", ex);
       request.setAttribute(WNames.sATTR_MESSAGE, ex.getMessage());
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
       return "Exception: " + ex;
@@ -299,7 +299,7 @@ class DBUtil
       }
     }
     catch(Exception ex) {
-      System.err.println("Exception in DBUtil.getMap: " + ex);
+      PlatformUtil.log("Exception in DBUtil.getMap", ex);
       request.setAttribute(WNames.sATTR_MESSAGE, ex.getMessage());
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
@@ -342,7 +342,7 @@ class DBUtil
       }
     }
     catch(Exception ex) {
-      System.err.println("Exception in DBUtil.getMapOfString: " + ex);
+      PlatformUtil.log("Exception in DBUtil.getMapOfString", ex);
       request.setAttribute(WNames.sATTR_MESSAGE, ex.getMessage());
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
@@ -455,7 +455,7 @@ class DBUtil
       }
     }
     catch(Exception ex) {
-      System.err.println("Exception in DBUtil.getList: " + ex);
+      PlatformUtil.log("Exception in DBUtil.getList", ex);
       request.setAttribute(WNames.sATTR_MESSAGE, ex.getMessage());
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
@@ -500,7 +500,7 @@ class DBUtil
       }
     }
     catch(Exception ex) {
-      System.err.println("Exception in DBUtil.getListString: " + ex);
+      PlatformUtil.log("Exception in DBUtil.getListOfString", ex);
       request.setAttribute(WNames.sATTR_MESSAGE, ex.getMessage());
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
@@ -557,7 +557,7 @@ class DBUtil
       }
     }
     catch(Exception ex) {
-      System.err.println("Exception in DBUtil.buildList: " + ex);
+      PlatformUtil.log("Exception in DBUtil.buildList", ex);
       request.setAttribute(WNames.sATTR_MESSAGE, ex.getMessage());
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
     }
@@ -619,7 +619,7 @@ class DBUtil
       }
     }
     catch(Exception ex) {
-      System.err.println("Exception in DBUtil.buildOptions: " + ex);
+      PlatformUtil.log("Exception in DBUtil.buildOptions", ex);
       request.setAttribute(WNames.sATTR_MESSAGE, ex.getMessage());
       request.setAttribute(WNames.sATTR_SQL_WITH_MSG, sSQL);
       return "";

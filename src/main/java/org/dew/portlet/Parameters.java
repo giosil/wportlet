@@ -165,7 +165,7 @@ class Parameters extends HashMap<String,Object>
         return true;
       }
       catch(Exception ex) {
-        System.err.println("[WPortlet] Exception in Parameters.storePreferences: " + ex);
+        PlatformUtil.log("Exception in Parameters.storePreferences", ex);
       }
     }
     return false;

@@ -53,7 +53,7 @@ class ResourcesMgr
       return sPORTAL_PLATFORM;
     }
     String sServerInfo = portletConfig.getPortletContext().getServerInfo();
-    System.out.println("[ResourcesMgr] ServerInfo: " + sServerInfo);
+    PlatformUtil.log("ServerInfo: " + sServerInfo);
     sPORTAL_PLATFORM = "";
     if(sServerInfo != null && sServerInfo.length() > 0) {
       int iSep = sServerInfo.indexOf('/');
@@ -83,8 +83,8 @@ class ResourcesMgr
         iPORTAL_VERSION = 1;
       }
     }
-    System.out.println("[ResourcesMgr] sPORTAL_PLATFORM = " + sPORTAL_PLATFORM);
-    System.out.println("[ResourcesMgr] iPORTAL_VERSION  = " + iPORTAL_VERSION);
+    PlatformUtil.log("sPORTAL_PLATFORM = " + sPORTAL_PLATFORM);
+    PlatformUtil.log("iPORTAL_VERSION  = " + iPORTAL_VERSION);
     return sPORTAL_PLATFORM;
   }
   
@@ -185,7 +185,7 @@ class ResourcesMgr
       if(ds != null) return ds.getConnection();
     }
     catch(Exception ex) {}
-    throw new Exception("[WPortlet] DataSource " + sDataSource + " not available.");
+    throw new Exception("DataSource " + sDataSource + " not available.");
   }
   
   public static
@@ -217,7 +217,7 @@ class ResourcesMgr
         Class.forName(sDriver);
       }
       catch(Exception ex) {
-        System.err.println("[WPortlet] Exception in Class.forName(" + sDriver + "): " + ex);
+        PlatformUtil.log("Exception in ResourcesMgr.getConnection/Class.forName(" + sDriver + ")", ex);
         throw new Exception(ex.getMessage());
       }
       Connection conn = null;
@@ -225,12 +225,12 @@ class ResourcesMgr
         conn = DriverManager.getConnection(sURL, sUser, sPassword);
       }
       catch(Exception ex) {
-        System.err.println("[WPortlet] Exception in DriverManager.getConnection(" + sURL + ", " + sUser + ", " + sPassword + "): " + ex);
+        PlatformUtil.log("Exception in ResourcesMgr.getConnection/DriverManager.getConnection(" + sURL + ", " + sUser + ", " + sPassword + ")", ex);
         throw new Exception(ex.getMessage());
       }
       return conn;
     }
-    throw new Exception("[WPortlet] jdbc configuration not found in portlet.xml");
+    throw new Exception("jdbc configuration not found in portlet.xml");
   }
   
   public static
@@ -264,7 +264,7 @@ class ResourcesMgr
       }
     } 
     catch (Exception ex) {
-      System.err.println("[WPortlet] Exception in ResourcesMgr.getDefaultAction: " + ex);
+      PlatformUtil.log("Exception in ResourcesMgr.getAction", ex);
     }
     return null;
   }
@@ -338,23 +338,21 @@ class ResourcesMgr
       if(oClass instanceof AMenuBuilder) {
         return (AMenuBuilder) oClass;
       }
-      else
-      if(oClass instanceof Class) {
+      else if(oClass instanceof Class) {
         oNewInstance = ((Class<?>) oClass).newInstance();
       }
-      else
-      if(oClass instanceof String) {
+      else if(oClass instanceof String) {
         oNewInstance = Class.forName((String) oClass).newInstance();
       }
       if(oNewInstance instanceof AMenuBuilder) {
         return (AMenuBuilder) oNewInstance;
       }
       else {
-        System.err.println("[WPortlet] Exception in ResourcesMgr.getMenuBuilder: " + oClass + " is not AMenuBuilder");
+        PlatformUtil.log("ResourcesMgr.getMenuBuilder: " + oClass + " is not AMenuBuilder");
       }
     }
     catch(Exception ex) {
-      System.err.println("[WPortlet] Exception in ResourcesMgr.getMenuBuilder: " + ex);
+      PlatformUtil.log("Exception in ResourcesMgr.getMenuBuilder", ex);
     }
     return new SimpleMenuBuilder();
   }
@@ -374,23 +372,21 @@ class ResourcesMgr
       if(oClass instanceof ATabsBuilder) {
         return (ATabsBuilder) oClass;
       }
-      else
-      if(oClass instanceof Class) {
+      else if(oClass instanceof Class) {
         oNewInstance = ((Class<?>) oClass).newInstance();
       }
-      else
-      if(oClass instanceof String) {
+      else if(oClass instanceof String) {
         oNewInstance = Class.forName((String) oClass).newInstance();
       }
       if(oNewInstance instanceof ATabsBuilder) {
         return (ATabsBuilder) oNewInstance;
       }
       else {
-        System.err.println("[WPortlet] Exception in ResourcesMgr.getTabsBuilder: " + oClass + " is not ATabsBuilder");
+        PlatformUtil.log("ResourcesMgr.getTabsBuilder: " + oClass + " is not ATabsBuilder");
       }
     }
     catch(Exception ex) {
-      System.err.println("[WPortlet] Exception in ResourcesMgr.getTabsBuilder: " + ex);
+      PlatformUtil.log("Exception in ResourcesMgr.getTabsBuilder", ex);
     }
     return new SimpleTabsBuilder();
   }
@@ -436,7 +432,7 @@ class ResourcesMgr
       }
     } 
     catch(Exception ex) {
-      System.err.println("[WPortlet] Exception in ResourcesMgr.loadTabs: " + ex);
+      PlatformUtil.log("Exception in ResourcesMgr.loadTabs(portletConfig," + sTabsFile + ")", ex);
     }
     finally {
       if(br != null) try{ br.close(); } catch(Exception ex) {}
@@ -519,7 +515,7 @@ class ResourcesMgr
       }
     } 
     catch (Exception ex) {
-      System.err.println("[WPortlet] Exception in ResourcesMgr.loadMenu: " + ex);
+      PlatformUtil.log("Exception in ResourcesMgr.loadMenu(portletConfig," + sMenuFile + ")", ex);
     }
     finally {
       if(br != null) try{ br.close(); } catch(Exception ex) {}
@@ -536,7 +532,7 @@ class ResourcesMgr
       properties.load(new FileInputStream(sFilePath));
     } 
     catch (Exception ex) {
-      System.err.println("Exception in ResourcesMgr.loadFileProperties: " + ex);
+      PlatformUtil.log("Exception in ResourcesMgr.loadFileProperties(" + sFilePath + ")", ex);
     }
     return DataUtil.expectMap(properties, true);
   }
@@ -564,7 +560,7 @@ class ResourcesMgr
       }
     } 
     catch (Exception ex) {
-      System.err.println("[WPortlet] Exception in ResourcesMgr.loadSQL: " + ex);
+      PlatformUtil.log("Exception in ResourcesMgr.loadSQL(portletConfig," + sSQLFile + ")", ex);
     }
     finally {
       if(br != null) try{ br.close(); } catch(Exception ex) {}
@@ -599,7 +595,7 @@ class ResourcesMgr
       }
     } 
     catch (Exception ex) {
-      System.err.println("[WPortlet] Exception in ResourcesMgr.loadHTML: " + ex);
+      PlatformUtil.log("Exception in ResourcesMgr.loadHTML(parameters," + sHTMLFile + "," + renderResponse + ")", ex);
     }
     finally {
       if(br != null) try{ br.close(); } catch(Exception ex) {}

@@ -136,13 +136,13 @@ class WPortlet extends GenericPortlet implements WNames
       }
       catch(Exception ex) {
         SnapTracer.trace(this, "init", ex);
-        System.err.println("[WPortlet] Exception loading class " + sListener + ": " + ex);
+        PlatformUtil.log("[WPortlet] Exception loading class " + sListener, ex);
       }
     }
     if(_portletListener != null) {
       _portletListener.init(_portletConfig);
     }
-    System.out.println("[WPortlet] Portal: " + sPortalPlatform + " - init of " + sPortletName + " completed.");
+    PlatformUtil.log("[WPortlet] Portal: " + sPortalPlatform + " - init of " + sPortletName + " completed.");
   }
   
   public 
@@ -223,7 +223,7 @@ class WPortlet extends GenericPortlet implements WNames
       } 
       catch (Throwable th) {
         SnapTracer.trace(iaction, "action(" + sAction + ")", th);
-        System.out.println("Exception in " + iaction.getClass().getName() + ".action(" + sAction + "):");
+        PlatformUtil.log("Exception in " + iaction.getClass().getName() + ".action(" + sAction + ")", th);
         th.printStackTrace();
         wActionResult = new WActionResult(sAction, iaction, th);
       }
@@ -414,7 +414,7 @@ class WPortlet extends GenericPortlet implements WNames
     }
     catch (Throwable th) {
       SnapTracer.trace(iaction, "view(" + sAction + ")", th);
-      System.out.println("Exception in " + iaction.getClass().getName() + ".view(" + sAction + "):");
+      PlatformUtil.log("Exception in " + iaction.getClass().getName() + ".view(" + sAction + ")", th);
       th.printStackTrace();
       if(th instanceof Exception) {
         actionException = (Exception) th;

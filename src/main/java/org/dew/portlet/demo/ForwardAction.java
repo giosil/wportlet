@@ -14,7 +14,9 @@ class ForwardAction implements IAction
     throws Exception
   {
     String sPage = parameters.getString(WNames.sPAR_FORWARD);
-    System.out.println("ForwardAction.action action=" + sAction + " (" + WNames.sPAR_FORWARD + "=" + sPage + ")");
+    
+    PlatformUtil.log("ForwardAction.action action=" + sAction + " (" + WNames.sPAR_FORWARD + "=" + sPage + ")");
+    
     return null;
   }
   
@@ -23,7 +25,8 @@ class ForwardAction implements IAction
     throws Exception
   {
     String sPage = parameters.getString(WNames.sPAR_FORWARD);
-    System.out.println("ForwardAction.view action=" + sAction + " (" + WNames.sPAR_FORWARD + "=" + sPage + ")");
+    
+    PlatformUtil.log("ForwardAction.view action=" + sAction + " (" + WNames.sPAR_FORWARD + "=" + sPage + ")");
     
     if(sPage.equals("showMap.jsp")) {
       initShowMap(parameters, request);

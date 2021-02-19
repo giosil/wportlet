@@ -78,7 +78,7 @@ class ALoginAction implements IAction
       response.setWindowState(WindowState.MAXIMIZED);
     }
     catch(Exception ex) {
-      System.err.println("Exception in ALoginCommandManager.setDefaultWindowState: " + ex);
+      PlatformUtil.log("Exception in ALoginAction.setDefaultWindowState", ex);
     }
   }
   
