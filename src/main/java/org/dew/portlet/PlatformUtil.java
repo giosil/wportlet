@@ -81,38 +81,54 @@ class PlatformUtil
         sLiferayUser += ",emailAddress=" + sEmailAddress;
       }
       else {
-        EmailAddress emailAddress = listOfEmailAddress.get(0);
-        if(emailAddress != null) {
-          sEmailAddress = emailAddress.getAddress();
-          sLiferayUser += ",emailAddresses[0]=" + sEmailAddress;
+        for(int i = 0; i < listOfEmailAddress.size(); i++) {
+          EmailAddress emailAddress = listOfEmailAddress.get(i);
+          if(emailAddress == null) {
+            sLiferayUser += ",emailAddresses[" + i + "]=null";
+            continue;
+          }
+          else if(emailAddress.isPrimary()) {
+            sEmailAddress = emailAddress.getAddress();
+            sLiferayUser += ",emailAddresses[" + i + "]*=" + sEmailAddress;
+          }
+          else {
+            String sEmailAddress_i = emailAddress.getAddress();
+            if(sEmailAddress == null || sEmailAddress.length() < 2) {
+              sEmailAddress = sEmailAddress_i;
+              sLiferayUser += ",emailAddresses[" + i + "]^=" + sEmailAddress_i;
+            }
+            else {
+              sLiferayUser += ",emailAddresses[" + i + "]=" + sEmailAddress_i;
+            }
+          }
         }
         if(sEmailAddress == null || sEmailAddress.length() < 3) {
           sEmailAddress = liferayUser.getEmailAddress();
           sLiferayUser += ",emailAddress=" + sEmailAddress;
         }
-        
-        if(listOfEmailAddress.size() > 1) {
-          EmailAddress emailAddress1 = listOfEmailAddress.get(1);
-          if(emailAddress1 != null) {
-            String sEmailAddress1 = emailAddress1.getAddress();
-            sLiferayUser += ",emailAddresses[1]=" + sEmailAddress1;
-          }
-        }
       }
       
       List<Phone> phones = liferayUser.getPhones();
       if(phones != null && phones.size() > 0) {
-        Phone phone0 = phones.get(0);
-        if(phone0 != null) {
-          sPhoneNumber = phone0.getNumber();
-          sLiferayUser += ",phones[0]=" + sPhoneNumber;
-        }
-        
-        if(phones.size() > 1) {
-          Phone phone1 = phones.get(1);
-          if(phone1 != null) {
-            String sPhoneNumber1 = phone1.getNumber();
-            sLiferayUser += ",phones[1]=" + sPhoneNumber1;
+        for(int i = 0; i < phones.size(); i++) {
+          Phone phone = phones.get(0);
+          if(phone == null) {
+            sLiferayUser += ",phones[" + i + "]=null";
+            continue;
+          }
+          else if(phone.isPrimary()) {
+            sPhoneNumber = phone.getNumber();
+            sLiferayUser += ",phones[" + i + "]*=" + sPhoneNumber;
+          }
+          else {
+            String sPhoneNumber_i = phone.getNumber();
+            if(sPhoneNumber == null || sPhoneNumber.length() < 2) {
+              sPhoneNumber = sPhoneNumber_i;
+              sLiferayUser += ",phones[" + i + "]^=" + sPhoneNumber_i;
+            }
+            else {
+              sLiferayUser += ",phones[" + i + "]=" + sPhoneNumber_i;
+            }
           }
         }
       }
