@@ -1,15 +1,13 @@
 package org.dew.portlet;
 
 import java.io.Serializable;
+
 import java.util.*;
 
-/**
- * Bean che raccoglie le informazioni dell'utente.
- */
 public
 class User implements Serializable
 {
-  private static final long serialVersionUID = -8306744803593044134L;
+  private static final long serialVersionUID = -2630803766966815141L;
   
   private long    id;
   private String  sessionId;
@@ -18,6 +16,7 @@ class User implements Serializable
   private String  role;
   private String  email;
   private String  mobile;
+  private String  info;
   private List<String> groups;
   private Object  profile;
   private boolean portalUser;
@@ -84,6 +83,14 @@ class User implements Serializable
   
   public void setMobile(String mobile) {
     this.mobile = mobile;
+  }
+  
+  public String getInfo() {
+    return info;
+  }
+  
+  public void setInfo(String info) {
+    this.info = info;
   }
   
   public List<String> getGroups() {

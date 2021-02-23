@@ -19,21 +19,23 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-// portal-service-6.1.2.jar
-import com.liferay.portal.model.EmailAddress;
+//portal-service-6.1.2.jar
+import com.liferay.portal.model.User;
+import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.Phone;
-import com.liferay.portal.model.User;
+import com.liferay.portal.model.EmailAddress;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 
-// portal-kernel-7.2.1.jar
-//import com.liferay.portal.kernel.model.EmailAddress;
-//import com.liferay.portal.kernel.model.Phone;
-//import com.liferay.portal.kernel.model.Role;
+//portal-kernel-7.2.1.jar
 //import com.liferay.portal.kernel.model.User;
+//import com.liferay.portal.kernel.model.Group;
+//import com.liferay.portal.kernel.model.Role;
+//import com.liferay.portal.kernel.model.Phone;
+//import com.liferay.portal.kernel.model.EmailAddress;
 //import com.liferay.portal.kernel.upload.UploadPortletRequest;
 //import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 //import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -59,7 +61,8 @@ class PlatformUtil
   public static
   org.dew.portlet.User getInternalUser(PortletRequest request)
   {
-    String sLiferayUser  = "";
+    StringBuilder sbInfo = new StringBuilder();
+    
     long   lUserId       = 0;
     String sScreenName   = null;
     String sEmailAddress = null;
@@ -71,40 +74,45 @@ class PlatformUtil
       User liferayUser = UserLocalServiceUtil.getUser(lUserId);
       if(liferayUser == null) return null;
       
-      sScreenName   = liferayUser.getScreenName();
+      sScreenName      = liferayUser.getScreenName();
+      String firstName = liferayUser.getFirstName();
+      String lastName  = liferayUser.getLastName();
       
-      sLiferayUser = "userId=" + lUserId + ",screenName=" + sScreenName;
+      sbInfo.append("userId="      + lUserId);
+      sbInfo.append(",firstName="  + firstName);
+      sbInfo.append(",lastName="   + lastName);
+      sbInfo.append(",screenName=" + sScreenName);
       
       List<EmailAddress> listOfEmailAddress = liferayUser.getEmailAddresses();
       if(listOfEmailAddress == null || listOfEmailAddress.size() == 0) {
         sEmailAddress = liferayUser.getEmailAddress();
-        sLiferayUser += ",emailAddress=" + sEmailAddress;
+        sbInfo.append(",emailAddress=" + sEmailAddress);
       }
       else {
         for(int i = 0; i < listOfEmailAddress.size(); i++) {
           EmailAddress emailAddress = listOfEmailAddress.get(i);
           if(emailAddress == null) {
-            sLiferayUser += ",emailAddresses[" + i + "]=null";
+            sbInfo.append(",emailAddresses[" + i + "]=null");
             continue;
           }
           else if(emailAddress.isPrimary()) {
             sEmailAddress = emailAddress.getAddress();
-            sLiferayUser += ",emailAddresses[" + i + "]*=" + sEmailAddress;
+            sbInfo.append(",emailAddresses[" + i + "]*=" + sEmailAddress);
           }
           else {
             String sEmailAddress_i = emailAddress.getAddress();
             if(sEmailAddress == null || sEmailAddress.length() < 2) {
               sEmailAddress = sEmailAddress_i;
-              sLiferayUser += ",emailAddresses[" + i + "]^=" + sEmailAddress_i;
+              sbInfo.append(",emailAddresses[" + i + "]^=" + sEmailAddress_i);
             }
             else {
-              sLiferayUser += ",emailAddresses[" + i + "]=" + sEmailAddress_i;
+              sbInfo.append(",emailAddresses[" + i + "]=" + sEmailAddress_i);
             }
           }
         }
         if(sEmailAddress == null || sEmailAddress.length() < 3) {
           sEmailAddress = liferayUser.getEmailAddress();
-          sLiferayUser += ",emailAddress=" + sEmailAddress;
+          sbInfo.append(",emailAddress=" + sEmailAddress);
         }
       }
       
@@ -113,24 +121,29 @@ class PlatformUtil
         for(int i = 0; i < phones.size(); i++) {
           Phone phone = phones.get(0);
           if(phone == null) {
-            sLiferayUser += ",phones[" + i + "]=null";
+            sbInfo.append(",phones[" + i + "]=null");
             continue;
           }
           else if(phone.isPrimary()) {
             sPhoneNumber = phone.getNumber();
-            sLiferayUser += ",phones[" + i + "]*=" + sPhoneNumber;
+            sbInfo.append(",phones[" + i + "]*=" + sPhoneNumber);
           }
           else {
             String sPhoneNumber_i = phone.getNumber();
             if(sPhoneNumber == null || sPhoneNumber.length() < 2) {
               sPhoneNumber = sPhoneNumber_i;
-              sLiferayUser += ",phones[" + i + "]^=" + sPhoneNumber_i;
+              sbInfo.append(",phones[" + i + "]^=" + sPhoneNumber_i);
             }
             else {
-              sLiferayUser += ",phones[" + i + "]=" + sPhoneNumber_i;
+              sbInfo.append(",phones[" + i + "]=" + sPhoneNumber_i);
             }
           }
         }
+      }
+      
+      Group group = liferayUser.getGroup();
+      if(group != null) {
+        sbInfo.append(",group=" + group.getName());
       }
       
       List<Role> roles = liferayUser.getRoles();
@@ -141,18 +154,17 @@ class PlatformUtil
           if(roleName == null || roleName.length() == 0) continue;
           listRoles.add(roleName);
         }
-        sLiferayUser += ",roles=" + listRoles;
+        sbInfo.append(",roles=" + listRoles);
       }
     }
     catch(Exception ex) {
-      log("Exception in PlatformUtil.getInternalUser(request)", ex);
+      PlatformUtil.log("Exception in PlatformUtil.getInternalUser(request)", ex);
       ex.printStackTrace();
       return null;
     }
     
-    if(sLiferayUser != null && sLiferayUser.length() > 0) {
-      PlatformUtil.log("liferayUser: " + sLiferayUser);
-    }
+    String info = sbInfo.toString();
+    PlatformUtil.log("liferayUser: " + info);
     
     org.dew.portlet.User result = new org.dew.portlet.User();
     result.setId(lUserId);
@@ -160,6 +172,7 @@ class PlatformUtil
     result.setEmail(sEmailAddress);
     result.setMobile(sPhoneNumber);
     result.setGroups(listRoles);
+    result.setInfo(info);
     return result;
   }
   
