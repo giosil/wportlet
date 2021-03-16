@@ -943,14 +943,30 @@ class WebForm implements Serializable
       sb.append("<br/>");
     }
     for(int r = 0; r < rows.size(); r++) {
-      if(!columnLayout) {
-        sb.append("<div class=\"" + ROW_CLASS + "\">");
+      
+      String rowElement = null;
+      if(rowe != null && rowe.size() > r) {
+        rowElement = rowe.get(r);
       }
       
-      if(rowe != null && rowe.size() > r) {
-        String sRowElement = rowe.get(r);
-        if(sRowElement != null && sRowElement.length() > 0) {
-          sb.append(sRowElement);
+      if(!columnLayout) {
+        if(rowElement != null && rowElement.equals("!")) {
+          sb.append("<div style=\"display:none;\">");
+        }
+        else if(rowElement != null && rowElement.startsWith("class=")) {
+          sb.append("<div " + rowElement + ">");
+        }
+        else if(rowElement != null && rowElement.startsWith("style=")) {
+          sb.append("<div class=\"" + ROW_CLASS + "\" " + rowElement + ">");
+        }
+        else {
+          sb.append("<div class=\"" + ROW_CLASS + "\">");
+        }
+      }
+      
+      if(rowElement != null && rowElement.length() > 0) {
+        if(!rowElement.equals("!") && !rowElement.startsWith("class=") && !rowElement.startsWith("style=")) {
+          sb.append(rowElement);
         }
       }
       
