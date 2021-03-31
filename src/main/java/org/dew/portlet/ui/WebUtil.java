@@ -293,7 +293,7 @@ class WebUtil
   String buildTable(String sId, Object oValues, boolean boContainsHeader)
   {
     if(oValues == null) return "";
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder(100);
     if(sCLASS_RES_GRID != null) {
       if(sSTYLE_RES_GRID != null && sSTYLE_RES_GRID.length() > 0) {
         sb.append("<div " + sCLASS_RES_GRID + " " + sSTYLE_RES_GRID + ">");
@@ -332,7 +332,7 @@ class WebUtil
     if(oValues instanceof String) {
       return (String) oValues;
     }
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder(100);
     if(sCLASS_RES_GRID != null) {
       if(sSTYLE_RES_GRID != null && sSTYLE_RES_GRID.length() > 0) {
         sb.append("<div " + sCLASS_RES_GRID + " " + sSTYLE_RES_GRID + ">");
@@ -367,7 +367,7 @@ class WebUtil
     if(oValues instanceof String) {
       return (String) oValues;
     }
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder(100);
     if(sCLASS_RES_GRID != null) {
       if(sSTYLE_RES_GRID != null && sSTYLE_RES_GRID.length() > 0) {
         sb.append("<div " + sCLASS_RES_GRID + " " + sSTYLE_RES_GRID + ">");
@@ -436,7 +436,7 @@ class WebUtil
   String buildTableContent(Object oValues, boolean boContainsHeader)
   {
     Set<Integer> setOfResponsiveCols = new HashSet<Integer>();
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder(100);
     int iRow = boContainsHeader ? 0 : 1;
     boolean body = false;
     if(oValues instanceof Collection) {
@@ -455,8 +455,7 @@ class WebUtil
             sTR = "<tr " + sCLASS_TR_EVEN + ">";
           }
         }
-        else 
-        if((iRow % 2) == 0) {
+        else if((iRow % 2) == 0) {
           sTR = "<tr " + sCLASS_TR_EVEN + ">";
         }
         else {
@@ -465,8 +464,7 @@ class WebUtil
         if(iRow == 0 && boContainsHeader) {
           sb.append("<thead>");
         }
-        else
-        if(iRow == 1) {
+        else if(iRow == 1) {
           sb.append("<tbody>");
           body = true;
         }
@@ -483,8 +481,7 @@ class WebUtil
             if(oData == null) {
               sb.append(sTagTD + ">&nbsp;" + sTD2);
             }
-            else
-            if(oData instanceof String) {
+            else if(oData instanceof String) {
               String sData = (String) oData;
               if(sData.length() == 0) {
                 sb.append(sTagTD + ">&nbsp;" + sTD2);
@@ -506,12 +503,10 @@ class WebUtil
                     sb.append(sTagTD + " style=\"text-align: center;\">" + sData + sTD2);
                   }
                 }
-                else
-                if(sData.startsWith("<input ")) {
+                else if(sData.startsWith("<input ")) {
                   sb.append(sTagTD + " style=\"text-align: center;\">" + sData + sTD2);
                 }
-                else
-                if(sData.indexOf("<img") >= 0 && sData.endsWith(">")) {
+                else if(sData.indexOf("<img") >= 0 && sData.endsWith(">")) {
                   sb.append(sTagTD + " style=\"text-align: center;\">" + sData + sTD2);
                 }
                 else {
@@ -519,8 +514,7 @@ class WebUtil
                 }
               }
             }
-            else
-            if(oData instanceof Number) {
+            else if(oData instanceof Number) {
               if(oData instanceof Double) {
                 sb.append(sTagTD + " style=\"text-align: right;\">" + formatDouble(oData) + sTD2);
               }
@@ -528,12 +522,10 @@ class WebUtil
                 sb.append(sTagTD + " style=\"text-align: right;\">" + oData + sTD2);
               }
             }
-            else
-            if(oData instanceof Date) {
+            else if(oData instanceof Date) {
               sb.append(sTagTD + " style=\"text-align: left;\">" + formatDate((Date) oData) + sTD2);
             }
-            else
-            if(oData instanceof Calendar) {
+            else if(oData instanceof Calendar) {
               sb.append(sTagTD + " style=\"text-align: left;\">" + formatDate((Calendar) oData) + sTD2);
             }
             else {
@@ -545,8 +537,7 @@ class WebUtil
           if(oRow == null) {
             sb.append(sTD1 + ">&nbsp;" + sTD2);
           }
-          else
-          if(oRow instanceof String) {
+          else if(oRow instanceof String) {
             String sRow = (String) oRow;
             if(sRow.length() == 0) {
               sb.append(sTD1 + ">&nbsp;" + sTD2);
@@ -563,12 +554,10 @@ class WebUtil
                   sb.append(sTD1 + " style=\"text-align: center;\">" + sRow + sTD2);
                 }
               }
-              else
-              if(sRow.startsWith("<input ")) {
+              else if(sRow.startsWith("<input ")) {
                 sb.append(sTD1 + " style=\"text-align: center;\">" + sRow + sTD2);
               }
-              else
-              if(sRow.indexOf("<img") >= 0 && sRow.endsWith(">")) {
+              else if(sRow.indexOf("<img") >= 0 && sRow.endsWith(">")) {
                 sb.append(sTD1 + " style=\"text-align: center;\">" + sRow + sTD2);
               }
               else {
@@ -576,16 +565,13 @@ class WebUtil
               }
             }
           }
-          else
-          if(oRow instanceof Number) {
+          else if(oRow instanceof Number) {
             sb.append(sTD1 + " style=\"text-align: right;\">" + oRow + sTD2);
           }
-          else
-          if(oRow instanceof Date) {
+          else if(oRow instanceof Date) {
             sb.append(sTD1 + " style=\"text-align: left;\">" + formatDate((Date) oRow) + sTD2);
           }
-          else
-          if(oRow instanceof Calendar) {
+          else if(oRow instanceof Calendar) {
             sb.append(sTD1 + " style=\"text-align: left;\">" + formatDate((Calendar) oRow) + sTD2);
           }
           else {
@@ -599,8 +585,7 @@ class WebUtil
         iRow++;
       }
     }
-    else
-    if(oValues instanceof Map) {
+    else if(oValues instanceof Map) {
       Map map = (Map) oValues;
       List listKeys = new ArrayList();
       Iterator itKeys = map.keySet().iterator();
@@ -629,16 +614,13 @@ class WebUtil
         if(oData == null) {
           sb.append("<td>&nbsp;</td>");
         }
-        else
-        if(oData instanceof Number) {
+        else if(oData instanceof Number) {
           sb.append("<td align=\"right\">" + oData + "</td>");
         }
-        else
-        if(oData instanceof Date) {
+        else if(oData instanceof Date) {
           sb.append("<td align=\"left\">" + formatDate((Date) oData) + "</td>");
         }
-        else
-        if(oData instanceof Calendar) {
+        else if(oData instanceof Calendar) {
           sb.append("<td align=\"left\">" + formatDate((Calendar) oData) + "</td>");
         }
         else {
@@ -671,7 +653,7 @@ class WebUtil
   public static
   String buildTableContent(HttpServletRequest request, String sKey, String[] asSymbolics, String[] asColNames)
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder(100);
     if(asColNames != null && asColNames.length > 0) {
       sb.append("<thead>");
       sb.append("<tr " + sCLASS_TR_HEADER + ">");
@@ -702,16 +684,13 @@ class WebUtil
             if(oData == null) {
               sb.append("<td>&nbsp;</td>");
             }
-            else
-            if(oData instanceof Number) {
+            else if(oData instanceof Number) {
               sb.append("<td align=\"right\">" + oData + "</td>");
             }
-            else
-            if(oData instanceof Date) {
+            else if(oData instanceof Date) {
               sb.append("<td align=\"left\">" + formatDate((Date) oData) + "</td>");
             }
-            else
-            if(oData instanceof Calendar) {
+            else if(oData instanceof Calendar) {
               sb.append("<td align=\"left\">" + formatDate((Calendar) oData) + "</td>");
             }
             else {
@@ -774,7 +753,7 @@ class WebUtil
   public static
   String buildOptions(Collection colRows, Object oSelected)
   {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (Object oRow : colRows) {
       if(oRow instanceof List) {
         List list = (List) oRow;
@@ -1099,12 +1078,10 @@ class WebUtil
     if(oValue == null) {
       return "";
     }
-    else
-    if(oValue instanceof Date) {
+    else if(oValue instanceof Date) {
       return formatTime((Date) oValue);
     }
-    else
-    if(oValue instanceof Calendar) {
+    else if(oValue instanceof Calendar) {
       return formatTime((Calendar) oValue);
     }
     return formatTime(oValue.toString());
@@ -1125,12 +1102,10 @@ class WebUtil
     if(oValue == null) {
       return sDefault;
     }
-    else
-    if(oValue instanceof Date) {
+    else if(oValue instanceof Date) {
       return formatTime((Date) oValue);
     }
-    else
-    if(oValue instanceof Calendar) {
+    else if(oValue instanceof Calendar) {
       return formatTime((Calendar) oValue);
     }
     return formatTime(oValue.toString());
@@ -1279,16 +1254,13 @@ class WebUtil
       if(renderRequest == null) return null;
       return renderRequest.getPortletSession();
     }
-    else
-    if(request instanceof ActionRequest) {
+    else if(request instanceof ActionRequest) {
       return ((ActionRequest) request).getPortletSession();
     }
-    else
-    if(request instanceof RenderRequest) {
+    else if(request instanceof RenderRequest) {
       return ((RenderRequest) request).getPortletSession();
     }
-    else
-    if(request instanceof Parameters) {
+    else if(request instanceof Parameters) {
       return ((Parameters) request).getPortletSession();
     }
     return null;
