@@ -30,6 +30,9 @@ public interface WNames {
   public final static String sATTR_PARAMETERS       = sPREFIX + "parameters";
   public final static String sATTR_SQL_WITH_MSG     = sPREFIX + "sqlWithMessage";
   
+  public final static String sBACK_DEFAULT_KEY      = "back";
+  public final static String sBACK_DEFAULT_TEXT     = "Indietro";
+  
   public final static String sNO_JSP   = "";
   public final static String sJSP_PATH = "/jsp/";
   

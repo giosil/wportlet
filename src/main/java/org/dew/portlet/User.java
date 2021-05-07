@@ -7,7 +7,7 @@ import java.util.*;
 public
 class User implements Serializable
 {
-  private static final long serialVersionUID = -2630803766966815141L;
+  private static final long serialVersionUID = 8026638715544022148L;
   
   private long    id;
   private String  sessionId;
@@ -21,6 +21,8 @@ class User implements Serializable
   private Object  profile;
   private boolean portalUser;
   private int     authLevel;
+  private String  homeURL;
+  private String  lastURL;
   
   private Map<String,Object> resources;
   private Map<String,Object> menu;
@@ -123,6 +125,22 @@ class User implements Serializable
   
   public void setAuthLevel(int authLevel) {
     this.authLevel = authLevel;
+  }
+  
+  public String getHomeURL() {
+    return homeURL;
+  }
+
+  public void setHomeURL(String homeURL) {
+    this.homeURL = homeURL;
+  }
+
+  public String getLastURL() {
+    return lastURL;
+  }
+
+  public void setLastURL(String lastURL) {
+    this.lastURL = lastURL;
   }
   
   public Map<String, Object> getResources() {

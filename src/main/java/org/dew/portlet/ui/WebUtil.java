@@ -12,7 +12,7 @@ import org.dew.portlet.*;
 /**
  * Classe di utilita' per lo sviluppo rapido di JSP.
  */
-@SuppressWarnings({"rawtypes","unchecked"})
+@SuppressWarnings("unchecked")
 public 
 class WebUtil 
 {
@@ -186,7 +186,45 @@ class WebUtil
   }
   
   /**
-   * Restituisce il link con label="Indietro" relativo all'ultima azione di forward. 
+   * Restituisce il link costruito da User.lastURL (o in assenza da User.homeURL).
+   * 
+   * @param request HttpServletRequest
+   * @param sIcon Icona (non obbligatoria)
+   * @param sLabel Caption del link
+   * @return String
+   */
+  public static
+  String getUserLastLink(HttpServletRequest request, String sIcon, String sLabel)
+  {
+    if(sLabel == null) sLabel = "";
+    String sResult = "";
+    if(sIcon != null && sIcon.length() > 0) {
+      sResult += "<img alt=\"" + sLabel + "\" src=\"" + request.getContextPath() + sIcon + "\"> ";
+    }
+    User user = getUser(request);
+    if(user != null) {
+      String lastURL = user.getLastURL();
+      if(lastURL != null && lastURL.length() > 0) {
+        sResult += "<a href=\"" + lastURL + "\" title=\"" + sLabel + "\"> " + sLabel + "</a>";
+        return sResult;
+      }
+      String homeURL = user.getHomeURL();
+      if(homeURL != null && homeURL.length() > 0) {
+        sResult += "<a href=\"" + homeURL + "\" title=\"" + sLabel + "\"> " + sLabel + "</a>";
+        return sResult;
+      }
+    }
+    String sLastForwardURL = (String) request.getAttribute(WNames.sATTR_LAST_FORWARD_URL);
+    if(sLastForwardURL != null && sLastForwardURL.length() > 0) {
+      sResult += "<a href=\"" + sLastForwardURL + "\" title=\"" + sLabel + "\"> " + sLabel + "</a>";
+      return sResult;
+    }
+    sResult += "<a href=\"javascript:history.back();\" title=\"" + sLabel + "\"> " + sLabel + "</a>";
+    return sResult;
+  }
+  
+  /**
+   * Restituisce il link con label preimpostata relativo all'ultima azione di forward. 
    * 
    * @param request HttpServletRequest
    * @return String
@@ -198,7 +236,8 @@ class WebUtil
     if(sURL == null || sURL.length() == 0) {
       return "";
     }
-    return "<a href=\"" + sURL + "\" title=\"Indietro\">Indietro</a>";
+    String sText = getMessage(request, WNames.sBACK_DEFAULT_KEY, WNames.sBACK_DEFAULT_TEXT);
+    return "<a href=\"" + sURL + "\" title=\"" + sText + "\">" + sText + "</a>";
   }
   
   /**
@@ -441,7 +480,7 @@ class WebUtil
     boolean body = false;
     if(oValues instanceof Collection) {
       String sTR, sTD1, sTD2;
-      Collection colRows = (Collection) oValues;
+      Collection<?> colRows = (Collection<?>) oValues;
       for (Object oRow : colRows) {
         sTD1 = "<td";
         sTD2 = "</td>";
@@ -471,7 +510,7 @@ class WebUtil
         sb.append(sTR);
         if(oRow instanceof Collection) {
           int index = -1;
-          Collection colData = (Collection) oRow;
+          Collection<?> colData = (Collection<?>) oRow;
           for (Object oData : colData) {
             index++;
             String sTagTD = sTD1;
@@ -586,11 +625,11 @@ class WebUtil
       }
     }
     else if(oValues instanceof Map) {
-      Map map = (Map) oValues;
-      List listKeys = new ArrayList();
-      Iterator itKeys = map.keySet().iterator();
+      Map<String, Object> map = (Map<String, Object>) oValues;
+      List<String> listKeys = new ArrayList<String>();
+      Iterator<String> itKeys = map.keySet().iterator();
       while(itKeys.hasNext()) {
-        String sKeyMap = (String) itKeys.next();
+        String sKeyMap = itKeys.next();
         listKeys.add(sKeyMap);
       }
       Collections.sort(listKeys);
@@ -666,7 +705,7 @@ class WebUtil
     sb.append("<tbody>");
     Object oValues = request.getAttribute(sKey);
     if(oValues instanceof Collection) {
-      Collection colRows = (Collection) oValues;
+      Collection<?> colRows = (Collection<?>) oValues;
       int iRow = 1;
       String sTR;
       for (Object oRow : colRows) {
@@ -678,7 +717,7 @@ class WebUtil
         }
         sb.append(sTR);
         if(oRow instanceof Map) {
-          Map map = (Map) oRow;
+          Map<String, Object> map = (Map<String, Object>) oRow;
           for (String sSymbolic : asSymbolics) {
             Object oData = map.get(sSymbolic);
             if(oData == null) {
@@ -719,7 +758,7 @@ class WebUtil
   {
     Object oValues = request.getAttribute(sKey);
     if(oValues instanceof Collection) {
-      return buildOptions((Collection) oValues, null);
+      return buildOptions((Collection<?>) oValues, null);
     }
     return "";
   }
@@ -738,7 +777,7 @@ class WebUtil
   {
     Object oValues = request.getAttribute(sKey);
     if(oValues instanceof Collection) {
-      return buildOptions((Collection) oValues, oSelected);
+      return buildOptions((Collection<?>) oValues, oSelected);
     }
     return "";
   }
@@ -751,12 +790,12 @@ class WebUtil
    * @return String
    */
   public static
-  String buildOptions(Collection colRows, Object oSelected)
+  String buildOptions(Collection<?> colRows, Object oSelected)
   {
     StringBuilder sb = new StringBuilder();
     for (Object oRow : colRows) {
       if(oRow instanceof List) {
-        List list = (List) oRow;
+        List<?> list = (List<?>) oRow;
         String sSelected = "";
         if(oSelected != null && oSelected.equals(list.get(0))) {
           sSelected = " selected";
@@ -1036,7 +1075,7 @@ class WebUtil
    * @return List
    */
   public static
-  List getList(HttpServletRequest request, String sKey)
+  List<?> getList(HttpServletRequest request, String sKey)
   {
     Object oValue = request.getAttribute(sKey);
     return Parameters.toList(oValue, true);
@@ -1383,7 +1422,7 @@ class WebUtil
     Object oUser = portletSession.getAttribute(WNames.sSESS_USER);
     if(oUser instanceof User) {
       User user = (User) oUser;
-      Map mapResources = user.getResources();
+      Map<String, Object> mapResources = user.getResources();
       if(mapResources == null) return null;
       return mapResources.get(sKey);
     }
@@ -1445,7 +1484,7 @@ class WebUtil
    * @return boolean
    */
   public static
-  boolean storePreferences(HttpServletRequest request, Map mapPreferences)
+  boolean storePreferences(HttpServletRequest request, Map<String, Object> mapPreferences)
   {
     Parameters parameters = (Parameters) request.getAttribute(WNames.sATTR_PARAMETERS);
     if(parameters == null) return false;
@@ -1459,13 +1498,13 @@ class WebUtil
    * @return Map
    */
   public static
-  Map getMapSession(HttpServletRequest request)
+  Map<String, Object> getMapSession(HttpServletRequest request)
   {
     RenderRequest renderRequest = (RenderRequest) request.getAttribute(WNames.sATTR_RENDER_REQUEST);
-    if(renderRequest == null) return new HashMap();
+    if(renderRequest == null) return new HashMap<String, Object>();
     PortletSession portletSession = renderRequest.getPortletSession();
-    Map mapResult = new HashMap();
-    Enumeration enumNames = portletSession.getAttributeNames();
+    Map<String, Object> mapResult = new HashMap<String, Object>();
+    Enumeration<String> enumNames = portletSession.getAttributeNames();
     while(enumNames.hasMoreElements()) {
       String sName = (String) enumNames.nextElement();
       mapResult.put(sName, portletSession.getAttribute(sName));
@@ -1703,7 +1742,7 @@ class WebUtil
   public static
   String buildMenu(HttpServletRequest request, String sKey)
   {
-    Map mapMenu = (Map) request.getAttribute(sKey);
+    Map<String, Object> mapMenu = (Map<String, Object>) request.getAttribute(sKey);
     if(mapMenu == null || mapMenu.isEmpty()) return "";
     AMenuBuilder aMenuBuilder = ResourcesMgr.getMenuBuilder(mapMenu);
     return aMenuBuilder.build(request, mapMenu);
@@ -1731,7 +1770,7 @@ class WebUtil
   public static
   String buildTabs(HttpServletRequest request, String sKey)
   {
-    Map mapTabs = (Map) request.getAttribute(sKey);
+    Map<String, Object> mapTabs = (Map<String, Object>) request.getAttribute(sKey);
     if(mapTabs == null || mapTabs.isEmpty()) return "";
     ATabsBuilder aTabsBuilder = ResourcesMgr.getTabsBuilder(mapTabs);
     return aTabsBuilder.build(request, mapTabs);
