@@ -56,16 +56,16 @@ class WebForm implements Serializable
   protected List<String> titles = null;
 
   public static String ROW_CLASS        = "section group";
-  public static String COL_CLASS_BEG    = "col span_";
+  public static String COL_CLASS_BEG    = "kol span_";
   public static String COL_CLASS_END    = "_of_12";
 
   public static String STYLE_STATIC_TXT = "line-height:2;padding-top:5px;";
   public static String STYLE_DIV_LABEL  = "line-height:2;padding-top:5px;text-align:right;";
-  public static String STYLE_DIV_BLANK  = "padding:2px 0 2px 0;";
-  public static String STYLE_DIV_INPUT  = "padding:2px 0 2px 0;";
+  public static String STYLE_DIV_BLANK  = "padding:5px 0 2px 0;";
+  public static String STYLE_DIV_INPUT  = "padding:5px 0 2px 0;";
   public static String STYLE_DIV_RADIO  = "padding:12px 0 2px 0;";
-  public static String STYLE_DIV_FIELD  = "padding:2px 0 2px 0;";
-  public static String STYLE_DIV_STATIC = "padding:0px 0 0px 0;";
+  public static String STYLE_DIV_FIELD  = "padding:5px 0 2px 0;";
+  public static String STYLE_DIV_STATIC = "padding:5px 0 2px 0;";
   
   public WebForm()
   {
@@ -1086,7 +1086,7 @@ class WebForm implements Serializable
               sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\">");
             }
           }
-          else if(type == Type.RADIOBUTTON) {
+          else if(type == Type.CHECKBOX || type == Type.RADIOBUTTON) {
             if(STYLE_DIV_RADIO != null && STYLE_DIV_RADIO.length() > 0) {
               sb.append("<div class=\"" + COL_CLASS_BEG + iSmF + COL_CLASS_END + "\" style=\"" + STYLE_DIV_RADIO + "\">");
             }

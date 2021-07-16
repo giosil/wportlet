@@ -7,6 +7,8 @@
 		<portlet-name>dew_demo</portlet-name>
 		<instanceable>false</instanceable>
 		<scopeable>true</scopeable>
+		<header-portlet-css>/css/grid/col.css</header-portlet-css>
+		<header-portlet-css>/css/grid/12cols.css</header-portlet-css>
 		<header-portlet-css>/css/demo.css</header-portlet-css>
 		<header-portlet-javascript>/js/jrpc.js</header-portlet-javascript>
 	</portlet>

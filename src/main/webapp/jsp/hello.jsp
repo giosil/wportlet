@@ -1,15 +1,15 @@
 <%@ include file="init.jsp" %>
 
 <% 
-	String sHello = (String) request.getAttribute("hello");
+	String hello = (String) request.getAttribute("hello");
 %>
 <table>
 <tr>
 <td valign="top" width="250px">
 <%= WebUtil.buildMenu(request) %>
 </td>
-<td valign="top" align="center">	
-<i><%= sHello %></i>
+<td valign="top" align="center">
+<i><%= hello %></i>
 </td>
 </tr>
 </table>
