@@ -763,7 +763,7 @@ class WebForm implements Serializable
   {
     if(sText == null) return false;
     if(sText.startsWith("<") && sText.indexOf('>') > 1) return true;
-    if(sText.indexOf("&nbsp;") >= 0) return true;
+    if(sText.indexOf("&nbsp;") >= 0 || sText.indexOf("<br") >= 0) return true;
     return false;
   }
   
