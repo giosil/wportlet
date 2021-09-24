@@ -15,6 +15,18 @@ class WebDialog implements Serializable
   public static final int JQUERY_UI = 0;
   public static final int BOOTSTRAP = 1;
   
+  // Static configuration
+  public static String CONTENT_ATTRIBUTES = "";
+  public static String HEADER_ATTRIBUTES  = "";
+  public static String TITLE_TAG          = "h5";
+  public static String TITLE_ATTRIBUTES   = "";
+  public static String BODY_ATTRIBUTES    = "";
+  public static String FOOTER_ATTRIBUTES  = "";
+  public static String FIELDS_ATTRIBUTES  = "";
+  public static String BUTTON_TITLE_CLOSE = "Close";
+  // Produce margin-left: -(width/MODAL_MARGIN_LEFT_FACTOR)
+  public static int    MODAL_MARGIN_LEFT_FACTOR = 0;
+  
   protected String id;
   protected String title;
   protected String before;
@@ -312,32 +324,76 @@ class WebDialog implements Serializable
       styleDim += "width:" + width + "px;";
     }
     if(height > 0) {
-      styleDim += "height:" + width + "px;";
+      styleDim += "height:" + height + "px;";
     }
-    sb.append("<div id=\"" + getNotNullId() + "\" class=\"modal\" tabindex=\"-1\" role=\"dialog\" style=\"display:none;" + styleDim + "\">");
-    sb.append("<div class=\"modal-dialog\" role=\"document\">");
-    sb.append("<div class=\"modal-content\">");
+    String marginLeftRule = "";
+    if(width > 0 && MODAL_MARGIN_LEFT_FACTOR != 0) {
+      int marginLeft = width / MODAL_MARGIN_LEFT_FACTOR;
+      marginLeftRule = "margin-left:-" + marginLeft + "px;";
+    }
     
-    sb.append("<div class=\"modal-header\">");
-    if(title != null && title.length() > 0) {
-      sb.append("<h5 class=\"modal-title\">" + title + "</h5>");
+    sb.append("<div id=\"" + getNotNullId() + "\" class=\"modal\" tabindex=\"-1\" role=\"dialog\" style=\"display:none;" + styleDim + marginLeftRule + "\">");
+    if(styleDim != null && styleDim.length() > 0) {
+      sb.append("<div class=\"modal-dialog\" role=\"document\" style=\"" + styleDim + "\">");
     }
-    // sb.append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">");
-    sb.append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\" onclick=\"" + attrib(getHideCode(null)) + "\">");
+    else {
+      sb.append("<div class=\"modal-dialog\" role=\"document\">");
+    }
+    
+    if(CONTENT_ATTRIBUTES != null && CONTENT_ATTRIBUTES.length() > 0) {
+      sb.append("<div class=\"modal-content\" " + CONTENT_ATTRIBUTES + ">");
+    }
+    else {
+      sb.append("<div class=\"modal-content\">");
+    }
+    
+    if(HEADER_ATTRIBUTES != null && HEADER_ATTRIBUTES.length() > 0) {
+      sb.append("<div class=\"modal-header\" " + HEADER_ATTRIBUTES + ">");
+    }
+    else {
+      sb.append("<div class=\"modal-header\">");
+    }
+    if(title != null && title.length() > 0) {
+      if(TITLE_TAG == null || TITLE_TAG.length() == 0) {
+        TITLE_TAG = "h5";
+      }
+      if(TITLE_ATTRIBUTES != null && TITLE_ATTRIBUTES.length() > 0) {
+        sb.append("<" + TITLE_TAG + " class=\"modal-title\" " + TITLE_ATTRIBUTES + ">" + title + "</" + TITLE_TAG + ">");
+      }
+      else {
+        sb.append("<" + TITLE_TAG + " class=\"modal-title\">" + title + "</" + TITLE_TAG + ">");
+      }
+    }
+    
+    String buttonTitle = "";
+    if(BUTTON_TITLE_CLOSE != null && BUTTON_TITLE_CLOSE.length() > 0) {
+      buttonTitle += " title=\"" + BUTTON_TITLE_CLOSE + "\"";
+    }
+    sb.append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\" onclick=\"" + attrib(getHideCode(null)) + "\"" + buttonTitle + ">");
     sb.append("<span aria-hidden=\"true\">&times;</span>");
     sb.append("</button>");
-    sb.append("</div>");
+    sb.append("</div>"); // modal-header
     
-    sb.append("<div class=\"modal-body\">");
+    if(BODY_ATTRIBUTES != null && BODY_ATTRIBUTES.length() > 0) {
+      sb.append("<div class=\"modal-body\" " + BODY_ATTRIBUTES + ">");
+    }
+    else {
+      sb.append("<div class=\"modal-body\">");
+    }
     if(body != null) {
       String sBody = body.toString();
       if(sBody != null && sBody.length() > 0) {
         sb.append(sBody);
       }
     }
-    sb.append("</div>");
+    sb.append("</div>"); // modal-body
     
-    sb.append("<div class=\"modal-footer\">");
+    if(FOOTER_ATTRIBUTES != null && FOOTER_ATTRIBUTES.length() > 0) {
+      sb.append("<div class=\"modal-footer\" " + FOOTER_ATTRIBUTES + ">");
+    }
+    else {
+      sb.append("<div class=\"modal-footer\">");
+    }
     if(buttonsCaption != null && buttonsCaption.size() > 0) {
       for(int i = 0; i < buttonsCaption.size(); i++) {
         String sCaption = buttonsCaption.get(i);
@@ -351,11 +407,11 @@ class WebDialog implements Serializable
         }
       }
     }
-    sb.append("</div>");
+    sb.append("</div>"); // modal-footer
     
-    sb.append("</div>");
-    sb.append("</div>");
-    sb.append("</div>");
+    sb.append("</div>"); // modal-content
+    sb.append("</div>"); // modal-dialog
+    sb.append("</div>"); // modal
     return sb.toString();
   }
   
