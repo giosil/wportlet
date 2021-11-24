@@ -10,6 +10,9 @@
 		<header-portlet-css>/css/grid/col.css</header-portlet-css>
 		<header-portlet-css>/css/grid/12cols.css</header-portlet-css>
 		<header-portlet-css>/css/demo.css</header-portlet-css>
+		<header-portlet-css>/css/h-timeline.min.css</header-portlet-css>
+		<header-portlet-javascript>/js/jquery-1.11.2.min.js</header-portlet-javascript>
+		<header-portlet-javascript>/js/h-timeline.min.js</header-portlet-javascript>
 		<header-portlet-javascript>/js/jrpc.js</header-portlet-javascript>
 	</portlet>
 

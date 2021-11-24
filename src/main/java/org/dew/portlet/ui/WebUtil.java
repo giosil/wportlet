@@ -332,6 +332,9 @@ class WebUtil
   String buildTable(String sId, Object oValues, boolean boContainsHeader)
   {
     if(oValues == null) return "";
+    if(oValues instanceof String) {
+      return (String) oValues;
+    }    
     StringBuilder sb = new StringBuilder(100);
     if(sCLASS_RES_GRID != null) {
       if(sSTYLE_RES_GRID != null && sSTYLE_RES_GRID.length() > 0) {
@@ -1777,6 +1780,159 @@ class WebUtil
   }
   
   /**
+   * Costruisce la funzione di enhancement della timeline.
+   * 
+   * @param id Identificativo dell'elemento html
+   * @param options Opzioni timeline
+   * @return funzione di enhancement.
+   */
+  public static
+  String buildTimelineEnhancement(String id, String options)
+  {
+    if(id == null || id.length() == 0) {
+      id = "timeline";
+    }
+    String result = "";
+    if(options == null) {
+      result += "$('#" + id + "').horizontalTimeline({";
+      result += "useScrollWheel:false,";
+      result += "useTouchSwipe:true,";
+      result += "useFontAwesomeIcons:false,";
+      {
+        result += "iconClass:{";
+        result += "\"base\":\"\",";
+        result += "\"scrollLeft\":\"icon-backward\",";
+        result += "\"scrollRight\":\"icon-forward\",";
+        result += "\"prev\":\"icon-arrow-left\",";
+        result += "\"next\":\"icon-arrow-right\",";
+        result += "\"pause\":\"icon-pause\",";
+        result += "\"play\":\"icon-play\"";
+        result += "}";
+      }
+      result += "});";
+    }
+    else {
+      result += "$('#" + id + "').horizontalTimeline(" + options + ");";
+    }
+    return result;
+  }
+  
+  /**
+   * Costruisce la timeline dai dati individuati da sKey.
+   * 
+   * @param id Identificativo html del componente
+   * @param request HttpServletRequest
+   * @param sKey Chiave attributo
+   * @param field Campo rispetto al quale costruire la timeline
+   * @param reverse Elaborazione dati in ordine inverso
+   * @param groupByMonth Raggruppamento per mese
+   * @return timeline
+   */
+  public static
+  String buildTimeline(String id, HttpServletRequest request, String sKey, int field, boolean reverse, boolean groupByMonth)
+  {
+    Object oValues = request.getAttribute(sKey);
+    if(oValues == null) return "";
+    if(!(oValues instanceof Collection)) {
+      return oValues.toString();
+    }
+    List<List<Object>> data = DataUtil.toListOfListObject(oValues);
+    return buildTimeline(id, data, field, reverse, groupByMonth);
+  }
+  
+  /**
+   * Costruisce la timeline.
+   * 
+   * @param id Identificativo html del componente
+   * @param data Dati
+   * @param field Campo rispetto al quale costruire la timeline
+   * @param reverse Elaborazione dati in ordine inverso
+   * @param groupByMonth Raggruppamento per mese
+   * @return timeline
+   */
+  public static
+  String buildTimeline(String id, List<List<Object>> data, int field, boolean reverse, boolean groupByMonth)
+  {
+    if(id == null || id.length() == 0) {
+      id = "timeline";
+    }
+    if(data == null || data.size() == 0) {
+      return "";
+    }
+    if(data.size() == 1) {
+      return buildTable(null, data, true);
+    }
+    
+    List<Object> header = data.get(0);
+    
+    List<List<Object>> group = new ArrayList<List<Object>>();
+    
+    String result = "";
+    result += "<div class=\"horizontal-timeline\" id=\"" + id + "\">";
+    result += "<div class=\"events-content\">";
+    result += "<ol>";
+    String lastKey  = "";
+    String lastDate = "";
+    if(reverse) {
+      for(int i = data.size() - 1; i > 0; i--) {
+        List<Object> record = data.get(i);
+        if(record == null || record.size() <= field) continue;
+        String date = DataUtil.toString(record.get(field), null);
+        if(date == null || date.length() == 0) continue;
+        String key = groupByMonth ? getDescMonth(date, date) : date;
+        if(key.equals(lastKey)) {
+          group.add(record);
+        }
+        else {
+          if(lastKey.length() > 0) {
+            result += "<li data-horizontal-timeline='{\"date\":\"" + lastDate + "\",\"customDisplay\":\"" + lastKey + "\"}'>";
+            result += buildTable(null, data, true);
+            result += "</li>";
+          }
+          group.clear();
+          group.add(header);
+          group.add(record);
+        }
+        lastKey  = key;
+        lastDate = date;
+      }
+    }
+    else {
+      for(int i = 1; i < data.size(); i++) {
+        List<Object> record = data.get(i);
+        if(record == null || record.size() <= field) continue;
+        String date = DataUtil.toString(record.get(field), null);
+        if(date == null || date.length() == 0) continue;
+        String key = groupByMonth ? getDescMonth(date, date) : date;
+        if(key.equals(lastKey)) {
+          group.add(record);
+        }
+        else {
+          if(lastKey.length() > 0) {
+            result += "<li data-horizontal-timeline='{\"date\":\"" + lastDate + "\",\"customDisplay\":\"" + lastKey + "\"}'>";
+            result += buildTable(null, data, true);
+            result += "</li>";
+          }
+          group.clear();
+          group.add(header);
+          group.add(record);
+        }
+        lastKey  = key;
+        lastDate = date;
+      }
+    }
+    if(lastKey.length() > 0) {
+      result += "<li data-horizontal-timeline='{\"date\":\"" + lastDate + "\",\"customDisplay\":\"" + lastKey + "\"}'>";
+      result += buildTable(null, data, true);
+      result += "</li>";
+    }
+    result += "</ol>";
+    result += "</div>";
+    result += "</div>";
+    return result;
+  }
+  
+  /**
    * Restituisce il path dela pagina corrente.
    * 
    * @param renderResponse RenderResponse
@@ -1818,8 +1974,7 @@ class WebUtil
     if(sPortletURL.startsWith("http://")) {
       iIdxRoot = sPortletURL.indexOf("/", 7);
     }
-    else
-    if(sPortletURL.startsWith("https://")) {
+    else if(sPortletURL.startsWith("https://")) {
       iIdxRoot = sPortletURL.indexOf("/", 8);
     }
     else {
@@ -2098,5 +2253,54 @@ class WebUtil
     if(sB.length() == 1) sB = "0" + sB;
     
     return "#" + sR + sG + sB;
+  }
+  
+  public static
+  String getDescMonth(Object date, String defValue)
+  {
+    Calendar cal = DataUtil.toCalendar(date, null);
+    if(cal == null) return defValue;
+    int month = cal.get(Calendar.MONTH) + 1;
+    int year  = cal.get(Calendar.YEAR);
+    String descMonth = "";
+    switch (month) {
+    case 1:
+      descMonth = "Gen";
+      break;
+    case 2:
+      descMonth = "Feb";
+      break;
+    case 3:
+      descMonth = "Mar";
+      break;
+    case 4:
+      descMonth = "Apr";
+      break;
+    case 5:
+      descMonth = "Mag";
+      break;
+    case 6:
+      descMonth = "Giu";
+      break;
+    case 7:
+      descMonth = "Lug";
+      break;
+    case 8:
+      descMonth = "Ago";
+      break;
+    case 9:
+      descMonth = "Set";
+      break;
+    case 10:
+      descMonth = "Ott";
+      break;
+    case 11:
+      descMonth = "Nov";
+      break;
+    case 12:
+      descMonth = "Dic";
+      break;
+    }
+    return descMonth + " " + year;
   }
 }
