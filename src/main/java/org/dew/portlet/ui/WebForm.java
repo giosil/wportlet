@@ -50,6 +50,8 @@ class WebForm implements Serializable
   protected String before;
   protected String after;
   protected String footer;
+  protected String beforeButtons;
+  protected String afterButtons;
   protected int incLab = 0;
 
   protected List<WebForm> forms = null;
@@ -241,6 +243,14 @@ class WebForm implements Serializable
 
   public void setButtonsUp(boolean buttonsUp) {
     this.btnsUp = buttonsUp;
+  }
+
+  public void setBeforeButtons(String beforeButtons) {
+    this.beforeButtons = beforeButtons;
+  }
+
+  public void setAfterButtons(String afterButtons) {
+    this.afterButtons = afterButtons;
   }
 
   public String getValidation() {
@@ -931,6 +941,9 @@ class WebForm implements Serializable
       if(!columnLayout) {
         sb.append("<div class=\"" + ROW_CLASS + "\">");
       }
+      if(beforeButtons != null && beforeButtons.length() > 0) {
+        sb.append(beforeButtons);
+      }
       else {
         sb.append("<br/>");
       }
@@ -938,6 +951,9 @@ class WebForm implements Serializable
         WField wButton = btns.get(i);
         sb.append(wButton.toString());
         if(i < btns.size()-1) sb.append("&nbsp;&nbsp;");
+      }
+      if(afterButtons != null && afterButtons.length() > 0) {
+        sb.append(afterButtons);
       }
       if(!columnLayout) sb.append("</div>");
       sb.append("<br/>");
@@ -1120,6 +1136,9 @@ class WebForm implements Serializable
         sb.append("<div class=\"" + ROW_CLASS + "\">");
         sb.append("<br/>");
       }
+      if(beforeButtons != null && beforeButtons.length() > 0) {
+        sb.append(beforeButtons);
+      }
       else {
         sb.append("<br/>");
         sb.append("<br/>");
@@ -1128,6 +1147,9 @@ class WebForm implements Serializable
         WField wButton = btns.get(i);
         sb.append(wButton.toString());
         if(i < btns.size()-1) sb.append("&nbsp;&nbsp;");
+      }
+      if(afterButtons != null && afterButtons.length() > 0) {
+        sb.append(afterButtons);
       }
       if(!columnLayout) sb.append("</div>");
     }
