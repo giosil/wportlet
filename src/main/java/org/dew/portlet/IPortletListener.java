@@ -46,8 +46,9 @@ interface IPortletListener
    * @param actionException Eccezione
    * @param request javax.portlet.RenderRequest
    * @param response javax.portlet.RenderResponse
+   * @return Messaggio da mostrare
    */
-  public void exception(String sAction, Parameters parameters, Exception actionException, RenderRequest request, RenderResponse response);
+  public String exception(String sAction, Parameters parameters, Exception actionException, RenderRequest request, RenderResponse response);
   
   /**
    * Invocato alla fine del metodo <code>WPortlet.destroy</code>. 
