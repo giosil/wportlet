@@ -478,7 +478,7 @@ class WPortlet extends GenericPortlet implements WNames
         sMessage = th.toString();
       }
       if(sMessage == null || sMessage.length() == 0) {
-        sMessage = "Errore non identificato";
+        sMessage = "Error";
       }
       int iException = sMessage.lastIndexOf("Exception:");
       if(iException >= 0) {
