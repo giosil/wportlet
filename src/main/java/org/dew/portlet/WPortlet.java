@@ -384,14 +384,28 @@ class WPortlet extends GenericPortlet implements WNames
         request.setAttribute(sATTR_IS_WARNING, Boolean.FALSE);
       }
       try {
-        String sMsgPage = iaction.exception(sAction, parameters, actionException, request, response);
-        if(sMsgPage != null) {
-          if(!sMsgPage.equals(sNO_JSP)) {
-            showMessage(request, response, sMsgPage, actionException);
+        String sMsgText = null;
+        if(_portletListener != null) {
+          sMsgText = _portletListener.exception(sAction, parameters, actionException, request, response);
+        }
+        String sActionMsgPage = iaction.exception(sAction, parameters, actionException, request, response);
+        if(sActionMsgPage != null) {
+          if(!sActionMsgPage.equals(sNO_JSP)) {
+            if(sMsgText != null && sMsgText.length() > 0) {
+              showMessage(request, response, sActionMsgPage, sMsgText);
+            }
+            else {
+              showMessage(request, response, sActionMsgPage, actionException);
+            }
           }
         }
         else {
-          showMessage(request, response, _sMsgPage, actionException);
+          if(sMsgText != null && sMsgText.length() > 0) {
+            showMessage(request, response, _sMsgPage, sMsgText);
+          }
+          else {
+            showMessage(request, response, _sMsgPage, actionException);
+          }
         }
       } 
       catch (Throwable th) {
@@ -433,20 +447,20 @@ class WPortlet extends GenericPortlet implements WNames
         if(_portletListener != null) {
           sMsgText = _portletListener.exception(sAction, parameters, actionException, request, response);
         }
-        String sMsgPage = iaction.exception(sAction, parameters, actionException, request, response);
-        if(sMsgPage != null) {
-          if(!sMsgPage.equals(sNO_JSP)) {
+        String sActionMsgPage = iaction.exception(sAction, parameters, actionException, request, response);
+        if(sActionMsgPage != null) {
+          if(!sActionMsgPage.equals(sNO_JSP)) {
             if(sMsgText != null && sMsgText.length() > 0) {
-              showMessage(request, response, sMsgPage, sMsgText, true);
+              showMessage(request, response, sActionMsgPage, sMsgText);
             }
             else {
-              showMessage(request, response, sMsgPage, actionException);
+              showMessage(request, response, sActionMsgPage, actionException);
             }
           }
         }
         else {
           if(sMsgText != null && sMsgText.length() > 0) {
-            showMessage(request, response, _sMsgPage, sMsgText, true);
+            showMessage(request, response, _sMsgPage, sMsgText);
           }
           else {
             showMessage(request, response, _sMsgPage, actionException);
@@ -478,31 +492,11 @@ class WPortlet extends GenericPortlet implements WNames
     response.setContentType("text/html");
     PortletContext portletContext = getPortletContext();
     PortletRequestDispatcher dispatcher = null;
-    if(_sMsgPage != null && _sMsgPage.length() > 0) {
-      dispatcher = portletContext.getRequestDispatcher(sJSP_PATH + _sMsgPage);
+    if(sPage != null && sPage.length() > 0) {
+      dispatcher = portletContext.getRequestDispatcher(sJSP_PATH + sPage);
     }
     else {
-      dispatcher = portletContext.getRequestDispatcher(sJSP_PATH + sPage);
-    }
-    dispatcher.include(request, response);
-  }
-  
-  protected 
-  void showMessage(RenderRequest request, RenderResponse response, String sPage, String sMessage, boolean overridePage) 
-    throws PortletException, IOException
-  {
-    request.setAttribute(sATTR_MESSAGE, sMessage);
-    response.setContentType("text/html");
-    PortletContext portletContext = getPortletContext();
-    PortletRequestDispatcher dispatcher = null;
-    if(overridePage) {
-      dispatcher = portletContext.getRequestDispatcher(sJSP_PATH + sPage);
-    }
-    else if(_sMsgPage != null && _sMsgPage.length() > 0) {
       dispatcher = portletContext.getRequestDispatcher(sJSP_PATH + _sMsgPage);
-    }
-    else {
-      dispatcher = portletContext.getRequestDispatcher(sJSP_PATH + sPage);
     }
     dispatcher.include(request, response);
   }
@@ -528,7 +522,13 @@ class WPortlet extends GenericPortlet implements WNames
     request.setAttribute(sATTR_MESSAGE, sMessage);
     response.setContentType("text/html");
     PortletContext portletContext = getPortletContext();
-    PortletRequestDispatcher dispatcher = portletContext.getRequestDispatcher(sJSP_PATH + sPage);
+    PortletRequestDispatcher dispatcher = null;
+    if(sPage != null && sPage.length() > 0) {
+      dispatcher = portletContext.getRequestDispatcher(sJSP_PATH + sPage);
+    }
+    else {
+      dispatcher = portletContext.getRequestDispatcher(sJSP_PATH + _sMsgPage);
+    }
     dispatcher.include(request, response);
   }
   
