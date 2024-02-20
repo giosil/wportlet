@@ -26,13 +26,13 @@ class WebForm implements Serializable
   protected String  labelStyle;
   protected String  fieldsetStyle;
   protected String  focusOn;
-
+  
   protected List<List<WField>> rows = new ArrayList<List<WField>>();
   protected List<String> rowe = new ArrayList<String>();
   protected List<WField> btns;
   protected List<WField> hidd;
   protected List<String> date;
-
+  
   protected String name;
   protected String id;
   protected String initFunction;
@@ -45,7 +45,7 @@ class WebForm implements Serializable
   protected boolean multipart = false;
   protected boolean btnsUp    = false;
   protected boolean btnsDown  = true;
-
+  
   protected String endRow;
   protected String before;
   protected String after;
@@ -53,66 +53,66 @@ class WebForm implements Serializable
   protected String beforeButtons;
   protected String afterButtons;
   protected int incLab = 0;
-
+  
   protected List<WebForm> forms = null;
   protected List<String> titles = null;
-
-  public static String ROW_CLASS        = "section group";
-  public static String COL_CLASS_BEG    = "kol span_";
-  public static String COL_CLASS_END    = "_of_12";
-
-  public static String STYLE_STATIC_TXT = "line-height:2;padding-top:5px;";
-  public static String STYLE_DIV_LABEL  = "line-height:2;padding-top:5px;text-align:right;";
-  public static String STYLE_DIV_BLANK  = "padding:5px 0 2px 0;";
-  public static String STYLE_DIV_INPUT  = "padding:5px 0 2px 0;";
-  public static String STYLE_DIV_RADIO  = "padding:12px 0 2px 0;";
-  public static String STYLE_DIV_FIELD  = "padding:5px 0 2px 0;";
-  public static String STYLE_DIV_STATIC = "padding:5px 0 2px 0;";
+  
+  public static String ROW_CLASS         = "section group";
+  public static String COL_CLASS_BEG     = "kol span_";
+  public static String COL_CLASS_END     = "_of_12";
+  
+  public static String STYLE_STATIC_TXT  = "line-height:2;padding-top:5px;";
+  public static String STYLE_DIV_LABEL   = "line-height:2;padding-top:5px;text-align:right;";
+  public static String STYLE_DIV_BLANK   = "padding:5px 0 2px 0;";
+  public static String STYLE_DIV_INPUT   = "padding:5px 0 2px 0;";
+  public static String STYLE_DIV_RADIO   = "padding:12px 0 2px 0;";
+  public static String STYLE_DIV_FIELD   = "padding:5px 0 2px 0;";
+  public static String STYLE_DIV_STATIC  = "padding:5px 0 2px 0;";
   
   public WebForm()
   {
   }
-
+  
   public WebForm(String id, String title, String onSubmit)
   {
     this.id       = id;
     this.title    = title;
     this.onSubmit = onSubmit;
   }
-
+  
   public WebForm(HttpServletRequest request)
   {
     this.namespace = WebUtil.getNamespace(request);
     this.actionUrl = WebUtil.getActionURL(request);
   }
-
+  
   public WebForm(HttpServletRequest request, String title)
   {
     this.namespace = WebUtil.getNamespace(request);
     this.actionUrl = WebUtil.getActionURL(request);
     this.title     = title;
   }
-
+  
   public WebForm(HttpServletRequest request, String title, String action)
   {
     this.namespace = WebUtil.getNamespace(request);
     this.actionUrl = WebUtil.buildActionURL(request, action, null);
     this.title     = title;
   }
-
+  
   public WebForm(RenderResponse renderResponse)
   {
     this.namespace = renderResponse.getNamespace();
     this.actionUrl = renderResponse.createActionURL().toString();
   }
-
+  
   public WebForm(RenderResponse renderResponse, String title)
   {
     this.namespace = renderResponse.getNamespace();
     this.actionUrl = renderResponse.createActionURL().toString();
     this.title     = title;
   }
-
+  
   public WebForm(RenderResponse renderResponse, String title, String action)
   {
     this.namespace = renderResponse.getNamespace();
@@ -123,7 +123,7 @@ class WebForm implements Serializable
     this.actionUrl = portletURL.toString();
     this.title     = title;
   }
-
+  
   public WebForm(RenderResponse renderResponse, String title, String action, String param, String value)
   {
     this.namespace = renderResponse.getNamespace();
@@ -137,43 +137,43 @@ class WebForm implements Serializable
     this.actionUrl = portletURL.toString();
     this.title     = title;
   }
-
+  
   public void setNamespace(String namespace) {
     this.namespace = namespace;
   }
-
+  
   public String getActionUrl() {
     return actionUrl;
   }
-
+  
   public String getId() {
     return id;
   }
-
+  
   public void setId(String id) {
     this.id = id;
   }
-
+  
   public String getName() {
     return name;
   }
-
+  
   public void setName(String name) {
     this.name = name;
   }
-
+  
   public String getStyle() {
     return style;
   }
-
+  
   public void setStyle(String style) {
     this.style = style;
   }
-
+  
   public void setOnSubmit(String onSubmit) {
     this.onSubmit = onSubmit;
   }
-
+  
   public void setOnSubmit(String onSubmit, boolean validation) {
     if(validation) {
       this.validation = onSubmit;
@@ -275,7 +275,7 @@ class WebForm implements Serializable
       titles.add("");
     }
   }
-
+  
   public
   void addRow()
   {
@@ -289,21 +289,21 @@ class WebForm implements Serializable
     rows.add(new ArrayList<WField>());
     rowe.add(sElement);
   }
-
+  
   public 
   void addComponent(String sHtml)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.COMPONENT, sHtml));
   }
-
+  
   public 
   void addComponent(String sLabel, String sHtml)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.COMPONENT, "", sLabel).append(sHtml));
   }
-
+  
   public 
   void addStaticText(String sId, String sLabel, String sText)
   {
@@ -320,7 +320,7 @@ class WebForm implements Serializable
       currRow.add(new WField(Type.STATICTEXT, sId, sLabel, sText));
     }
   }
-
+  
   public 
   void addStaticText(String sId, String sLabel, String sText, String sStyle)
   {
@@ -350,28 +350,28 @@ class WebForm implements Serializable
       currRow.add(new WField(Type.STATICTEXT, sId, sLabel, sText));
     }
   }
-
+  
   public 
   void addTextField(String sId, String sLabel)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.TEXTFIELD, sId, sLabel));
   }
-
+  
   public 
   void addTextField(String sId, String sLabel, String sAttributes)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.TEXTFIELD, sId, sLabel, "", sAttributes));
   }
-
+  
   public 
   void addTextField(String sId, String sLabel, String sAttributes, String sText)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.TEXTFIELD, sId, sLabel, sText, sAttributes));
   }
-
+  
   public 
   void addTextField(String sId, String sLabel, String sAttributes, String sText, boolean boEnabled)
   {
@@ -382,7 +382,7 @@ class WebForm implements Serializable
       addStaticText(sId, sLabel, sAttributes, sText);
     }
   }
-
+  
   public 
   void addTextField(String sId, String sLabel, String sText, boolean boEnabled)
   {
@@ -393,28 +393,28 @@ class WebForm implements Serializable
       addStaticText(sId, sLabel, sText);
     }
   }
-
+  
   public 
   void addPassword(String sId, String sLabel)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.PASSWORD, sId, sLabel));
   }
-
+  
   public 
   void addNumericField(String sId, String sLabel)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.NUMBER, sId, sLabel));
   }
-
+  
   public 
   void addNumericField(String sId, String sLabel, String sAttributes, String sValue)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.NUMBER, sId, sLabel, sValue, sAttributes));
   }
-
+  
   public 
   void addTextArea(String sId, String sLabel, int iRows, int iCols)
   {
@@ -432,7 +432,7 @@ class WebForm implements Serializable
       currRow.add(new WField(Type.TEXTAREA, sId, sLabel));
     }
   }
-
+  
   public 
   void addTextArea(String sId, String sLabel, int iRows, int iCols, String sAttributes)
   {
@@ -454,7 +454,7 @@ class WebForm implements Serializable
       currRow.add(new WField(Type.TEXTAREA, sId, sLabel, "", sAttributes));
     }
   }
-
+  
   public 
   void addTextArea(String sId, String sLabel, int iRows, int iCols, String sAttributes, String sText)
   {
@@ -476,14 +476,14 @@ class WebForm implements Serializable
       currRow.add(new WField(Type.TEXTAREA, sId, sLabel, sText, sAttributes));
     }
   }
-
+  
   public 
   void addCheckBox(String sId, String sLabel)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.CHECKBOX, sId, sLabel));
   }
-
+  
   public 
   void addCheckBox(String sId, String sLabel, boolean checked)
   {
@@ -495,7 +495,7 @@ class WebForm implements Serializable
       currRow.add(new WField(Type.CHECKBOX, sId, sLabel));
     }
   }
-
+  
   public 
   void addCheckBox(String sId, String sLabel, boolean checked, boolean boEnabled)
   {
@@ -517,21 +517,21 @@ class WebForm implements Serializable
       }
     }
   }
-
+  
   public 
   void addRadioButton(String sId, String sLabel, boolean checked)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.RADIOBUTTON, sId, sLabel, checked));
   }
-
+  
   public 
   void addRadioButton(String sId, String sLabel, String sValue, boolean checked)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.RADIOBUTTON, sId, sLabel, sValue, checked));
   }
-
+  
   public 
   void addDateField(String sId, String sLabel)
   {
@@ -540,7 +540,7 @@ class WebForm implements Serializable
     if(date == null) date = new ArrayList<String>();
     date.add(sId);
   }
-
+  
   public 
   void addDateField(String sId, String sLabel, String sAttributes)
   {
@@ -551,18 +551,18 @@ class WebForm implements Serializable
     }
     else {
       currRow.add(new WField(Type.DATEFIELD, sId, sLabel, "", sAttributes));
-    }    
+    }
     if(date == null) date = new ArrayList<String>();
     date.add(sId);
   }
-
+  
   public 
   void addTimeField(String sId, String sLabel)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.TIMEFIELD, sId, sLabel));
   }
-
+  
   public 
   void addTimeField(String sId, String sLabel, String sAttributes)
   {
@@ -575,7 +575,7 @@ class WebForm implements Serializable
       currRow.add(new WField(Type.TIMEFIELD, sId, sLabel, "", sAttributes));
     }
   }
-
+  
   public 
   void addSelect(String sId, String sLabel, HttpServletRequest request, String sAttribute)
   {
@@ -588,14 +588,14 @@ class WebForm implements Serializable
       currRow.add(new WField(Type.SELECT, sId, sLabel, Collections.EMPTY_LIST));
     }
   }
-
+  
   public 
   void addSelect(String sId, String sLabel, List<?> listOptions)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.SELECT, sId, sLabel, listOptions));
   }
-
+  
   public 
   void addSelect(String sId, String sLabel, List<?> listOptions, String sSelectedItem_Attribute)
   {
@@ -607,14 +607,14 @@ class WebForm implements Serializable
       currRow.add(new WField(Type.SELECT, sId, sLabel, listOptions, sSelectedItem_Attribute));
     }
   }
-
+  
   public 
   void addSelect(String sId, String sLabel, List<?> listOptions, String sSelectedItem, String sAttribute)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.SELECT, sId, sLabel, listOptions, sSelectedItem, sAttribute));
   }
-
+  
   public 
   void addSelect(String sId, String sLabel, String... asOptions)
   {
@@ -628,14 +628,14 @@ class WebForm implements Serializable
     }
     currRow.add(new WField(Type.SELECT, sId, sLabel, listOptions));
   }
-
+  
   public 
   void addHiddenField(String sId, String sValue)
   {
     if(hidd == null) hidd = new ArrayList<WField>();
     hidd.add(new WField(Type.HIDDEN, sId, "", sValue));
   }
-
+  
   public 
   void addFileField(String sId, String sLabel)
   {
@@ -643,7 +643,7 @@ class WebForm implements Serializable
     currRow.add(new WField(Type.FILEFIELD, sId, sLabel));
     multipart = true;
   }
-
+  
   public 
   void addFileField(String sId, String sLabel, String sNotes)
   {
@@ -651,21 +651,21 @@ class WebForm implements Serializable
     currRow.add(new WField(Type.FILEFIELD, sId, sLabel, sNotes));
     multipart = true;
   }
-
+  
   public 
   void addBlankField()
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.BLANK, "&nbsp;"));
   }
-
+  
   public 
   void addBlankField(String sText_Html)
   {
     List<WField> currRow = getCurrentRow();
     currRow.add(new WField(Type.BLANK, sText_Html));
   }
-
+  
   public 
   void addButton(String sLabel, String sOnClick)
   {
@@ -680,7 +680,7 @@ class WebForm implements Serializable
     }
     btns.add(new WField(Type.BUTTON, sId, sLabel, sOnClick));
   }
-
+  
   public 
   void addSubmit(String sLabel, String sOnClick)
   {
@@ -695,7 +695,7 @@ class WebForm implements Serializable
     }
     btns.add(new WField(Type.SUBMIT, sId, sLabel, sOnClick));
   }
-
+  
   public 
   void addSubmit(String sLabel)
   {
@@ -710,7 +710,7 @@ class WebForm implements Serializable
     }
     btns.add(new WField(Type.SUBMIT, sId, sLabel));
   }
-
+  
   public 
   void addCancel(String sLabel, String sOnClick)
   {
@@ -725,7 +725,7 @@ class WebForm implements Serializable
     }
     btns.add(new WField(Type.RESET, sId, sLabel, sOnClick));
   }
-
+  
   public 
   void addCancel(String sLabel)
   {
@@ -740,19 +740,19 @@ class WebForm implements Serializable
     }
     btns.add(new WField(Type.RESET, sId, sLabel));
   }
-
+  
   public
   void setInitFunction(String functionName)
   {
     this.initFunction = functionName;
   }
-
+  
   public
   String getInitFunction()
   {
     return initFunction;
   }
-
+  
   protected
   List<WField> getCurrentRow()
   {
@@ -873,7 +873,7 @@ class WebForm implements Serializable
     }
     return "";
   }
-
+  
   protected
   String build()
   {
@@ -998,6 +998,7 @@ class WebForm implements Serializable
       else {
         iSmL = 1; iSmF = 1;
       }
+      
       int iRowItems = currRow.size();
       for(int c = 0; c < iRowItems; c++) {
         WField wField = currRow.get(c);
@@ -1026,6 +1027,12 @@ class WebForm implements Serializable
         int iSepPlaceHolder = sLabel.indexOf('^');
         if(iSepPlaceHolder > 0) {
           sLabel = sLabel.substring(0, iSepPlaceHolder);
+        }
+        // Increment
+        if(sLabel.startsWith("+")) {
+          sLabel = sLabel.substring(1);
+          iSmL++;
+          iSmF--;
         }
         
         if(type == Type.BLANK && !columnLayout) {
@@ -1169,7 +1176,7 @@ class WebForm implements Serializable
     }
     return sb.toString();
   }
-
+  
   @Override
   public
   boolean equals(Object obj) 
@@ -1180,7 +1187,7 @@ class WebForm implements Serializable
     }
     return false;
   }
-
+  
   @Override
   public
   int hashCode()
@@ -1188,7 +1195,7 @@ class WebForm implements Serializable
     if(actionUrl != null) return actionUrl.hashCode();
     return 0;
   }
-
+  
   @Override
   public
   String toString()
@@ -1212,14 +1219,14 @@ class WebForm implements Serializable
     }
     return sb.toString();
   }
-
+  
   static enum Type
   {
     STATICTEXT, TEXTFIELD, TEXTAREA, CHECKBOX, RADIOBUTTON, DATEFIELD, TIMEFIELD, SELECT, FILEFIELD, NUMBER, PASSWORD, HIDDEN, 
     COMPONENT, BLANK, 
     BUTTON, SUBMIT, RESET 
   }
-
+  
   static class WField implements Serializable
   {
     private static final long serialVersionUID = 8260748273213660357L;
@@ -1232,19 +1239,19 @@ class WebForm implements Serializable
     protected String  html    = "";
     protected boolean checked = false;
     protected List<?> options;
-
+    
     public WField()
     {
       this.type  = Type.BLANK;
     }
-
+    
     public WField(Type type, String id, String label)
     {
       this.type    = type;
       this.id      = id;
       this.label   = label;
     }
-
+    
     public WField(Type type, String id, String label, boolean checked)
     {
       this.type    = type;
@@ -1252,7 +1259,7 @@ class WebForm implements Serializable
       this.label   = label;
       this.checked = checked;
     }
-
+    
     public WField(Type type, String id, String label, String value, boolean checked)
     {
       this.type    = type;
@@ -1261,7 +1268,7 @@ class WebForm implements Serializable
       this.value   = value;
       this.checked = checked;
     }
-
+    
     public WField(Type type, String id, String label, List<?> options)
     {
       this.type    = type;
@@ -1272,13 +1279,13 @@ class WebForm implements Serializable
         this.options = Collections.EMPTY_LIST;
       }
     }
-
+    
     public WField(Type type, String html)
     {
       this.type  = type;
       this.html  = html;
     }
-
+    
     public WField(Type type, String id, String label, String value)
     {
       this.type  = type;
@@ -1286,7 +1293,7 @@ class WebForm implements Serializable
       this.label = label;
       this.value = value;
     }
-
+    
     public WField(Type type, String id, String label, List<?> options, String value)
     {
       this.type    = type;
@@ -1298,7 +1305,7 @@ class WebForm implements Serializable
         this.options = Collections.EMPTY_LIST;
       }
     }
-
+    
     public WField(Type type, String id, String label, List<?> options, String value, String attr)
     {
       this.type    = type;
@@ -1311,7 +1318,7 @@ class WebForm implements Serializable
         this.options = Collections.EMPTY_LIST;
       }
     }
-
+    
     public WField(Type type, String id, String label, String value, String attr)
     {
       this.type  = type;
@@ -1384,7 +1391,7 @@ class WebForm implements Serializable
     public void setOptions(List<?> options) {
       this.options = options;
     }
-
+    
     public WField append(Object obj) {
       if(obj == null) obj = "";
       String sObjHtml = obj.toString();
@@ -1394,7 +1401,7 @@ class WebForm implements Serializable
       }
       return this;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
       if(obj instanceof WField) {
@@ -1403,7 +1410,7 @@ class WebForm implements Serializable
       }
       return false;
     }
-
+    
     @Override
     public int hashCode() {
       if(id != null) return id.hashCode();
