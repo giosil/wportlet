@@ -206,7 +206,7 @@ class WPortlet extends GenericPortlet implements WNames
         
         if(boActionLogin && (actionResult instanceof User)) {
           session.setAttribute(sSESS_USER, actionResult, PortletSession.PORTLET_SCOPE);
-          Map<String,Object> mapMenu = ((User) actionResult).getMenu();
+          Map<String, Object> mapMenu = ((User) actionResult).getMenu();
           if(mapMenu != null && !mapMenu.isEmpty()) {
             session.setAttribute(sSESS_MENU, mapMenu, PortletSession.PORTLET_SCOPE);
           }
@@ -299,7 +299,7 @@ class WPortlet extends GenericPortlet implements WNames
     request.setAttribute(sATTR_PARAMETERS, parameters);
     
     // Gestione menu
-    Map<String,Object> mapMenu = DataUtil.expectMap(session.getAttribute(sSESS_MENU));
+    Map<String, Object> mapMenu = DataUtil.expectMap(session.getAttribute(sSESS_MENU));
     if(mapMenu == null) {
       if(_sMenu != null && _sMenu.length() > 0) {
         if(_boHasLogin) {
