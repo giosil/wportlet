@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.sql.Connection;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpSession;
 // <artifactId>portal-service</artifactId>
 // <version>6.1.2</version>
 
+//import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 //import com.liferay.portal.model.User;
 //import com.liferay.portal.model.Group;
 //import com.liferay.portal.model.Role;
@@ -41,6 +44,7 @@ import javax.servlet.http.HttpSession;
 // <artifactId>com.liferay.portal.kernel</artifactId>
 // <version>3.35.3</version>
 
+import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
@@ -66,6 +70,21 @@ class PlatformUtil
   void log(String message, Throwable th)
   {
     System.err.println(new java.sql.Timestamp(System.currentTimeMillis()) + " " + message + ": " + th);
+  }
+  
+  public static
+  Connection getPortalConnection()
+    throws Exception
+  {
+    Connection conn = null;
+    try {
+      conn = DataAccess.getConnection();
+    }
+    catch(Exception ex) {
+      log("Exception in PlatformUtil.getPortalConnection(): ", ex);
+      throw ex;
+    }
+    return conn;
   }
   
   public static
