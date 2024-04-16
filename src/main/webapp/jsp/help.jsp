@@ -7,3 +7,5 @@
 <br />
 <br />
 PortletName: <strong><%= name %></strong>
+<br />
+<a href="<%= WebUtil.buildForwardHome(request) %>">Home</a>
