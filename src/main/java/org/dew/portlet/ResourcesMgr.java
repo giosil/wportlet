@@ -1,7 +1,5 @@
 package org.dew.portlet;
 
-import org.dew.portlet.ui.*;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -32,6 +30,12 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import javax.sql.DataSource;
+
+import org.dew.portlet.ui.AMenuBuilder;
+import org.dew.portlet.ui.ATabsBuilder;
+import org.dew.portlet.ui.DataUtil;
+import org.dew.portlet.ui.SimpleMenuBuilder;
+import org.dew.portlet.ui.SimpleTabsBuilder;
 
 /**
  * Classe per la gestione delle risorse di WPortlet.
@@ -198,16 +202,6 @@ class ResourcesMgr
     }
     String sURL = portletConfig.getInitParameter("jdbc.url");
     if(sURL != null) {
-      int iCtxDir = sURL.indexOf("${ctx.dir}");
-      if(iCtxDir > 0) {
-        String sCtxDir = portletConfig.getPortletContext().getRealPath("");
-        if(sCtxDir != null && sCtxDir.length() > 0) {
-          int iLast = sCtxDir.length() - 1;
-          char cLast = sCtxDir.charAt(iLast);
-          if(cLast == '/' || cLast == '\\') sCtxDir = sCtxDir.substring(0, iLast);
-          sURL = sURL.substring(0, iCtxDir) + sCtxDir + sURL.substring(iCtxDir + 10);
-        }
-      }
       String sDriver = portletConfig.getInitParameter("jdbc.driver");
       if(sDriver == null) sDriver = "oracle.jdbc.driver.OracleDriver";
       String sUser = portletConfig.getInitParameter("jdbc.user");
@@ -352,7 +346,7 @@ class ResourcesMgr
       }
     }
     catch(Exception ex) {
-      PlatformUtil.log("Exception in ResourcesMgr.getMenuBuilder", ex);
+      PlatformUtil.log("Exception in ResourcesMgr.getMenuBuilder(" + AMenuBuilder.sCLASS + "=" + oClass + ")", ex);
     }
     return new SimpleMenuBuilder();
   }
@@ -386,31 +380,47 @@ class ResourcesMgr
       }
     }
     catch(Exception ex) {
-      PlatformUtil.log("Exception in ResourcesMgr.getTabsBuilder", ex);
+      PlatformUtil.log("Exception in ResourcesMgr.getTabsBuilder(" + ATabsBuilder.sCLASS + "=" + oClass + ")", ex);
     }
     return new SimpleTabsBuilder();
   }
   
   public static
-  Map<String,Object> loadTabs(PortletConfig portletConfig, String sTabsFile)
+  InputStream openPortletFile(PortletConfig portletConfig, String path)
   {
-    if(sTabsFile == null || sTabsFile.length() == 0) {
+    if(path == null || path.length() == 0) {
       return null;
     }
+    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+    if(is != null) return is;
     
-    String sFilePath = portletConfig.getPortletContext().getRealPath("tabs/" + sTabsFile);
-    if(sFilePath == null || sFilePath.length() == 0) return null;
-    
-    if(sTabsFile.endsWith("properties")) {
-      return ResourcesMgr.loadFileProperties(sFilePath);
+    String sFilePath = portletConfig.getPortletContext().getRealPath(path);
+    if(sFilePath == null || sFilePath.length() == 0) {
+      return null;
     }
-    Map<String,Object> mapResult = new HashMap<String,Object>();
+    try {
+      return new FileInputStream(sFilePath);
+    }
+    catch(Exception ex) {
+      PlatformUtil.log("Exception in ResourcesMgr.openPortletFile(portletConfig, " + path + ")", ex);
+    }
+    return null;
+  }
+  
+  public static
+  Map<String, Object> loadTabs(PortletConfig portletConfig, String sTabsFile)
+  {
+    InputStream is = openPortletFile(portletConfig, "tabs/" + sTabsFile);
+    if(is == null) return null;
+    
+    Map<String, Object> mapResult = new HashMap<String, Object>();
     List<String> listTabs = new ArrayList<String>();
     mapResult.put(ATabsBuilder.sTABS, listTabs);
-    InputStream is    = null;
     BufferedReader br = null;
     try {
-      is = new FileInputStream(sFilePath);
+      if(sTabsFile != null && sTabsFile.endsWith(".properties")) {
+        return ResourcesMgr.loadFileProperties(is);
+      }
       br = new BufferedReader(new InputStreamReader(is));
       String sLine = null;
       while((sLine = br.readLine()) != null) {
@@ -432,7 +442,7 @@ class ResourcesMgr
       }
     } 
     catch(Exception ex) {
-      PlatformUtil.log("Exception in ResourcesMgr.loadTabs(portletConfig," + sTabsFile + ")", ex);
+      PlatformUtil.log("Exception in ResourcesMgr.loadTabs(portletConfig, " + sTabsFile + ")", ex);
     }
     finally {
       if(br != null) try{ br.close(); } catch(Exception ex) {}
@@ -446,24 +456,18 @@ class ResourcesMgr
   }
   
   public static
-  Map<String,Object> loadMenu(PortletConfig portletConfig, String sMenuFile)
+  Map<String, Object> loadMenu(PortletConfig portletConfig, String sMenuFile)
   {
-    if(sMenuFile == null || sMenuFile.length() == 0) {
-      return null;
-    }
+    InputStream is = openPortletFile(portletConfig, "menu/" + sMenuFile);
+    if(is == null) return null;
     
-    String sFilePath = portletConfig.getPortletContext().getRealPath("menu/" + sMenuFile);
-    if(sFilePath == null || sFilePath.length() == 0) return null;
-    
-    if(sMenuFile.endsWith("properties")) {
-      return ResourcesMgr.loadFileProperties(sFilePath);
-    }
-    Map<String,Object> mapResult = new HashMap<String,Object>();
+    Map<String, Object> mapResult = new HashMap<String, Object>();
     List<Integer> listCounters = new ArrayList<Integer>();
-    InputStream is    = null;
     BufferedReader br = null;
     try {
-      is = new FileInputStream(sFilePath);
+      if(sMenuFile != null && sMenuFile.endsWith(".properties")) {
+        return ResourcesMgr.loadFileProperties(is);
+      }
       br = new BufferedReader(new InputStreamReader(is));
       String sLine = null;
       while((sLine = br.readLine()) != null) {
@@ -471,7 +475,7 @@ class ResourcesMgr
         if(sLine.charAt(0) == '#') continue;
         int iSepRef    = sLine.indexOf("->");
         int iSepEquals = sLine.indexOf('=');
-        int iTabs = 0;        
+        int iTabs = 0;
         for(int i = 0; i < sLine.length(); i++) {
           if(sLine.charAt(i) == '\t') iTabs++; else break;
         }
@@ -513,9 +517,9 @@ class ResourcesMgr
         }
         mapResult.put(sKeyNode + "@d", sDescription);
       }
-    } 
+    }
     catch (Exception ex) {
-      PlatformUtil.log("Exception in ResourcesMgr.loadMenu(portletConfig," + sMenuFile + ")", ex);
+      PlatformUtil.log("Exception in ResourcesMgr.loadMenu(portletConfig, " + sMenuFile + ")", ex);
     }
     finally {
       if(br != null) try{ br.close(); } catch(Exception ex) {}
@@ -525,12 +529,12 @@ class ResourcesMgr
   }
   
   public static
-  Map<String,Object> loadFileProperties(String sFilePath)
+  Map<String, Object> loadFileProperties(String sFilePath)
   {
     Properties properties = new Properties();
     try {
       properties.load(new FileInputStream(sFilePath));
-    } 
+    }
     catch (Exception ex) {
       PlatformUtil.log("Exception in ResourcesMgr.loadFileProperties(" + sFilePath + ")", ex);
     }
@@ -538,18 +542,27 @@ class ResourcesMgr
   }
   
   public static
+  Map<String, Object> loadFileProperties(InputStream is)
+  {
+    Properties properties = new Properties();
+    try {
+      properties.load(is);
+    }
+    catch (Exception ex) {
+      PlatformUtil.log("Exception in ResourcesMgr.loadFileProperties(InputStream is)", ex);
+    }
+    return DataUtil.expectMap(properties, true);
+  }
+  
+  public static
   String loadSQL(PortletConfig portletConfig, String sSQLFile)
   {
-    if(sSQLFile == null || sSQLFile.length() == 0) return null;
-    
-    String sFilePath  = portletConfig.getPortletContext().getRealPath("sql/" + sSQLFile);
-    if(sFilePath == null || sFilePath.length() == 0) return null;
+    InputStream is = openPortletFile(portletConfig, "sql/" + sSQLFile);
+    if(is == null) return null;
     
     StringBuffer sb   = new StringBuffer();
-    InputStream is    = null;
     BufferedReader br = null;
     try {
-      is = new FileInputStream(sFilePath);
       br = new BufferedReader(new InputStreamReader(is));
       String sLine = null;
       while((sLine = br.readLine()) != null) {
@@ -578,16 +591,12 @@ class ResourcesMgr
   public static
   String loadHTML(PortletConfig portletConfig, String sHTMLFile, RenderResponse renderResponse)
   {
-    if(sHTMLFile == null || sHTMLFile.length() == 0) return null;
-    
-    String sFilePath  = portletConfig.getPortletContext().getRealPath("html/" + sHTMLFile);
-    if(sFilePath == null || sFilePath.length() == 0) return null;
+    InputStream is = openPortletFile(portletConfig, "html/" + sHTMLFile);
+    if(is == null) return null;
     
     StringBuffer sb   = new StringBuffer();
-    InputStream is    = null;
     BufferedReader br = null;
     try {
-      is = new FileInputStream(sFilePath);
       br = new BufferedReader(new InputStreamReader(is));
       String sLine = null;
       while((sLine = br.readLine()) != null) {
@@ -595,7 +604,7 @@ class ResourcesMgr
       }
     } 
     catch (Exception ex) {
-      PlatformUtil.log("Exception in ResourcesMgr.loadHTML(parameters," + sHTMLFile + "," + renderResponse + ")", ex);
+      PlatformUtil.log("Exception in ResourcesMgr.loadHTML(portletConfig," + sHTMLFile + ",renderResponse)", ex);
     }
     finally {
       if(br != null) try{ br.close(); } catch(Exception ex) {}

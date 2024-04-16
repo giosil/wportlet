@@ -19,27 +19,37 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-//portal-service-6.1.2.jar
-import com.liferay.portal.model.User;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.model.Role;
-import com.liferay.portal.model.Phone;
-import com.liferay.portal.model.EmailAddress;
-import com.liferay.portal.kernel.upload.UploadPortletRequest;
-import com.liferay.portal.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.util.PortalUtil;
+// <groupId>com.liferay.portal</groupId>
+// <artifactId>util-taglib</artifactId>
+// <version>6.0.2</version>
+//
+// <groupId>com.liferay.portal</groupId>
+// <artifactId>portal-service</artifactId>
+// <version>6.1.2</version>
 
-//portal-kernel-7.2.1.jar
-//import com.liferay.portal.kernel.model.User;
-//import com.liferay.portal.kernel.model.Group;
-//import com.liferay.portal.kernel.model.Role;
-//import com.liferay.portal.kernel.model.Phone;
-//import com.liferay.portal.kernel.model.EmailAddress;
+//import com.liferay.portal.model.User;
+//import com.liferay.portal.model.Group;
+//import com.liferay.portal.model.Role;
+//import com.liferay.portal.model.Phone;
+//import com.liferay.portal.model.EmailAddress;
 //import com.liferay.portal.kernel.upload.UploadPortletRequest;
-//import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-//import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-//import com.liferay.portal.kernel.util.PortalUtil;
+//import com.liferay.portal.security.auth.PrincipalThreadLocal;
+//import com.liferay.portal.service.UserLocalServiceUtil;
+//import com.liferay.portal.util.PortalUtil;
+
+// <groupId>com.liferay.portal</groupId>
+// <artifactId>com.liferay.portal.kernel</artifactId>
+// <version>3.35.3</version>
+
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.Phone;
+import com.liferay.portal.kernel.model.EmailAddress;
+import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 public 
 class PlatformUtil 
