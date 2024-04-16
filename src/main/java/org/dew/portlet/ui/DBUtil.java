@@ -5,12 +5,21 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
-import java.util.*;
 
-import javax.servlet.http.*;
-import javax.portlet.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import org.dew.portlet.*;
+import javax.portlet.PortletConfig;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.dew.portlet.Parameters;
+import org.dew.portlet.PlatformUtil;
+import org.dew.portlet.ResourcesMgr;
+import org.dew.portlet.WNames;
 
 /**
  * Classe di utilita' per lo sviluppo rapido di JSP che interrogano una base dati. <br />

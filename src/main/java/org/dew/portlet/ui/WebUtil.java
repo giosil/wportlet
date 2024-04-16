@@ -1,13 +1,39 @@
 package org.dew.portlet.ui;
 
-import java.text.MessageFormat;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.text.MessageFormat;
 
-import javax.servlet.http.*;
-import javax.portlet.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.StringTokenizer;
 
-import org.dew.portlet.*;
+import javax.portlet.ActionRequest;
+import javax.portlet.PortletConfig;
+import javax.portlet.PortletSession;
+import javax.portlet.PortletURL;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.portlet.WindowState;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.dew.portlet.Parameters;
+import org.dew.portlet.ResourcesMgr;
+import org.dew.portlet.User;
+import org.dew.portlet.WActionResult;
+import org.dew.portlet.WNames;
 
 /**
  * Classe di utilita' per lo sviluppo rapido di JSP.
@@ -48,6 +74,10 @@ class WebUtil
    * Classe di stile per le celle da far "scomparire" in caso di visualizzazione mobile.
    */
   public static String sCLASS_RESPONSIVE_CELL_HIDE = "class=\"res-cell-hide\"";
+  /**
+   * Startup time.
+   */
+  public static long STARTUP_TIME = System.currentTimeMillis();
   
   /**
    * Inizializzazione per la definizione delle classi di stile.
@@ -57,6 +87,7 @@ class WebUtil
   public static 
   void init(PortletConfig portletConfig)
   {
+    STARTUP_TIME = System.currentTimeMillis();
     if(ResourcesMgr.sPORTAL_PLATFORM.equals("liferay") || ResourcesMgr.sPORTAL_PLATFORM.equals("sun")) {
       String sLiferayHome = System.getProperty("liferay.home");
       if(sLiferayHome != null && sLiferayHome.indexOf("6.1") >= 0) {
