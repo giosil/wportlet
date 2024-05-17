@@ -26,7 +26,7 @@ docker run --name yeoman-node --mount source=prova-theme,target=/home/yeoman/pro
 	
 	yo liferay-theme
 	
-	cd liferay-theme
+	cd prova-theme
 	
 	gulp deploy
 
