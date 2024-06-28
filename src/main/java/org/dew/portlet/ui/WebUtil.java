@@ -601,6 +601,9 @@ class WebUtil
             else if(oData instanceof Calendar) {
               sb.append(sTagTD + " style=\"text-align: left;\">" + formatDate((Calendar) oData) + sTD2);
             }
+            else if(oData instanceof Boolean) {
+              sb.append(sTagTD + " style=\"text-align: center;\">" + formatBoolean((Boolean) oData) + sTD2);
+            }
             else {
               sb.append(sTagTD + " style=\"text-align: left;\">" + oData + sTD2);
             }
@@ -644,6 +647,9 @@ class WebUtil
           else if(oRow instanceof Date) {
             sb.append(sTD1 + " style=\"text-align: left;\">" + formatDate((Date) oRow) + sTD2);
           }
+          else if(oRow instanceof Boolean) {
+            sb.append(sTD1 + " style=\"text-align: center;\">" + formatBoolean((Boolean) oRow) + sTD2);
+          }
           else if(oRow instanceof Calendar) {
             sb.append(sTD1 + " style=\"text-align: left;\">" + formatDate((Calendar) oRow) + sTD2);
           }
@@ -669,7 +675,7 @@ class WebUtil
       Collections.sort(listKeys);
       if(boContainsHeader) {
         sb.append("<thead>");
-        sb.append("<tr " + sCLASS_TR_HEADER + "><th>Key</th><th>Value</th></tr>");
+        sb.append("<tr " + sCLASS_TR_HEADER + "><th>Chiave</th><th>Valore</th></tr>");
         sb.append("</thead>");
       }
       sb.append("<tbody>");
@@ -695,6 +701,9 @@ class WebUtil
         }
         else if(oData instanceof Calendar) {
           sb.append("<td align=\"left\">" + formatDate((Calendar) oData) + "</td>");
+        }
+        else if(oData instanceof Boolean) {
+          sb.append("<td align=\"center\">" + formatBoolean((Boolean) oData) + "</td>");
         }
         else {
           sb.append("<td align=\"left\">" + oData + "</td>");
@@ -765,6 +774,9 @@ class WebUtil
             }
             else if(oData instanceof Calendar) {
               sb.append("<td align=\"left\">" + formatDate((Calendar) oData) + "</td>");
+            }
+            else if(oData instanceof Boolean) {
+              sb.append("<td align=\"center\">" + formatBoolean((Boolean) oData) + "</td>");
             }
             else {
               sb.append("<td align=\"left\">" + oData + "</td>");
@@ -2017,6 +2029,18 @@ class WebUtil
       return sPortletURL.substring(iIdxRoot);
     }
     return sPortletURL.substring(iIdxRoot, iSepParameters);
+  }
+  
+  /**
+   * Formatta un booleano.
+   * @param bol Boolean
+   * @return String
+   */
+  public static
+  String formatBoolean(Boolean bol)
+  {
+    if(bol == null) return "";
+    return bol.booleanValue() ? "&#10004;" : "";
   }
   
   /**

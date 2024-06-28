@@ -41,6 +41,7 @@ class WebDialog implements Serializable
   
   protected List<String> buttonsCaption;
   protected List<String> buttonsOnClick;
+  protected String validation;
   protected String openHandler;
   protected String closeHandler;
   
@@ -146,6 +147,14 @@ class WebDialog implements Serializable
     this.after = after;
   }
 
+  public int getFramework() {
+    return framework;
+  }
+
+  public void setFramework(int framework) {
+    this.framework = framework;
+  }
+
   public List<String> getButtonsCaption() {
     return buttonsCaption;
   }
@@ -160,6 +169,14 @@ class WebDialog implements Serializable
 
   public void setButtonsOnClick(List<String> buttonsOnClick) {
     this.buttonsOnClick = buttonsOnClick;
+  }
+
+  public String getValidation() {
+    return validation;
+  }
+
+  public void setValidation(String validation) {
+    this.validation = validation;
   }
 
   public String getOpenHandler() {
@@ -203,6 +220,11 @@ class WebDialog implements Serializable
   public WebDialog size(int width, int height) {
     this.width  = width;
     this.height = height;
+    return this;
+  }
+  
+  public WebDialog validation(String validation) {
+    this.validation = validation;
     return this;
   }
   
@@ -380,11 +402,17 @@ class WebDialog implements Serializable
     else {
       sb.append("<div class=\"modal-body\">");
     }
+    if(before != null && before.length() > 0) {
+      sb.append(before);
+    }
     if(body != null) {
       String sBody = body.toString();
       if(sBody != null && sBody.length() > 0) {
         sb.append(sBody);
       }
+    }
+    if(after != null && after.length() > 0) {
+      sb.append(after);
     }
     sb.append("</div>"); // modal-body
     
@@ -400,7 +428,12 @@ class WebDialog implements Serializable
         String sOnClick = buttonsOnClick != null && buttonsOnClick.size() > i ? buttonsOnClick.get(i) : "";
         if(sOnClick != null && sOnClick.length() > 0 && !sOnClick.equalsIgnoreCase("x")) {
           if(!sOnClick.endsWith(";")) sOnClick += ";";
-          sb.append("<button type=\"button\" class=\"btn btn-primary\" onclick=\"" + attrib(sOnClick, getHideCode(null)) + "\">" + sCaption + "</button>");
+          if(validation != null && validation.length() > 0) {
+            sb.append("<button type=\"button\" class=\"btn btn-primary\" onclick=\"if(" + validation + "){" + attrib(sOnClick, getHideCode(null)) + "}\">" + sCaption + "</button>");
+          }
+          else {
+            sb.append("<button type=\"button\" class=\"btn btn-primary\" onclick=\"" + attrib(sOnClick, getHideCode(null)) + "\">" + sCaption + "</button>");
+          }
         }
         else {
           sb.append("<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" onclick=\"" + attrib(getHideCode(null)) + "\">" + sCaption + "</button>");
