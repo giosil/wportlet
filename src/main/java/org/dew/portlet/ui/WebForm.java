@@ -71,6 +71,10 @@ class WebForm implements Serializable
   public static String STYLE_CHECKBOX    = "margin-left:0.5rem;width:1rem;height:1rem;";
   public static String STYLE_LABEL_RIGHT = "margin-left:0.5rem;";
   
+  public static String CLS_BTN_SUBMIT    = "btn btn-primary";
+  public static String CLS_BTN_RESET     = "btn btn-secondary";
+  public static String CLS_BTN_BUTTON    = "btn btn-primary";
+  
   public WebForm()
   {
   }
@@ -1518,13 +1522,28 @@ class WebForm implements Serializable
           idAttr = "id=\"" + id + "\" ";
         }
         if(type == Type.SUBMIT) {
-          sb.append("<button " + onClickAttr + idAttr + "type=\"submit\">");
+          if(CLS_BTN_SUBMIT != null && CLS_BTN_SUBMIT.length() > 0) {
+            sb.append("<button " + onClickAttr + idAttr + "type=\"submit\" class=\"" + CLS_BTN_SUBMIT + "\">");
+          }
+          else {
+            sb.append("<button " + onClickAttr + idAttr + "type=\"submit\">");
+          }
         }
         else if(type == Type.RESET) {
-          sb.append("<button " + onClickAttr + idAttr + "type=\"reset\">");
+          if(CLS_BTN_RESET != null && CLS_BTN_RESET.length() > 0) {
+            sb.append("<button " + onClickAttr + idAttr + "type=\"reset\" class=\"" + CLS_BTN_RESET + "\">");
+          }
+          else {
+            sb.append("<button " + onClickAttr + idAttr + "type=\"reset\">");
+          }
         }
         else {
-          sb.append("<button " + onClickAttr + idAttr + "type=\"button\">");
+          if(CLS_BTN_BUTTON != null && CLS_BTN_BUTTON.length() > 0) {
+            sb.append("<button " + onClickAttr + idAttr + "type=\"button\" class=\"" + CLS_BTN_BUTTON + "\">");
+          }
+          else {
+            sb.append("<button " + onClickAttr + idAttr + "type=\"button\">");
+          }
         }
         sb.append(esc(label));
         sb.append("</button>");
