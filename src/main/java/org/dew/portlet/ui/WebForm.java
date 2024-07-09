@@ -54,6 +54,8 @@ class WebForm implements Serializable
   protected String afterButtons;
   protected int incLab = 0;
   
+  protected String enancheDate = "$('#?id?').datepicker($.datepicker.regional[\"it\"]);";
+  
   protected List<WebForm> forms = null;
   protected List<String> titles = null;
   
@@ -74,6 +76,10 @@ class WebForm implements Serializable
   public static String CLS_BTN_SUBMIT    = "btn btn-primary";
   public static String CLS_BTN_RESET     = "btn btn-secondary";
   public static String CLS_BTN_BUTTON    = "btn btn-primary";
+  
+  public static boolean NATIVE_DATE      = false;
+  public static boolean NATIVE_TIME      = false;
+  public static String  DEF_LANG_DATE    = "it";
   
   public WebForm()
   {
@@ -265,6 +271,14 @@ class WebForm implements Serializable
 
   public void setValidation(String validation) {
     this.validation = validation;
+  }
+
+  public String getEnancheDate() {
+    return enancheDate;
+  }
+
+  public void setEnancheDate(String enancheDate) {
+    this.enancheDate = enancheDate;
   }
 
   public 
@@ -852,9 +866,18 @@ class WebForm implements Serializable
       if(sAfter != null && sAfter.length() > 0) sb.append(sAfter);
       return sb.toString();
     }
-    if(date != null && date.size() > 0) {
-      if(sBefore == null || sBefore.indexOf("$('.fdate').datepicker") < 0) {
-        sb.append("$('.fdate').datepicker($.datepicker.regional[\"it\"]);");
+    if(!NATIVE_DATE) {
+      if(date != null && date.size() > 0) {
+        if(enancheDate != null && enancheDate.length() > 0) {
+          for(int i = 0; i < date.size(); i++) {
+            String dateId = date.get(i);
+            if(dateId == null || dateId.length() == 0) {
+              continue;
+            }
+            String enancheDate_i = enancheDate.replace("?id?", dateId);
+            sb.append(enancheDate_i);
+          }
+        }
       }
     }
     if(focusOn != null && focusOn.length() > 0) {
@@ -1626,10 +1649,25 @@ class WebForm implements Serializable
         }
       }
       else if(type == Type.DATEFIELD) {
-        sb.append("<input type=\"text\" class=\"fdate\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+        if(NATIVE_DATE) {
+          if(DEF_LANG_DATE != null && DEF_LANG_DATE.length() > 0) {
+            sb.append("<input type=\"date\" class=\"fdate\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + " lang=" + DEF_LANG_DATE + ">");
+          }
+          else {
+            sb.append("<input type=\"date\" class=\"fdate\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+          }
+        }
+        else {
+          sb.append("<input type=\"text\" class=\"fdate\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+        }
       }
       else if(type == Type.TIMEFIELD) {
-        sb.append("<input type=\"text\" class=\"ftime\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+        if(NATIVE_TIME) {
+          sb.append("<input type=\"time\" class=\"ftime\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+        }
+        else {
+          sb.append("<input type=\"text\" class=\"ftime\" placeholder=\"" + sPlaceholder + "\" name=\"" + namespace + sName + "\"  id=\"" + sName + "\"" + sTAttr + ">");
+        }
       }
       else if(type == Type.RADIOBUTTON) {
         String sInputName = sName;
