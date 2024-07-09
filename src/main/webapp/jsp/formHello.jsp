@@ -20,3 +20,10 @@
 <a href="<portlet:actionURL><portlet:param name="f" value="help.jsp" /></portlet:actionURL>">Help</a> -
 <a href="<portlet:actionURL windowState="<%= WindowState.NORMAL.toString() %>"><portlet:param name="a" value="logout" /></portlet:actionURL>">Logout</a>
 
+<script>
+$(document).ready(function(){
+	// bug fix datepicker liferay
+	var uidpd=document.getElementById('ui-datepicker-div');
+	if(uidpd)uidpd.remove();
+});
+</script>
