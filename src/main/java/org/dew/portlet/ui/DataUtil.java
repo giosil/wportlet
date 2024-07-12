@@ -332,100 +332,100 @@ class DataUtil
   }
   
   public static
-  List<Map<String,Object>> expectListOfMap(Object o)
+  List<Map<String, Object>> expectListOfMap(Object o)
   {
     return expectListOfMap(o, false);
   }
   
   @SuppressWarnings("unchecked")
   public static
-  List<Map<String,Object>> expectListOfMap(Object o, boolean emptyListDefault)
+  List<Map<String, Object>> expectListOfMap(Object o, boolean emptyListDefault)
   {
     if(o == null) {
       if(emptyListDefault) {
-        return new ArrayList<Map<String,Object>>();
+        return new ArrayList<Map<String, Object>>();
       }
       return null;
     }
     if(!(o instanceof List)) {
       if(o instanceof Map) {
-        List<Map<String,Object>> listResult = new ArrayList<Map<String,Object>>();
-        listResult.add((Map<String,Object>) o);
+        List<Map<String, Object>> listResult = new ArrayList<Map<String, Object>>();
+        listResult.add((Map<String, Object>) o);
         return listResult;
       }
       if(emptyListDefault) {
-        return new ArrayList<Map<String,Object>>();
+        return new ArrayList<Map<String, Object>>();
       }
       return null;
     }
     int size = ((List<?>) o).size();
     if(size == 0) {
-      return (List<Map<String,Object>>) o;
+      return (List<Map<String, Object>>) o;
     }
     Object item0 = ((List<?>) o).get(0);
     if(item0 == null) {
-      return (List<Map<String,Object>>) o;
+      return (List<Map<String, Object>>) o;
     }
     if(item0 instanceof Map) {
-      return (List<Map<String,Object>>) o;
+      return (List<Map<String, Object>>) o;
     }
     if(emptyListDefault) {
-      return new ArrayList<Map<String,Object>>();
+      return new ArrayList<Map<String, Object>>();
     }
     return null;
   }
   
   @SuppressWarnings("unchecked")
   public static <T> 
-  List<Map<String,Object>> expectListOfMap(Object o, boolean emptyListDefault, Object module, Object parameters)
+  List<Map<String, Object>> expectListOfMap(Object o, boolean emptyListDefault, Object module, Object parameters)
   {
     if(o == null) {
       if(emptyListDefault) {
-        return new ArrayList<Map<String,Object>>();
+        return new ArrayList<Map<String, Object>>();
       }
       return null;
     }
     if(!(o instanceof List)) {
       if(o instanceof Map) {
-        List<Map<String,Object>> listResult = new ArrayList<Map<String,Object>>();
-        listResult.add((Map<String,Object>) o);
+        List<Map<String, Object>> listResult = new ArrayList<Map<String, Object>>();
+        listResult.add((Map<String, Object>) o);
         return listResult;
       }
       // WARNING
-      warn(o, "List<Map<String,Object>>", null, module, parameters);
+      warn(o, "List<Map<String, Object>>", null, module, parameters);
       if(emptyListDefault) {
-        return new ArrayList<Map<String,Object>>();
+        return new ArrayList<Map<String, Object>>();
       }
       return null;
     }
     int size = ((List<?>) o).size();
     if(size == 0) {
-      return (List<Map<String,Object>>) o;
+      return (List<Map<String, Object>>) o;
     }
     Object item0 = ((List<?>) o).get(0);
     if(item0 == null) {
-      return (List<Map<String,Object>>) o;
+      return (List<Map<String, Object>>) o;
     }
     if(item0 instanceof Map) {
-      return (List<Map<String,Object>>) o;
+      return (List<Map<String, Object>>) o;
     }
     // WARNING
-    warn(o, "List<Map<String,Object>>", null, module, parameters);
+    warn(o, "List<Map<String, Object>>", null, module, parameters);
     if(emptyListDefault) {
-      return new ArrayList<Map<String,Object>>();
+      return new ArrayList<Map<String, Object>>();
     }
     return null;
   }
   
   public static 
-  Map<String,Object> expectMap(Object o)
+  Map<String, Object> expectMap(Object o)
   {
     return expectMap(o, false);
   }
   
   @SuppressWarnings("unchecked")
   public static 
-  Map<String,Object> expectMap(Object o, boolean emptyMapDefault)
+  Map<String, Object> expectMap(Object o, boolean emptyMapDefault)
   {
     if(o == null) {
       if(emptyMapDefault) {
@@ -439,12 +439,12 @@ class DataUtil
       }
       return null;
     }
-    return (Map<String,Object>) o;
+    return (Map<String, Object>) o;
   }
   
   @SuppressWarnings("unchecked")
   public static 
-  Map<String,Object> expectMap(Object o, boolean emptyMapDefault, Object module, Object parameters)
+  Map<String, Object> expectMap(Object o, boolean emptyMapDefault, Object module, Object parameters)
   {
     if(o == null) {
       if(emptyMapDefault) {
@@ -454,13 +454,13 @@ class DataUtil
     }
     if(!(o instanceof Map)) {
       // WARNING
-      warn(o, "Map<String,Object>", null, module, parameters);
+      warn(o, "Map<String, Object>", null, module, parameters);
       if(emptyMapDefault) {
         return new HashMap<String, Object>();
       }
       return null;
     }
-    return (Map<String,Object>) o;
+    return (Map<String, Object>) o;
   }
   
   public static <T> 
