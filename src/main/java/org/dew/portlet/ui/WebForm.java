@@ -1082,25 +1082,26 @@ class WebForm implements Serializable
               afterField = sLabel;
             }
             else {
+              String lblFor = sName.replace('#', '_');
               int brk = sLabel.indexOf('#');
               if(brk > 0) {
                 String sLabel1 = sLabel.substring(0,  brk);
                 String sLabel2 = sLabel.substring(brk + 1);
                 if(labelStyle != null && labelStyle.length() > 0) {
-                  afterField = "<label for=\"" + namespace + sName + "\" style=\"" + labelStyle + "\">" + label(sLabel1) + "</label>";
-                  afterField += "<label for=\"" + namespace + sName + "\" style=\"" + labelStyle + "\">" + label(sLabel2) + "</label>";
+                  afterField = "<label for=\"" + lblFor + "\" style=\"" + labelStyle + "\">" + label(sLabel1) + "</label>";
+                  afterField += "<label for=\"" + lblFor + "\" style=\"" + labelStyle + "\">" + label(sLabel2) + "</label>";
                 }
                 else {
-                  afterField = "<label for=\"" + namespace + sName + "\" style=\"" + STYLE_LABEL_RIGHT + "\">" + label(sLabel1) + "</label>";
-                  afterField += "<label for=\"" + namespace + sName + "\" style=\"" + STYLE_LABEL_RIGHT + "\">" + label(sLabel2) + "</label>";
+                  afterField = "<label for=\"" + lblFor + "\" style=\"" + STYLE_LABEL_RIGHT + "\">" + label(sLabel1) + "</label>";
+                  afterField += "<label for=\"" + lblFor + "\" style=\"" + STYLE_LABEL_RIGHT + "\">" + label(sLabel2) + "</label>";
                 }
               }
               else {
                 if(labelStyle != null && labelStyle.length() > 0) {
-                  afterField = "<label for=\"" + namespace + sName + "\" style=\"" + labelStyle + "\">" + label(sLabel) + "</label>";
+                  afterField = "<label for=\"" + lblFor + "\" style=\"" + labelStyle + "\">" + label(sLabel) + "</label>";
                 }
                 else {
-                  afterField = "<label for=\"" + namespace + sName + "\" style=\"" + STYLE_LABEL_RIGHT + "\">" + label(sLabel) + "</label>";
+                  afterField = "<label for=\"" + lblFor + "\" style=\"" + STYLE_LABEL_RIGHT + "\">" + label(sLabel) + "</label>";
                 }
               }
             }
@@ -1114,7 +1115,7 @@ class WebForm implements Serializable
             sStyleBlank = " style=\"" + STYLE_DIV_BLANK + "\"";
           }
           // Empty
-          if(sHtml != null && sHtml.length() > 50) {
+          if(iRowItems == 1 || (sHtml != null && sHtml.length() > 50)) {
             sb.append("<div class=\"" + COL_CLASS_BEG + "12" + COL_CLASS_END + "\"" + sStyleBlank + ">" + sHtml + "</div>");
           }
           else if(sHtml != null && sHtml.length() > 1) {
@@ -1134,25 +1135,26 @@ class WebForm implements Serializable
               sb.append(sLabel);
             }
             else {
+              String lblFor = sName.replace('#', '_');
               int brk = sLabel.indexOf('#');
               if(brk > 0) {
                 String sLabel1 = sLabel.substring(0,  brk);
                 String sLabel2 = sLabel.substring(brk + 1);
                 if(labelStyle != null && labelStyle.length() > 0) {
-                  sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;" + labelStyle + "\">" + label(sLabel1) + "</label>");
-                  sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;" + labelStyle + "\">" + label(sLabel2) + ":</label>");
+                  sb.append("<label for=\"" + lblFor + "\" style=\"display:block;" + labelStyle + "\">" + label(sLabel1) + "</label>");
+                  sb.append("<label for=\"" + lblFor + "\" style=\"display:block;" + labelStyle + "\">" + label(sLabel2) + ":</label>");
                 }
                 else {
-                  sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;\">" + label(sLabel1) + "</label>");
-                  sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;\">" + label(sLabel2) + ":</label>");
+                  sb.append("<label for=\"" + lblFor + "\" style=\"display:block;\">" + label(sLabel1) + "</label>");
+                  sb.append("<label for=\"" + lblFor + "\" style=\"display:block;\">" + label(sLabel2) + ":</label>");
                 }
               }
               else {
                 if(labelStyle != null && labelStyle.length() > 0) {
-                  sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;" + labelStyle + "\">" + label(sLabel) + ":</label>");
+                  sb.append("<label for=\"" + lblFor + "\" style=\"display:block;" + labelStyle + "\">" + label(sLabel) + ":</label>");
                 }
                 else {
-                  sb.append("<label for=\"" + namespace + sName + "\" style=\"display:block;\">" + label(sLabel) + ":</label>");
+                  sb.append("<label for=\"" + lblFor + "\" style=\"display:block;\">" + label(sLabel) + ":</label>");
                 }
               }
             }
@@ -1170,25 +1172,26 @@ class WebForm implements Serializable
               sb.append(sLabel);
             }
             else {
+              String lblFor = sName.replace('#', '_');
               int brk = sLabel.indexOf('#');
               if(brk > 0) {
                 String sLabel1 = sLabel.substring(0,  brk);
                 String sLabel2 = sLabel.substring(brk + 1);
                 if(labelStyle != null && labelStyle.length() > 0) {
-                  sb.append("<label for=\"" + sName + "\" style=\"" + labelStyle + "\">" + label(sLabel1) + "</label>");
-                  sb.append("<label for=\"" + sName + "\" style=\"" + labelStyle + "\">" + label(sLabel2) + ":</label>");
+                  sb.append("<label for=\"" + lblFor + "\" style=\"" + labelStyle + "\">" + label(sLabel1) + "</label>");
+                  sb.append("<label for=\"" + lblFor + "\" style=\"" + labelStyle + "\">" + label(sLabel2) + ":</label>");
                 }
                 else {
-                  sb.append("<label for=\"" + sName + "\">" + label(sLabel1) + "</label>");
-                  sb.append("<label for=\"" + sName + "\">" + label(sLabel2) + ":</label>");
+                  sb.append("<label for=\"" + lblFor + "\">" + label(sLabel1) + "</label>");
+                  sb.append("<label for=\"" + lblFor + "\">" + label(sLabel2) + ":</label>");
                 }
               }
               else {
                 if(labelStyle != null && labelStyle.length() > 0) {
-                  sb.append("<label for=\"" + sName + "\" style=\"" + labelStyle + "\">" + label(sLabel) + ":</label>");
+                  sb.append("<label for=\"" + lblFor + "\" style=\"" + labelStyle + "\">" + label(sLabel) + ":</label>");
                 }
                 else {
-                  sb.append("<label for=\"" + sName + "\">" + label(sLabel) + ":</label>");
+                  sb.append("<label for=\"" + lblFor + "\">" + label(sLabel) + ":</label>");
                 }
               }
             }
@@ -1678,7 +1681,28 @@ class WebForm implements Serializable
           sInputId   = sName.replace('#', '_');
         }
         if(value != null && value.length() > 0) {
-          sb.append("<input type=\"radio\" name=\"" + namespace + sInputName + "\" id=\"" + sInputId + "\" " + (checked ? "checked" : "") + " value=\"" + esc(value) + "\"> " + esc(value));
+          String val = null;
+          String txt = null;
+          int sep = value.indexOf('^');
+          if(sep >= 0) {
+            val = value.substring(0,sep);
+            txt = value.substring(sep+1);
+          }
+          else {
+            val = value;
+            txt = value;
+          }
+          if(sLabel != null && sLabel.length() > 0) {
+            if(txt != null && txt.length() > 0) {
+              sb.append("<input type=\"radio\" name=\"" + namespace + sInputName + "\" id=\"" + sInputId + "\" " + (checked ? "checked" : "") + " value=\"" + esc(val) + "\"> " + esc(txt));
+            }
+            else {
+              sb.append("<input type=\"radio\" name=\"" + namespace + sInputName + "\" id=\"" + sInputId + "\" " + (checked ? "checked" : "") + " value=\"" + esc(val) + "\">");
+            }
+          }
+          else {
+            sb.append("<input type=\"radio\" name=\"" + namespace + sInputName + "\" id=\"" + sInputId + "\" " + (checked ? "checked" : "") + " value=\"" + esc(val) + "\"> <label for=\"" + sInputId + "\">" + esc(txt) + "</label>");
+          }
         }
         else {
           sb.append("<input type=\"radio\" name=\"" + namespace + sInputName + "\" id=\"" + sInputId + "\"" + sTAttr + "> ");
