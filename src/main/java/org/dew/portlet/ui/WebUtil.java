@@ -1681,6 +1681,28 @@ class WebUtil
     return buildForwardHome(request, null);
   }
   
+    /**
+   * Costruisce una URL di action forward che punta alla pagina di view.
+   * 
+   * @param request HttpServletRequest
+   * @param checkUserHomeURL check user home URL
+   * @return String
+   */
+  public static
+  String buildForwardHome(HttpServletRequest request, boolean checkUserHomeURL)
+  {
+    if(checkUserHomeURL) {
+      User user = getUser(request);
+      if(user != null) {
+        String homeURL = user.getHomeURL();
+        if(homeURL != null && homeURL.length() > 1) {
+          return homeURL;
+        }
+      }
+    }
+    return buildForwardHome(request, null);
+  }
+  
   /**
    * Costruisce una URL di action forward che punta alla pagina di view.
    * 
