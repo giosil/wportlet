@@ -1,12 +1,12 @@
 @echo off
 
-set LIFERAY_CONT_NAME=csr-liferay
+set LIFERAY_CONT_NAME=test-liferay
 
 rem docker pull liferay/portal:7.1.3-ga4
 
 rem docker run --name %LIFERAY_CONT_NAME% -p 8080:8080 -d liferay/portal:7.1.3-ga4
 
-rem docker compose -p "csr-liferay-cluster" up --detach
+rem docker compose -p "test-liferay-cluster" up --detach
 
 docker cp ./target/wportlet.war %LIFERAY_CONT_NAME%:/opt/liferay
 

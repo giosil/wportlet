@@ -1,7 +1,7 @@
 services:
   liferay:
     image: liferay/portal:7.1.3-ga4
-    container_name: csr-liferay
+    container_name: test-liferay
     depends_on:
       - "postgres"
     ports:
@@ -13,7 +13,7 @@ services:
       - LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_PASSWORD=passw0rd
   postgres:
     image: postgres:12
-    container_name: csr-postgres
+    container_name: test-postgres
     environment:
       - POSTGRES_PASSWORD=passw0rd
       - POSTGRES_USER=liferay
