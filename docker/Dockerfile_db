@@ -1,0 +1,7 @@
+FROM postgres:12
+
+ENV POSTGRES_DB=lportal
+ENV POSTGRES_USER=liferay
+ENV POSTGRES_PASSWORD=passw0rd
+
+COPY psql_dump.sql /docker-entrypoint-initdb.d/
