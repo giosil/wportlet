@@ -9,15 +9,19 @@ services:
       - "8787:8787"
       - "8080:8080"
   lportal-db:
-    image: demo-db-liferay:1.0.0
+    image: postgres:12
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "liferay"]
+      test: ["CMD", "pg_isready", "-U", "push"]
       interval: 5s
       retries: 5
-      start_period: 10s 
-    container_name: demo-db-liferay
+      start_period: 10s
+    container_name: test-postgres
+    environment:
+      - POSTGRES_PASSWORD=passw0rd
+      - POSTGRES_USER=liferay
+      - POSTGRES_DB=lportal
     ports:
-      - "5433:5432"
+      - "5432:5432"
 
 volumes:
   liferay:
