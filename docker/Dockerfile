@@ -2,6 +2,7 @@ FROM centos:centos7
 
 COPY jdk-8u202-linux-x64.tar.gz /opt
 COPY liferay-portal-tomcat-7.4.3.125-ga125-1726242956.tar.gz /opt
+COPY db-check-1.0.0.jar /opt
 
 RUN tar -xvf /opt/jdk-8u202-linux-x64.tar.gz -C /opt
 RUN tar -xvf /opt/liferay-portal-tomcat-7.4.3.125-ga125-1726242956.tar.gz -C /opt
