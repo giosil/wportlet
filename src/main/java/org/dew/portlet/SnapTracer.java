@@ -142,13 +142,9 @@ class SnapTracer
   protected static
   void write(int type, String message) 
   {
-    int index = atomicInteger.getAndIncrement();
-    atomicInteger.compareAndSet(LENGTH, 0);
-    if(index >= LENGTH) {
-      atomicInteger.set(0);
-      index = 0;
-    }
     String logMessage = type + "|" + WebUtil.formatDateTime(new Date()) + "|" + message;
+    // Thread-safe
+    int index = atomicInteger.getAndUpdate(i -> (i + 1) % LENGTH);
     buffer[index] = logMessage;
   }
 }
